@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>🌟 Mi Banco de Puntos 🌟</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Segoe UI', sans-serif; background: #f0f4ff; min-height: 100vh; }
+    
+    .header {
+      background: linear-gradient(135deg, #6C63FF, #FF6584);
+      color: white; padding: 20px; text-align: center;
+      border-radius: 0 0 30px 30px;
+    }
+    .header h1 { font-size: 1.8em; margin-bottom: 5px; }
+    .current-kid { font-size: 1.3em; margin-bottom: 5px; }
+    .tickets { font-size: 3em; font-weight: bold; }
+    .tickets-label { font-size: 1.1em; opacity: 0.9; }
+    
+    .kid-seletor {
+      display: flex; justify-content: center; gap: 10px; padding: 15px 20px;
+    }
+    .kid-btn {
+      padding: 10px 20px; border-radius: 15px; border: 3px solid transparent;
+      font-size: 1em; font-weight: bold; cursor: pointer; transition: 0.3s;
+    }
+    .kid-btn.active { border-color: white; }
+    .kid-btn span { font-size: 1.5em; }
+    
+    .kid-iris { background: #FFB6C1; color: #333; }
+    .kid-dalia { background: #87CEEB; color: #333; }
+    .kid-alexander { background: #98FB98; color: #333; }
+    
+    .tabs {
+      display: flex; justify-content: center; gap: 8px; padding: 10px 20px;
+    }
+    .tab {
+      padding: 10px 16px; border-radius: 15px; border: none; cursor: pointer;
+      font-size: 0.9em; font-weight: bold; transition: 0.3s;
+    }
+    .tab.active { background: #6C63FF; color: white; }
+    .tab:not(.active) { background: white; color: #6C63FF; }
+    
+    .content { max-width: 800px; margin: 0 auto; padding: 0 15px 20px; }
+    .section { display: none; }
+    .section.active { display: block; }
+    
+    .cat-title {
+      font-size: 1em; color: #888; margin: 15px 0 10px 5px;
+      border-bottom: 2px solid #eee; padding-bottom: 5px;
+    }
+    
+    .task-card {
+      background: white; border-radius: 16px; padding: 14px; margin-bottom: 10px;
+      display: flex; align-items: center; gap: 12px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1); cursor: pointer; transition: 0.3s;
+    }
+    .task-card:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.15); }
+    .task-card.done { opacity: 0.4; }
+    .task-icon { font-size: 1.8em; width: 45px; text-align: center; }
+    .task-info { flex: 1; }
+    .task-name { font-size: 1em; font-weight: bold; color: #333; }
+    .task-sub { font-size: 0.85em; color: #999; }
+    .task-points { color: #6C63FF; font-weight: bold; font-size: 1.1em; }
+    .task-check { font-size: 1.4em; color: #ddd; }
+    .task-card.done .task-check { color: #4CAF50; }
+    
+    .reward-card {
+      background: white; border-radius: 16px; padding: 14px; margin-bottom: 10px;
+      display: flex; align-items: center; gap: 12px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+    .reward-icon { font-size: 1.8em; width: 45px; text-align: center; }
+    .reward-info { flex: 1; }
+    .reward-name { font-size: 1em; font-weight: bold; color: #333; }
+    .reward-cost { color: #FF6584; font-weight: bold; }
+    .redeem-btn {
+      background: #4CAF50; color: white; border: none; border-radius: 12px;
+      padding: 8px 16px; font-size: 0.85em; cursor: pointer; font-weight: bold;
+    }
+    .redeem-btn:disabled { background: #ccc; cursor: not-allowed; }
+    
+    .history-item {
+      background: white; border-radius: 12px; padding: 12px 16px; margin-bottom: 8px;
+      display: flex; justify-content: space-between; align-items: center;
+      border-left: 4px solid #6C63FF;
+    }
+    .history-item.redeemed { border-left-color: #FF6584; }
+    .history-date { color: #999; font-size: 0.8em; }
+    .history-points.earned { color: #4CAF50; font-weight: bold; }
+    .history-points.redeemed { color: #FF6584; font-weight: bold; }
+    
+    .reset-btn {
+      background: #eee; color: #666; border: none; border-radius: 10px;
+      padding: 8px 16px; font-size: 0.8em; cursor: pointer; margin: 10px 5px;
+    }
+    .add-btn {
+      background: #6C63FF; color: white; border: none; border-radius: 50%;
+      width: 50px; height: 50px; font-size: 1.5em; cursor: pointer;
+      position: fixed; bottom: 20px; right: 20px; box-shadow: 0 4px 12px rgba(108,99,255,0.4);
+    }
+    
+    .modal {
+      display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(0,0,0,0.5); z-index: 1000; justify-content: center; align-items: center;
+    }
+    .modal.show { display: flex; }
+    .modal-content {
+      background: white; border-radius: 20px; padding: 25px; width: 90%; max-width: 400px;
+    }
+    .modal-title { font-size: 1.2em; font-weight: bold; margin-bottom: 15px; text-align: center; }
+    .modal-input {
+      width: 100%; padding: 12px; border: 2px solid #eee; border-radius: 10px;
+      font-size: 1em; margin-bottom: 10px;
+    }
+    .modal-btn {
+      width: 100%; padding: 12px; border: none; border-radius: 10px;
+      font-size: 1em; font-weight: bold; cursor: pointer; margin-top: 5px;
+    }
+    .modal-btn.save { background: #6C63FF; color: white; }
+    .modal-btn.cancel { background: #eee; color: #333; }
+    
+    .confetti { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 999; }
+    .empty { text-align: center; padding: 30px; color: #aaa; }
+    .section-title { font-size: 1.2em; font-weight: bold; color: #333; margin: 10px 0 15px; }
+  </style>
+</head>
+<body>
+
+<div class="header">
+  <h1>🌟 Mi Banco de Puntos 🌟</h1>
+  <div class="current-kid" id="currentKidName">—</div>
+  <div class="tickets" id="tickets">0</div>
+  <div class="tickets-label">tickets</div>
+</div>
+
+<div class="kid-seletor">
+  <button class="kid-btn kid-iris" onclick="selectKid('iris')"><span>🌸</span><br>Iris</button>
+  <button class="kid-btn kid-dalia" onclick="selectKid('dalia')"><span>🌼</span><br>Dalia</button>
+  <button class="kid-btn kid-alexander" onclick="selectKid('alexander')"><span>⭐</span><br>Alexander</button>
+</div>
+
+<div class="tabs">
+  <button class="tab active" onclick="showTab('tasks')">📋 Tareas</button>
+  <button class="tab" onclick="showTab('rewards')">🎁 Recompensas</button>
+  <button class="tab" onclick="showTab('history')">📜 Historial</button>
+</div>
+
+<div class="content">
+  
+  <div id="tasks" class="section active">
+    <div class="section-title">Tareas de la casa 🏠</div>
+    <div id="house-tasks"></div>
+    <div class="cat-title">Tareas del colegio 📚</div>
+    <div id="school-tasks"></div>
+    <div class="cat-title">Juegos y diversíon 🎮</div>
+    <div id="play-tasks"></div>
+  </div>
+  
+  <div id="rewards" class="section active">
+    <div class="section-title">Tienda de Recompensas 🎁</div>
+    <div id="reward-list"></div>
+    <div style="text-align:center;margin-top:15px;">
+      <button class="reset-btn" onclick="resetKid()">🔄 Reiniciar tareas</button>
+    </div>
+  </div>
+  
+  <div id="history" class="section">
+    <div class="section-title">Mi Historial 📜</div>
+    <div id="history-list"></div>
+  </div>
+
+</div>
+
+<button class="add-btn" onclick="showAddModal()">+</button>
+
+<div class="modal" id="addModal">
+  <div class="modal-content">
+    <div class="modal-title">➕ Agregar tarea</div>
+    <input class="modal-input" id="addName" placeholder="Nombre de la tarea">
+    <input class="modal-input" id="addPoints" type="number" placeholder="Tickets (número)">
+    <select class="modal-input" id="addCategory">
+      <option value="house">🏠 Casa</option>
+      <option value="school">📚 Colegio</option>
+      <option value="play">🎮 Juego</option>
+    </select>
+    <input class="modal-input" id="addIcon" placeholder="Emoji (ej: 🧹)" maxlength="2">
+    <button class="modal-btn save" onclick="addTask()">Agregar</button>
+    <button class="modal-btn cancel" onclick="closeModal()">Cancelar</button>
+  </div>
+</div>
+
+<script>
+const KIDS = ['iris', 'dalia', 'alexander'];
+const KID_NAMES = { iris: '🌸 Iris', dalia: '🌼 Dalia', alexander: '⭐ Alexander' };
+const KID_COLORS = { iris: '#FFB6C1', dalia: '#87CEEB', alexander: '#98FB98' };
+
+const DEFAULT_TASKS = {
+  house: [
+    { id: 1, name: 'Hacer la cama', icon: '🛏️', points: 5 },
+    { id: 2, name: 'Lavarse los dientes', icon: '🦷', points: 3 },
+    { id: 3, name: 'Acomodar mi cuarto', icon: '🗄️', points: 10 },
+    { id: 4, name: 'Ayudar a lavar trastes', icon: '🍽️', points: 8 },
+    { id: 5, name: 'Barrer la casa', icon: '🧹', points: 8 },
+    { id: 6, name: 'Limpiar mi escritorio', icon: '📓', points: 7 },
+    { id: 7, name: 'Poner la mesa', icon: '🍴', points: 5 },
+    { id: 8, name: 'Recoger la basura', icon: '🗑️', points: 4 },
+    { id: 9, name: 'Cuidar a la mascota', icon: '🐕', points: 10 },
+    { id: 10, name: 'Regar las plantas', icon: '🌱', points: 5 },
+    { id: 11, name: 'No quejarse en todo el día', icon: '😤', points: 15 },
+    { id: 12, name: 'Ayudar a alguien sin quejar', icon: '❤️', points: 12 },
+    { id: 13, name: 'Doblar mi ropa', icon: '👕', points: 6 },
+    { id: 14, name: 'Limpiar el baño', icon: '🚿', points: 12 },
+    { id: 15, name: 'Secar el plato', icon: '🍳', points: 5 },
+  ],
+  school: [
+    { id: 101, name: 'Terminar tarea escolar', icon: '📚', points: 15 },
+    { id: 102, name: 'Leer 30 minutos', icon: '📖', points: 10 },
+    { id: 103, name: 'Hacer mi tarea rápido', icon: '✏️', points: 12 },
+    { id: 104, name: 'Estudiar para un examen', icon: '🧠', points: 20 },
+    { id: 105, name: 'Escribir en mi diario', icon: '📝', points: 8 },
+    { id: 106, name: 'Practicar música', icon: '🎵', points: 10 },
+    { id: 107, name: 'Pintar / dibujar', icon: '🎨', points: 8 },
+    { id: 108, name: 'Aprender algo nuevo', icon: '💡', points: 15 },
+    { id: 109, name: 'Hacer ejercicio en casa', icon: '🏃', points: 10 },
+    { id: 110, name: 'Practicar écriture', icon: '✍️', points: 8 },
+  ],
+  play: [
+    { id: 201, name: 'Jugar afuera 30 min', icon: '⚽', points: 8 },
+    { id: 202, name: 'Armar rompecabezas', icon: '🧩', points: 10 },
+    { id: 203, name: 'Jugar con plastilina', icon: '🎨', points: 8 },
+    { id: 204, name: 'Construir con bloques', icon: '🧱', points: 8 },
+    { id: 205, name: 'Jugar con muecas/payas', icon: '🧸', points: 6 },
+    { id: 206, name: 'Ver动画片 aprender', icon: '📺', points: 5 },
+    { id: 207, name: 'Jugar Minecraft/robux', icon: '🎮', points: 10 },
+    { id: 208, name: 'Armar un fuerte', icon: '🏰', points: 7 },
+    { id: 209, name: 'Jugar a cocinitas', icon: '🍳', points: 6 },
+    { id: 210, name: 'Andar en bici', icon: '🚲', points: 10 },
+    { id: 211, name: 'Jugar con vecinos', icon: '👧', points: 8 },
+    { id: 212, name: 'Colorear un libro', icon: '🖍️', points: 6 },
+  ]
+};
+
+const DEFAULT_REWARDS = [
+  { id: 1, name: 'Galletas', cost: 15, icon: '🍪' },
+  { id: 2, name: '30 min de videojuegos', cost: 25, icon: '🎮' },
+  { id: 3, name: 'Película nocturna', cost: 30, icon: '🎬' },
+  { id: 4, name: 'Salir a comer helado', cost: 40, icon: '🍦' },
+  { id: 5, name: 'Nuevo libro', cost: 50, icon: '📕' },
+  { id: 6, name: 'Juguete pequeño', cost: 60, icon: '🧸' },
+  { id: 7, name: 'Salir al parque', cost: 35, icon: '🌳' },
+  { id: 8, name: 'Pizza noche', cost: 45, icon: '🍕' },
+  { id: 9, name: 'Dulces', cost: 10, icon: '🍬' },
+  { id: 10, name: '1 hora de YouTube', cost: 20, icon: '📱' },
+  { id: 11, name: 'Cine en casa', cost: 35, icon: '🎥' },
+  { id: 12, name: 'Desayuno especial', cost: 25, icon: '🥞' },
+  { id: 13, name: 'Salir a кино', cost: 55, icon: '🎡' },
+  { id: 14, name: 'Nuevo juguete', cost: 80, icon: '🎁' },
+  { id: 15, name: 'Fiesta de cumpleaños', cost: 100, icon: '🎂' },
+];
+
+let currentKid = localStorage.getItem('bank_current_kid') || 'iris';
+let data = JSON.parse(localStorage.getItem('bank_data') || '{}');
+
+KIDS.forEach(k => {
+  if (!data[k]) {
+    data[k] = { tickets: 0, tasks: JSON.parse(JSON.stringify(DEFAULT_TASKS)), history: [] };
+  }
+});
+
+function save() {
+  localStorage.setItem('bank_data', JSON.stringify(data));
+  localStorage.setItem('bank_current_kid', currentKid);
+}
+
+function selectKid(kid) {
+  currentKid = kid;
+  document.querySelectorAll('.kid-btn').forEach(b => b.classList.remove('active'));
+  document.querySelector(`.kid-btn.kid-${kid}`).classList.add('active');
+  render();
+}
+
+function render() {
+  const d = data[currentKid];
+  document.getElementById('currentKidName').textContent = KID_NAMES[currentKid];
+  document.getElementById('tickets').textContent = d.tickets;
+  
+  // Tasks por categoría
+  renderTasks('house', d.tasks.house);
+  renderTasks('school', d.tasks.school);
+  renderTasks('play', d.tasks.play);
+  
+  // Rewards
+  let html = '';
+  DEFAULT_REWARDS.forEach(r => {
+    html += `<div class="reward-card">
+      <div class="reward-icon">${r.icon}</div>
+      <div class="reward-info">
+        <div class="reward-name">${r.name}</div>
+        <div class="reward-cost">${r.cost} tickets</div>
+      </div>
+      <button class="redeem-btn" ${d.tickets < r.cost ? 'disabled' : ''} onclick="redeem(${r.id})">Canjear</button>
+    </div>`;
+  });
+  document.getElementById('reward-list').innerHTML = html;
+  
+  // History
+  html = '';
+  d.history.slice().reverse().forEach(h => {
+    html += `<div class="history-item ${h.type === 'redeemed' ? 'redeemed' : ''}">
+      <div>
+        <div>${h.text}</div>
+        <div class="history-date">${h.date}</div>
+      </div>
+      <div class="history-points ${h.type}">${h.type === 'earned' ? '+' : '-'}${h.points}</div>
+    </div>`;
+  });
+  document.getElementById('history-list').innerHTML = html || '<div class="empty">Sin historial todavía 📜</div>';
+  
+  save();
+}
+
+function renderTasks(cat, tasks) {
+  let html = '';
+  tasks.forEach(t => {
+    html += `<div class="task-card ${t.done ? 'done' : ''}" onclick="doTask('${cat}', ${t.id})">
+      <div class="task-icon">${t.icon}</div>
+      <div class="task-info">
+        <div class="task-name">${t.name}</div>
+        <div class="task-sub">+${t.points} tickets</div>
+      </div>
+      <div class="task-points">+${t.points}</div>
+      <div class="task-check">${t.done ? '✅' : '⬜'}</div>
+    </div>`;
+  });
+  document.getElementById(`${cat}-tasks`).innerHTML = html || '<div class="empty">Sin tareas</div>';
+}
+
+function doTask(cat, id) {
+  const t = data[currentKid].tasks[cat].find(x => x.id === id);
+  if (!t || t.done) return;
+  t.done = true;
+  data[currentKid].tickets += t.points;
+  data[currentKid].history.push({
+    type: 'earned', text: t.name, points: t.points, date: new Date().toLocaleString('es-MX')
+  });
+  confetti();
+  render();
+}
+
+function redeem(id) {
+  const r = DEFAULT_REWARDS.find(x => x.id === id);
+  if (!r || data[currentKid].tickets < r.cost) return;
+  data[currentKid].tickets -= r.cost;
+  data[currentKid].history.push({
+    type: 'redeemed', text: r.name, points: r.cost, date: new Date().toLocaleString('es-MX')
+  });
+  alert(`🎉 ¡Felicidades ${KID_NAMES[currentKid].split(' ')[1]}! Canjeaste: ${r.name}`);
+  render();
+}
+
+function resetKid() {
+  if (!confirm('¿Reiniciar todas las tareas para ' + KID_NAMES[currentKid] + '?')) return;
+  data[currentKid].tasks = JSON.parse(JSON.stringify(DEFAULT_TASKS));
+  data[currentKid].tickets = 0;
+  data[currentKid].history = [];
+  render();
+}
+
+function showTab(name) {
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelector(`.tab[onclick="showTab('${name}')"]`).classList.add('active');
+  document.getElementById(name).classList.add('active');
+}
+
+function showAddModal() {
+  document.getElementById('addModal').classList.add('show');
+}
+
+function closeModal() {
+  document.getElementById('addModal').classList.remove('show');
+  document.getElementById('addName').value = '';
+  document.getElementById('addPoints').value = '';
+  document.getElementById('addIcon').value = '';
+}
+
+function addTask() {
+  const name = document.getElementById('addName').value.trim();
+  const points = parseInt(document.getElementById('addPoints').value);
+  const cat = document.getElementById('addCategory').value;
+  const icon = document.getElementById('addIcon').value || '✅';
+  if (!name || !points) return alert('Completa todos los campos');
+  const id = Date.now();
+  data[currentKid].tasks[cat].push({ id, name, points, icon, done: false });
+  closeModal();
+  render();
+}
+
+function confetti() {
+  const c = document.createElement('canvas');
+  c.className = 'confetti';
+  document.body.appendChild(c);
+  const ctx = c.getContext('2d');
+  c.width = window.innerWidth; c.height = window.innerHeight;
+  const particles = [];
+  for (let i = 0; i < 50; i++) {
+    particles.push({
+      x: Math.random() * c.width, y: Math.random() * c.height,
+      vx: (Math.random() - 0.5) * 10, vy: (Math.random() - 0.5) * 10,
+      color: ['#6C63FF','#FF6584','#4CAF50','#FFC107','#FFB6C1','#87CEEB'][Math.floor(Math.random()*6)],
+      size: Math.random() * 8 + 4
+    });
+  }
+  let frame = 0;
+  function draw() {
+    ctx.clearRect(0, 0, c.width, c.height);
+    particles.forEach(p => {
+      p.x += p.vx; p.y += p.vy; p.vy += 0.5;
+      ctx.fillStyle = p.color;
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.size, 0, Math.PI*2);
+      ctx.fill();
+    });
+    frame++;
+    if (frame < 60) requestAnimationFrame(draw);
+    else c.remove();
+  }
+  draw();
+}
+
+// Init
+selectKid(currentKid);
+</script>
+
+</body>
+</html>
