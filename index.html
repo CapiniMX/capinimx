@@ -1,0 +1,592 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CAPINI — Centro de Atención Psicológica Integral y Neurodesarrollo Infantil</title>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800&family=Nunito:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    :root {
+      --turquesa: #4DB6AC;
+      --turquesa-light: #B2DFDB;
+      --rosa: #F48FB1;
+      --rosa-piel: #FDDCCC;
+      --negro: #333333;
+      --blanco: #FFFFFF;
+      --gris: #F5F5F5;
+    }
+    body {
+      font-family: 'Nunito', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: var(--blanco);
+      color: var(--negro);
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    /* HEADER */
+    .header {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: var(--blanco);
+      box-shadow: 0 2px 20px rgba(0,0,0,0.06);
+      padding: 0 40px;
+      height: 72px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+ }
+    .logo img { height: 48px; width: auto; }
+    .logo-text {
+      display: flex;
+      flex-direction: column;
+      line-height: 1.1;
+    }
+    .logo-capini {
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 800;
+      font-size: 22px;
+      color: var(--turquesa);
+      letter-spacing: 2px;
+    }
+    .logo-tagline {
+      font-family: 'Nunito', sans-serif;
+      font-weight: 400;
+      font-size: 11px;
+      color: var(--rosa);
+      font-style: italic;
+    }
+    .header-nav {
+      display: flex;
+      gap: 32px;
+      align-items: center;
+    }
+    .header-nav a {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--negro);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+    .header-nav a:hover { color: var(--turquesa); }
+    .btn-contact-header {
+      height: 40px;
+      padding: 0 24px;
+      background: var(--turquesa);
+      color: var(--blanco);
+      border: none;
+      border-radius: 20px;
+      font-size: 14px;
+      font-weight: 600;
+      font-family: 'Nunito', sans-serif;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+    .btn-contact-header:hover { background: #3d9e91; }
+
+    /* HERO */
+    .hero {
+      background: linear-gradient(160deg, var(--turquesa-light) 0%, var(--blanco) 60%);
+      padding: 80px 40px 100px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .hero::before {
+      content: '';
+      position: absolute;
+      bottom: -40px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 200%;
+      height: 80px;
+      background: var(--blanco);
+      border-radius: 50%;
+    }
+    .hero-logo {
+      width: 120px;
+      margin: 0 auto 32px;
+      display: block;
+      border-radius: 50%;
+    }
+    .hero h1 {
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 800;
+      font-size: 48px;
+      color: var(--turquesa);
+      letter-spacing: 3px;
+      margin-bottom: 8px;
+    }
+    .hero h2 {
+      font-family: 'Nunito', sans-serif;
+      font-weight: 400;
+      font-size: 20px;
+      color: var(--rosa);
+      font-style: italic;
+      margin-bottom: 24px;
+    }
+    .hero p {
+      font-size: 18px;
+      color: #555;
+      max-width: 600px;
+      margin: 0 auto 40px;
+      line-height: 1.7;
+    }
+    .hero-cta {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      height: 56px;
+      padding: 0 36px;
+      background: var(--rosa);
+      color: var(--blanco);
+      border: none;
+      border-radius: 28px;
+      font-size: 16px;
+      font-weight: 700;
+      font-family: 'Nunito', sans-serif;
+      cursor: pointer;
+      text-decoration: none;
+      transition: 0.2s;
+      box-shadow: 0 8px 24px rgba(244,143,177,0.4);
+    }
+    .hero-cta:hover { background: #e07a9d; transform: translateY(-2px); }
+
+    /* STATS */
+    .stats {
+      display: flex;
+      justify-content: center;
+      gap: 80px;
+      padding: 60px 40px;
+      background: var(--blanco);
+    }
+    .stat { text-align: center; }
+    .stat-number {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 40px;
+      font-weight: 800;
+      color: var(--turquesa);
+    }
+    .stat-label {
+      font-size: 14px;
+      color: #888;
+      font-weight: 600;
+    }
+
+    /* SERVICES */
+    .services {
+      background: var(--gris);
+      padding: 80px 40px;
+    }
+    .section-label {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--rosa);
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      text-align: center;
+      margin-bottom: 8px;
+    }
+    .section-title {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 36px;
+      font-weight: 700;
+      color: var(--negro);
+      text-align: center;
+      margin-bottom: 48px;
+    }
+    .services-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 24px;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    .service-card {
+      background: var(--blanco);
+      border-radius: 20px;
+      padding: 32px;
+      border: 2px solid transparent;
+      transition: all 0.3s ease;
+      position: relative;
+    }
+    .service-card:hover {
+      border-color: var(--turquesa);
+      transform: translateY(-4px);
+      box-shadow: 0 12px 32px rgba(77,182,172,0.12);
+    }
+    .service-icon {
+      width: 56px;
+      height: 56px;
+      border-radius: 16px;
+      background: var(--turquesa-light);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 20px;
+    }
+    .service-icon svg { width: 28px; height: 28px; stroke: var(--turquesa); }
+    .service-card h3 {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--negro);
+      margin-bottom: 10px;
+    }
+    .service-card p {
+      font-size: 14px;
+      color: #666;
+      line-height: 1.6;
+    }
+    .service-tag {
+      display: inline-block;
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--turquesa);
+      background: var(--turquesa-light);
+      padding: 4px 12px;
+      border-radius: 12px;
+      margin-top: 12px;
+    }
+
+    /* ABOUT */
+    .about {
+      background: var(--blanco);
+      padding: 80px 40px;
+      display: flex;
+      align-items: center;
+      gap: 80px;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    .about-image {
+      flex: 0 0 300px;
+      height: 300px;
+      border-radius: 24px;
+      overflow: hidden;
+    }
+    .about-image img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    .about-content { flex: 1; }
+    .about-content h2 {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 32px;
+      font-weight: 700;
+      color: var(--negro);
+      margin-bottom: 16px;
+    }
+    .about-content p {
+      font-size: 16px;
+      color: #555;
+      line-height: 1.8;
+      margin-bottom: 16px;
+    }
+    .about-content blockquote {
+      border-left: 4px solid var(--rosa);
+      padding-left: 20px;
+      font-size: 16px;
+      color: var(--negro);
+      font-style: italic;
+      margin: 24px 0;
+    }
+    .about-cedula {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 13px;
+      color: #888;
+      background: var(--gris);
+      padding: 8px 16px;
+      border-radius: 12px;
+    }
+
+    /* CONTACT BAR */
+    .contact-bar {
+      background: linear-gradient(135deg, var(--turquesa), #3d9e91);
+      padding: 60px 40px;
+      text-align: center;
+    }
+    .contact-bar h2 {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 32px;
+      font-weight: 700;
+      color: var(--blanco);
+      margin-bottom: 12px;
+    }
+    .contact-bar p {
+      font-size: 16px;
+      color: rgba(255,255,255,0.85);
+      margin-bottom: 32px;
+    }
+    .contact-actions {
+      display: flex;
+      justify-content: center;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+    .btn-whatsapp {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      height: 52px;
+      padding: 0 32px;
+      background: #25D366;
+      color: var(--blanco);
+      border: none;
+      border-radius: 26px;
+      font-size: 15px;
+      font-weight: 700;
+      font-family: 'Nunito', sans-serif;
+      cursor: pointer;
+      text-decoration: none;
+      transition: 0.2s;
+    }
+    .btn-whatsapp:hover { background: #1fb855; }
+    .btn-call {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      height: 52px;
+      padding: 0 32px;
+      background: var(--blanco);
+      color: var(--turquesa);
+      border: none;
+      border-radius: 26px;
+      font-size: 15px;
+      font-weight: 700;
+      font-family: 'Nunito', sans-serif;
+      cursor: pointer;
+      text-decoration: none;
+      transition: 0.2s;
+    }
+    .btn-call:hover { background: var(--gris); }
+
+    /* FOOTER */
+    .footer {
+      background: var(--negro);
+      padding: 40px;
+      text-align: center;
+    }
+    .footer-logo {
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 800;
+      font-size: 24px;
+      color: var(--turquesa);
+      letter-spacing: 2px;
+      margin-bottom: 8px;
+    }
+    .footer-tagline {
+      font-size: 13px;
+      color: var(--rosa);
+      font-style: italic;
+      margin-bottom: 20px;
+    }
+    .footer-info {
+      font-size: 13px;
+      color: #666;
+      line-height: 1.8;
+    }
+    .footer-info a { color: var(--turquesa); text-decoration: none; }
+    .footer-social {
+      display: flex;
+      justify-content: center;
+      gap: 16px;
+      margin: 20px 0;
+    }
+    .footer-social a {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: #222;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-decoration: none;
+      transition: 0.2s;
+    }
+    .footer-social a:hover { background: var(--turquesa); }
+
+    /* RESPONSIVE */
+    @media (max-width: 768px) {
+      .header { padding: 0 20px; }
+      .header-nav { display: none; }
+      .hero h1 { font-size: 32px; }
+      .hero { padding: 60px 20px 80px; }
+      .stats { flex-direction: column; gap: 32px; padding: 40px 20px; }
+      .services { padding: 60px 20px; }
+      .about { flex-direction: column; padding: 60px 20px; gap: 40px; }
+      .about-image { flex: unset; width: 200px; height: 200px; }
+      .contact-bar { padding: 40px 20px; }
+      .contact-actions { flex-direction: column; align-items: center; }
+    }
+  </style>
+</head>
+<body>
+
+  <header class="header">
+    <div class="logo">
+      <img src="https://raw.githubusercontent.com/CapiniMX/capinimx/main/assets/logo/capini_logo.png" alt="CAPINI">
+      <div class="logo-text">
+        <span class="logo-capini">CAPINI</span>
+        <span class="logo-tagline">Creciendo Juntos</span>
+      </div>
+    </div>
+    <nav class="header-nav">
+      <a href="#servicios">Servicios</a>
+      <a href="#nosotros">Nosotros</a>
+      <a href="#contacto">Contacto</a>
+    </nav>
+    <button class="btn-contact-header" onclick="window.open('https://wa.me/523411365236','_blank')">Agendar cita</button>
+  </header>
+
+  <section class="hero">
+    <img src="https://raw.githubusercontent.com/CapiniMX/capinimx/main/assets/site/hero-child.png" alt="CAPINI" class="hero-logo">
+    <h1>CAPINI</h1>
+    <h2>Creciendo Juntos</h2>
+    <p>Centro de Atención Psicológica Integral y Neurodesarrollo Infantil. Evaluaciones especializadas, terapia y talleres para que cada niño descubra su verdadero potencial.</p>
+    <a href="https://wa.me/523411365236" class="hero-cta" target="_blank">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.879-.897-1.471-2.011-1.643-2.346-.149-.297-.149-.744.003-1.148.183-.48.768-1.049.986-1.253.217-.203.46-.267.67-.267.198 0 .512.1.778.479.24.344.892.968.892 1.234 0 .151-.039.336-.096.49-.066.188-.246.43-.519.662-.025.021-.051.043-.077.065-.198.168-.465.36-.68.456-.197.088-.397.195-.571.297-.198.115-.416.26-.592.393-.102.076-.205.152-.273.228-.198.213-.214.495-.214.6930 .177.016.366.059.514.077.263.331.516.516.698.148.147.313.292.486.398.198.121.425.198.672.198.273 0 .566-.05.85-.199.273-.15.496-.356.676-.6.143-.194.269-.404.372-.631.097-.214.142-.447.142-.674 0-.23-.059-.456-.17-.661z M12 0C5.373 0 0 5.373 0 12c0 2.104.547 4.096 1.512 5.822L0 24l6.437-1.688C7.905 23.453 9.907 24 12 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 22.8c-1.803 0-3.523-.17-5.14-.485l-.368-.066-3.648.957.976-3.517-.098-.37C2.645 17.65 215.392 2 13.007c0-5.955 4.845-10.8 10.8-10.8 5.955 0 10.8 4.845 10.8 10.8 0 5.955-4.845 10.8-10.8 10.8z"/></svg>
+      Agenda tu consulta
+    </a>
+  </section>
+
+  <section class="stats">
+    <div class="stat">
+      <div class="stat-number">0–16</div>
+      <div class="stat-label">años de experiencia</div>
+    </div>
+    <div class="stat">
+      <div class="stat-number">100%</div>
+      <div class="stat-label">enfoque integral</div>
+    </div>
+    <div class="stat">
+      <div class="stat-number">2 meses+</div>
+      <div class="stat-label">hasta adultos</div>
+    </div>
+  </section>
+
+  <section class="services" id="servicios">
+    <div class="section-label">Nuestros servicios</div>
+    <h2 class="section-title">Soluciones completas para el neurodesarrollo</h2>
+    <div class="services-grid">
+
+      <div class="service-card">
+        <div class="service-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="1"/><path d="M9 12h6"/><path d="M9 16h6"/></svg>
+        </div>
+        <h3>Evaluación TDAH</h3>
+        <p>Identificamos si tu hijo presenta déficit de atención e hiperactividad y diseñamos un plan de intervención personalizado.</p>
+        <span class="service-tag">Diagnóstico preciso</span>
+      </div>
+
+      <div class="service-card">
+        <div class="service-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg>
+        </div>
+        <h3>Evaluación Autismo (TEA)</h3>
+        <p>Detección temprana del espectro autista con herramientas estandarizadas para un diagnóstico certero.</p>
+        <span class="service-tag">Detección temprana</span>
+      </div>
+
+      <div class="service-card">
+        <div class="service-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+        </div>
+        <h3>Coeficiente Intelectual</h3>
+        <p>Pruebas WPPSI-IV, WISC-V y WAIS-IV para conocer el potencial cognitivo real de tu hijo.</p>
+        <span class="service-tag">Pruebas Wechsler</span>
+      </div>
+
+      <div class="service-card">
+        <div class="service-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        </div>
+        <h3>Terapia Infantil y Adolescentes</h3>
+        <p>Acompañamiento emocional personalizado para que tu hijo aprenda a gestionar sus emociones de forma saludable.</p>
+        <span class="service-tag">Acompañamiento real</span>
+      </div>
+
+      <div class="service-card">
+        <div class="service-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+        </div>
+        <h3>Estimulación Temprana</h3>
+        <p>Desde 2 meses hasta los 6 años. Activamos el potencial del cerebro en su etapa de mayor plasticidad.</p>
+        <span class="service-tag">Desde 2 meses</span>
+      </div>
+
+      <div class="service-card">
+        <div class="service-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8"/><path d="M12 17v4"/></svg>
+        </div>
+        <h3>Viernes Sensacional</h3>
+        <p>Una mañana completa de juegos terapéuticos y estimulación sensorial. ¡Solo los últimos viernes de cada mes!</p>
+        <span class="service-tag">Último viernes</span>
+      </div>
+
+    </div>
+  </section>
+
+  <section class="about" id="nosotros">
+    <div class="about-image">
+      <img src="https://raw.githubusercontent.com/CapiniMX/capinimx/main/assets/site/psychologist-child.png" alt="Psic. Ana María">
+    </div>
+    <div class="about-content">
+      <h2>No es suerte, es ciencia.</h2>
+      <p>En CapiniMX no etiquetamos, entendemos. Nuestro equipo especializado mira más allá del diagnóstico para descubrir quién es realmente tu hijo: sus fortalezas, sus talentos ocultos, su verdadero potencial.</p>
+      <p>Usamos evaluaciones precisas, terapias personalizadas y herramientas innovadoras para que tu hijo no solo supere sus desafíos, sino que brille como nunca antes.</p>
+      <blockquote>"Tu hijo no necesita ser arreglado. Necesita ser comprendido."</blockquote>
+      <div class="about-cedula">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><path d="M22 4 12 14.01l-3-3"/></svg>
+        Psic. Ana María Vargas Hernández · Cédula 13246850
+      </div>
+    </div>
+  </section>
+
+  <section class="contact-bar" id="contacto">
+    <h2>¿Listos para dar el primer paso?</h2>
+    <p>Ricardo Flores Magón #7, Tamazula de Gordiano, Jalisco · Horario: 9:00 AM - 6:00 PM</p>
+    <div class="contact-actions">
+      <a href="https://wa.me/523411365236" class="btn-whatsapp" target="_blank">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.879-.897-1.471-2.011-1.643-2.346-.149-.297-.149-.744.003-1.148.183-.48.768-1.049.986-1.253.217-.203.46-.267.67-.267.1980 .512.1.778.479.24.344.892.968.892 1.234 0 .151-.039.336-.096.49-.066.188-.246.43-.519.662-.025.021-.051.043-.077.065-.198.168-.465.36-.68.456-.197.088-.397.195-.571.297-.198.115-.416.26-.592.393-.102.076-.205.152-.273.228-.198.213-.214.495-.214.6930 .177.016.366.059.514.077.263.331.516.516.698.148.147.313.292.486.398.198.121.425.198.672.198.273 0 .566-.05.85-.199.273-.15.496-.356.676-.6.143-.194.269-.404.372-.631.097-.214.142-.447.142-.674 0-.23-.059-.456-.17-.661z M12 0C5.373 0 0 5.373 0 12c0 2.104.547 4.096 1.512 5.822L0 24l6.437-1.688C7.905 23.453 9.907 24 12 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 22.8c-1.803 0-3.523-.17-5.14-.485l-.368-.066-3.648.957.976-3.517-.098-.37C2.645 17.65 2 15.392 2 13.007c0-5.955 4.845-10.8 10.8-10.8 5.955 0 10.8 4.845 10.8 10.8 0 5.955-4.845 10.8-10.8 10.8z"/></svg>
+        WhatsApp
+      </a>
+      <a href="tel:+523411365236" class="btn-call">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 13a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.6 2.18h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+        Llamar
+      </a>
+    </div>
+  </section>
+
+  <footer class="footer">
+    <div class="footer-logo">CAPINI</div>
+    <div class="footer-tagline">Creciendo Juntos</div>
+    <div class="footer-social">
+      <a href="https://instagram.com/CAPINImx" target="_blank">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="#fff"/></svg>
+      </a>
+      <a href="https://facebook.com/CAPINImx" target="_blank">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="#fff"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>
+      </a>
+      <a href="https://tiktok.com/@CAPINImx" target="_blank">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="#fff"><path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-2.88 2.5 2.89 2.89 0 0 1-2.89-2.89 2.89 2.89 0 0 1 2.89-2.89c.28 0 .54.04.79.1V9.01a6.33 6.33 0 0 0-.79-.05 6.34 6.34 0 0 0-6.34 6.34 6.34 6.34 0 0 0 6.34 6.34 6.34 6.34 0 0 0 6.33-6.34V8.69a8.18 8.18 0 0 0 4.78 1.52V6.76a4.85 4.85 0 0 1-1.01-.07z"/></svg>
+      </a>
+    </div>
+    <div class="footer-info">
+      Ricardo Flores Magón #7, Tamazula de Gordiano, Jalisco<br>
+      <a href="mailto:capinimx@gmail.com">capinimx@gmail.com</a> · <a href="https://wa.me/523411365236">341 136 5236</a><br>
+      © 2026 CAPINI — Centro de Atención Psicológica Integral y Neurodesarrollo Infantil
+    </div>
+  </footer>
+
+</body>
+</html>
