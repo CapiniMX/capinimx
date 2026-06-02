@@ -86,7 +86,7 @@
 
 <div class="header">
   <div style="font-size:1.6em;">🎹</div>
-  <h1>La Aventura Musical de Alexander <span class="version-badge">v2.1</span></h1>
+  <h1>La Aventura Musical de Alexander <span class="version-badge">v2.2</span></h1>
   <div style="font-size:0.8em;color:#aaa;">¡Aprende piano jugando!</div>
 </div>
 
@@ -186,7 +186,7 @@
     </div>
     
     <div class="info-box">
-      <h3>⌨️ Teclado: A S D F G H J = Do Re Mi Fa Sol La Si</h3>
+      <h3>⌨️ Teclado: A S D F G H J (blancas) W E T Y U (negras)</h3>
     </div>
   </div>
   
@@ -195,23 +195,28 @@
 <div class="feedback" id="feedback"></div>
 
 <script>
-// Name modes
+// Name modes - includes sharps for all 12 notes
 const NAME_MODES = {
-  do: ['Do','Re','Mi','Fa','Sol','La','Si'],
-  letter: ['C','D','E','F','G','A','B'],
+  do: ['Do','Do#','Re','Re#','Mi','Fa','Fa#','Sol','Sol#','La','La#','Si'],
+  letter: ['C','C#','D','D#','E','F','F#','G','G#','A','A#','B'],
   number: ['1','2','3','4','5','6','7']
 };
 let currentMode = 'do';
 
 // Notes - whiteIdx maps to position in the 7 white keys
 const NOTES = [
-  { name: 'Do', eng: 'C', freq: 261.63, color: '#e74c3c', key: 'a', whiteIdx: 0 },
-  { name: 'Re', eng: 'D', freq: 293.66, color: '#e67e22', key: 's', whiteIdx: 1 },
-  { name: 'Mi', eng: 'E', freq: 329.63, color: '#f1c40f', key: 'd', whiteIdx: 2 },
-  { name: 'Fa', eng: 'F', freq: 349.23, color: '#2ecc71', key: 'f', whiteIdx: 3 },
-  { name: 'Sol', eng: 'G', freq: 392.00, color: '#3498db', key: 'g', whiteIdx: 4 },
-  { name: 'La', eng: 'A', freq: 440.00, color: '#9b59b6', key: 'h', whiteIdx: 5 },
-  { name: 'Si', eng: 'B', freq: 493.88, color: '#e91e63', key: 'j', whiteIdx: 6 },
+  { name: 'Do', eng: 'C', freq: 261.63, color: '#e74c3c', key: 'a', whiteIdx: 0, isSharp: false },
+  { name: 'Do#', eng: 'C#', freq: 277.18, color: '#333', key: 'w', whiteIdx: 0, isSharp: true },
+  { name: 'Re', eng: 'D', freq: 293.66, color: '#e67e22', key: 's', whiteIdx: 1, isSharp: false },
+  { name: 'Re#', eng: 'D#', freq: 311.13, color: '#333', key: 'e', whiteIdx: 1, isSharp: true },
+  { name: 'Mi', eng: 'E', freq: 329.63, color: '#f1c40f', key: 'd', whiteIdx: 2, isSharp: false },
+  { name: 'Fa', eng: 'F', freq: 349.23, color: '#2ecc71', key: 'f', whiteIdx: 3, isSharp: false },
+  { name: 'Fa#', eng: 'F#', freq: 369.99, color: '#333', key: 't', whiteIdx: 3, isSharp: true },
+  { name: 'Sol', eng: 'G', freq: 392.00, color: '#3498db', key: 'g', whiteIdx: 4, isSharp: false },
+  { name: 'Sol#', eng: 'G#', freq: 415.30, color: '#333', key: 'y', whiteIdx: 4, isSharp: true },
+  { name: 'La', eng: 'A', freq: 440.00, color: '#9b59b6', key: 'h', whiteIdx: 5, isSharp: false },
+  { name: 'La#', eng: 'A#', freq: 466.16, color: '#333', key: 'u', whiteIdx: 5, isSharp: true },
+  { name: 'Si', eng: 'B', freq: 493.88, color: '#e91e63', key: 'j', whiteIdx: 6, isSharp: false },
 ];
 
 const LESSONS = {
@@ -224,11 +229,11 @@ const LESSONS = {
 
 // Black key positions (left offset in the piano container)
 const BLACK_KEYS = [
-  { eng: 'C', left: 34 },
-  { eng: 'D', left: 84 },
-  { eng: 'F', left: 184 },
-  { eng: 'G', left: 234 },
-  { eng: 'A', left: 284 },
+  { eng: 'C#', left: 34 },
+  { eng: 'D#', left: 84 },
+  { eng: 'F#', left: 184 },
+  { eng: 'G#', left: 234 },
+  { eng: 'A#', left: 284 },
 ];
 
 // Audio
@@ -269,43 +274,68 @@ function renderPiano() {
     if (!container) return;
     container.innerHTML = '';
     
-    // White keys
-    NOTES.forEach((note, i) => {
+    // White keys - only natural notes (not sharps)
+    const naturalNotes = NOTES.filter(n => !n.isSharp);
+    naturalNotes.forEach((note, i) => {
       const wk = document.createElement('div');
       wk.className = 'wk';
       wk.innerHTML = `<span class="kn">${getName(note.name)}</span><span class="ki">${i+1}</span>`;
-      wk.onclick = () => { playNote(note.name); flashKey(container, note.whiteIdx); showFeedback(`🎹 ${getName(note.name)}`); };
+      wk.onclick = () => { playNote(note.name); flashKey(container, note.whiteIdx, false); showFeedback(`🎹 ${getName(note.name)}`); };
       container.appendChild(wk);
     });
     
     // Black keys
     BLACK_KEYS.forEach(bk => {
       const note = NOTES.find(n => n.eng === bk.eng);
+      if (!note) return;
       const div = document.createElement('div');
       div.className = 'bk';
       div.style.left = bk.left + 'px';
-      div.innerHTML = `<span class="kn">${bk.eng}#</span>`;
-      div.onclick = () => { playNote(note.name); showFeedback(`${bk.eng}#`); };
+      div.innerHTML = `<span class="kn">${bk.eng}</span>`;
+      div.onclick = () => { playNote(note.name); flashKey(container, note.whiteIdx, true); showFeedback(`🎹 ${getName(note.name)}`); };
       container.appendChild(div);
     });
   });
 }
 
-function flashKey(container, whiteIdx) {
+function flashKey(container, whiteIdx, isSharp) {
   const wks = container.querySelectorAll('.wk');
+  const bks = container.querySelectorAll('.bk');
   wks.forEach(w => w.classList.remove('lit'));
-  if (wks[whiteIdx]) {
-    wks[whiteIdx].classList.add('lit');
-    setTimeout(() => wks[whiteIdx].classList.remove('lit'), 400);
+  bks.forEach(b => b.classList.remove('lit'));
+  if (isSharp) {
+    // Find the black key at this position
+    const posMap = { 0: 0, 1: 1, 3: 2, 4: 3, 5: 4 };
+    const bkIdx = posMap[whiteIdx];
+    if (bkIdx !== undefined && bks[bkIdx]) {
+      bks[bkIdx].classList.add('lit');
+      setTimeout(() => bks[bkIdx].classList.remove('lit'), 400);
+    }
+  } else {
+    if (wks[whiteIdx]) {
+      wks[whiteIdx].classList.add('lit');
+      setTimeout(() => wks[whiteIdx].classList.remove('lit'), 400);
+    }
   }
 }
 
-function lightKey(container, whiteIdx) {
+function lightKey(container, whiteIdx, isSharp) {
   const wks = container.querySelectorAll('.wk');
+  const bks = container.querySelectorAll('.bk');
   wks.forEach(w => w.classList.remove('lit'));
-  if (wks[whiteIdx]) {
-    wks[whiteIdx].classList.add('lit');
-    setTimeout(() => wks[whiteIdx].classList.remove('lit'), lessonSpeed - 50);
+  bks.forEach(b => b.classList.remove('lit'));
+  if (isSharp) {
+    const posMap = { 0: 0, 1: 1, 3: 2, 4: 3, 5: 4 };
+    const bkIdx = posMap[whiteIdx];
+    if (bkIdx !== undefined && bks[bkIdx]) {
+      bks[bkIdx].classList.add('lit');
+      setTimeout(() => bks[bkIdx].classList.remove('lit'), lessonSpeed - 50);
+    }
+  } else {
+    if (wks[whiteIdx]) {
+      wks[whiteIdx].classList.add('lit');
+      setTimeout(() => wks[whiteIdx].classList.remove('lit'), lessonSpeed - 50);
+    }
   }
 }
 
@@ -336,7 +366,7 @@ function updateNoteHint() {
     btn.className = 'note-hint-btn';
     btn.style.background = note.color;
     btn.textContent = getName(n);
-    btn.onclick = () => { playNote(n); const lp = document.getElementById('lessonPiano'); lightKey(lp, note.whiteIdx); };
+    btn.onclick = () => { playNote(n); const lp = document.getElementById('lessonPiano'); const note = NOTES.find(x => x.name === n); lightKey(lp, note.whiteIdx, note.isSharp); };
     div.appendChild(btn);
   });
 }
@@ -386,7 +416,7 @@ function playOrComplete() {
     const note = NOTES.find(n => n.name === noteName);
     if (note) {
       const lp = document.getElementById('lessonPiano');
-      lightKey(lp, note.whiteIdx);
+      lightKey(lp, note.whiteIdx, note.isSharp);
     }
     currentStep++;
     const pct = (currentStep / lesson.sequence.length) * 100;
@@ -448,7 +478,7 @@ function playFreeDemo() {
     const note = NOTES.find(x => x.name === demo[i]);
     if (note) {
       const pd = document.getElementById('pianoDiv');
-      lightKey(pd, note.whiteIdx);
+      lightKey(pd, note.whiteIdx, note.isSharp);
     }
     i++;
     setTimeout(next, 400);
@@ -471,10 +501,15 @@ function showFeedback(text) {
   setTimeout(() => fb.classList.remove('show'), 2000);
 }
 
-// Keyboard
+// Keyboard - includes sharps W E T Y U for black keys
 document.addEventListener('keydown', e => {
   const note = NOTES.find(n => n.key === e.key.toLowerCase());
-  if (note) { playNote(note.name); showFeedback(`🎹 ${getName(note.name)}`); }
+  if (note) { 
+    playNote(note.name); 
+    const containers = document.querySelectorAll('.piano');
+    containers.forEach(c => flashKey(c, note.whiteIdx, note.isSharp));
+    showFeedback(`🎹 ${getName(note.name)}`); 
+  }
 });
 
 // Init
