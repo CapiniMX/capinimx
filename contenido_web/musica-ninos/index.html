@@ -39,7 +39,7 @@
     .piano-section { background: #0f3460; border-radius: 16px; padding: 10px; margin: 10px 0; }
     .piano-label { font-size: 0.8em; color: #aaa; text-align: center; margin-bottom: 8px; }
     .piano-wrap { overflow-x: auto; padding: 5px 0; -webkit-overflow-scrolling: touch; }
-    .piano { display: flex; position: relative; min-width: 1700px; height: 150px; }
+    .piano { display: flex; position: relative; min-width: 2100px; height: 150px; }
     
     .wk { width: 48px; height: 150px; background: white; border-radius: 0 0 5px 5px; border: 2px solid #bbb; display: flex; flex-direction: column; justify-content: flex-end; align-items: center; padding-bottom: 6px; transition: all 0.15s; cursor: pointer; margin-left: 2px; flex-shrink: 0; }
     .wk:hover { background: #f0f0f0; }
@@ -86,7 +86,7 @@
 
 <div class="header">
   <div style="font-size:1.6em;">🎹</div>
-  <h1>La Aventura Musical de Alexander <span class="version-badge">v3.4</span></h1>
+  <h1>La Aventura Musical de Alexander <span class="version-badge">v3.6</span></h1>
   <div style="font-size:0.75em;color:#aaa;margin-top:4px;">Alexander, 6 años · Aprende piano jugando</div>
 </div>
 
@@ -294,6 +294,19 @@ const NOTES = [
   { name: 'La', eng: 'A', freq: 880.00, color: '#9b59b6', key: '', whiteIdx: 19, octave: 5, isSharp: false },
   { name: 'La#', eng: 'A#', freq: 932.33, color: '#333', key: '', whiteIdx: 19, octave: 5, isSharp: true },
   { name: 'Si', eng: 'B', freq: 987.77, color: '#e91e63', key: '', whiteIdx: 20, octave: 5, isSharp: false },
+  // Octave 6 (upper extended - v3.6)
+  { name: 'Do', eng: 'C', freq: 1046.50, color: '#e74c3c', key: '', whiteIdx: 21, octave: 6, isSharp: false },
+  { name: 'Do#', eng: 'C#', freq: 1108.73, color: '#333', key: '', whiteIdx: 21, octave: 6, isSharp: true },
+  { name: 'Re', eng: 'D', freq: 1174.66, color: '#e67e22', key: '', whiteIdx: 22, octave: 6, isSharp: false },
+  { name: 'Re#', eng: 'D#', freq: 1244.51, color: '#333', key: '', whiteIdx: 22, octave: 6, isSharp: true },
+  { name: 'Mi', eng: 'E', freq: 1318.51, color: '#f1c40f', key: '', whiteIdx: 23, octave: 6, isSharp: false },
+  { name: 'Fa', eng: 'F', freq: 1396.91, color: '#2ecc71', key: '', whiteIdx: 24, octave: 6, isSharp: false },
+  { name: 'Fa#', eng: 'F#', freq: 1479.98, color: '#333', key: '', whiteIdx: 24, octave: 6, isSharp: true },
+  { name: 'Sol', eng: 'G', freq: 1567.98, color: '#3498db', key: '', whiteIdx: 25, octave: 6, isSharp: false },
+  { name: 'Sol#', eng: 'G#', freq: 1661.22, color: '#333', key: '', whiteIdx: 25, octave: 6, isSharp: true },
+  { name: 'La', eng: 'A', freq: 1760.00, color: '#9b59b6', key: '', whiteIdx: 26, octave: 6, isSharp: false },
+  { name: 'La#', eng: 'A#', freq: 1864.66, color: '#333', key: '', whiteIdx: 26, octave: 6, isSharp: true },
+  { name: 'Si', eng: 'B', freq: 1975.53, color: '#e91e63', key: '', whiteIdx: 27, octave: 6, isSharp: false },
 ];
 
 const LESSONS = {
@@ -333,6 +346,12 @@ const BLACK_KEYS = [
   { eng: 'F#', left: 1284, octave: 5 },
   { eng: 'G#', left: 1334, octave: 5 },
   { eng: 'A#', left: 1384, octave: 5 },
+  // Octave 6 (upper extended - v3.6)
+  { eng: 'C#', left: 1534, octave: 6 },
+  { eng: 'D#', left: 1584, octave: 6 },
+  { eng: 'F#', left: 1684, octave: 6 },
+  { eng: 'G#', left: 1734, octave: 6 },
+  { eng: 'A#', left: 1784, octave: 6 },
 ];
 
 // Audio

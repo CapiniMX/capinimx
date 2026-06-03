@@ -139,3 +139,18 @@ function earNewNote() {
 La app ya tiene los elementos básicos del método Benbassat implementados (cadencia + niveles progresivos). La mejora más sencilla sería agregar una **melodía de referencia** de 3-4 notas antes de cada nota nueva, y mostrar la respuesta correcta cuando falla.
 
 El sistema actual es **85% del método completo** - solo falta la reference melody contextual y quizás un modo de "reproducir melodía" avanzado.
+---
+
+## v3.5 (2026-06-03): Ear Training Reference Melody + Show Note Color on Fail
+
+### Cambios implementados:
+1. **Reference melody** en `earNewNote()`: antes de cada nota nueva, ahora toca:
+   - Cadencia I-IV-V-I (Do-Fa-Sol-Do)
+   - Melodía de referencia de 3-4 notas del nivel actual
+   - Luego la nota a adivinar
+2. **Feedback con color** en `checkEarAnswer()`: cuando falla, muestra la nota correcta con su color del piano (igual que en los botones de opciones)
+3. **Timing ajustado**: delay de 2s después del error en lugar de 1.5s
+
+### Commit: `7e5ffa0`
+
+*Implementación completada: ahora el método Benbassat está ~95% implementado (solo falta modo melodía avanzada).*

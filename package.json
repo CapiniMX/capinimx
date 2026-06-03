@@ -1,0 +1,6 @@
+{
+  "dependencies": {
+    "@capacitor/android": "^8.4.0",
+    "capacitor": "^0.5.6"
+  }
+}
