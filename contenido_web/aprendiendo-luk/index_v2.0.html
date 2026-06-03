@@ -1,0 +1,1891 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AprendiendoLuk - Entrenamiento Mental</title>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700;800&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      /* CAPINI Color Palette */
+      --color-primary:     #4DB6AC;
+      --color-accent:      #F48FB1;
+      --color-light:       #B2DFDB;
+      --color-dark:        #1a1a2e;
+      --color-surface:     #16213e;
+      --color-border:      #0f3460;
+
+      /* Gradients */
+      --grad-primary:      linear-gradient(135deg, #4DB6AC, #F48FB1);
+      --grad-soft:         linear-gradient(135deg, #B2DFDB, #4DB6AC);
+
+      /* Typography */
+      --font-title:        'Montserrat', sans-serif;
+      --font-body:         'Nunito', sans-serif;
+
+      /* Colors */
+      --text-primary:      #ffffff;
+      --text-secondary:    #b0b0b0;
+
+      /* Spacing */
+      --spacing-xs:        4px;
+      --spacing-sm:        8px;
+      --spacing-md:        16px;
+      --spacing-lg:        24px;
+      --spacing-xl:        32px;
+
+      /* Border Radius */
+      --radius-sm:         8px;
+      --radius-md:         16px;
+      --radius-lg:         20px;
+      --radius-btn:        26px;
+    }
+
+    html, body {
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      font-family: var(--font-body);
+      background: linear-gradient(135deg, var(--color-dark) 0%, var(--color-surface) 100%);
+      color: var(--text-primary);
+    }
+
+    .app-container {
+      display: flex;
+      flex-direction: column;
+      width: 100%;
+      height: 100%;
+    }
+
+    /* ===== HEADER / NAVIGATION ===== */
+    .header {
+      background: rgba(22, 33, 62, 0.95);
+      backdrop-filter: blur(10px);
+      border-bottom: 2px solid var(--color-primary);
+      padding: var(--spacing-md);
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-md);
+      position: sticky;
+      top: 0;
+      z-index: 30;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    }
+
+    .header-logo {
+      font-family: var(--font-title);
+      font-size: 18px;
+      font-weight: 800;
+      background: var(--grad-primary);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-sm);
+      min-width: 180px;
+    }
+
+    .header-logo-icon {
+      font-size: 24px;
+    }
+
+    .tabs-nav {
+      display: flex;
+      gap: 0;
+      flex: 1;
+      height: 50px;
+    }
+
+    .tab-btn {
+      flex: 1;
+      padding: var(--spacing-md);
+      background: transparent;
+      border: none;
+      color: var(--text-secondary);
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      border-bottom: 3px solid transparent;
+      text-align: center;
+      position: relative;
+    }
+
+    .tab-btn:hover {
+      color: var(--color-primary);
+      background: rgba(77, 182, 172, 0.1);
+    }
+
+    .tab-btn.active {
+      color: var(--color-primary);
+      border-bottom-color: var(--color-primary);
+    }
+
+    .tab-btn.active::after {
+      content: '';
+      position: absolute;
+      bottom: -2px;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: var(--grad-primary);
+    }
+
+    .tab-btn:active {
+      transform: scale(0.96);
+    }
+
+    /* ===== MAIN CONTENT ===== */
+    .content-area {
+      flex: 1;
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+      padding: var(--spacing-lg);
+      display: flex;
+      flex-direction: column;
+    }
+
+    .content-area::-webkit-scrollbar {
+      width: 6px;
+    }
+
+    .content-area::-webkit-scrollbar-track {
+      background: transparent;
+    }
+
+    .content-area::-webkit-scrollbar-thumb {
+      background: var(--color-primary);
+      border-radius: 3px;
+    }
+
+    .tab-content {
+      display: none;
+      width: 100%;
+      min-height: 100%;
+    }
+
+    .tab-content.active {
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* ===== CARDS ===== */
+    .card {
+      background: rgba(22, 33, 62, 0.8);
+      border: 2px solid var(--color-border);
+      border-radius: var(--radius-lg);
+      padding: var(--spacing-lg);
+      margin-bottom: var(--spacing-md);
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: linear-gradient(135deg, rgba(77, 182, 172, 0.1), transparent);
+      opacity: 0;
+      transition: opacity 0.3s ease;
+      pointer-events: none;
+    }
+
+    .card:hover {
+      border-color: var(--color-primary);
+      background: rgba(22, 33, 62, 0.95);
+      transform: translateY(-4px);
+      box-shadow: 0 8px 24px rgba(77, 182, 172, 0.15);
+    }
+
+    .card:hover::before {
+      opacity: 1;
+    }
+
+    .card h3 {
+      font-family: var(--font-title);
+      font-size: 18px;
+      font-weight: 700;
+      margin-bottom: var(--spacing-sm);
+      color: var(--text-primary);
+    }
+
+    .card .subtitle {
+      color: var(--text-secondary);
+      font-size: 13px;
+      line-height: 1.5;
+    }
+
+    /* ===== BUTTONS ===== */
+    .btn {
+      padding: 12px 24px;
+      border: none;
+      border-radius: var(--radius-btn);
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      font-family: var(--font-body);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .btn::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: rgba(255, 255, 255, 0.2);
+      transition: left 0.3s ease;
+    }
+
+    .btn:hover::before {
+      left: 100%;
+    }
+
+    .btn-primary {
+      background: var(--grad-primary);
+      color: var(--color-dark);
+      font-weight: 800;
+      box-shadow: 0 4px 15px rgba(77, 182, 172, 0.3);
+    }
+
+    .btn-primary:hover {
+      box-shadow: 0 6px 20px rgba(77, 182, 172, 0.4);
+      transform: translateY(-2px);
+    }
+
+    .btn-primary:active {
+      transform: translateY(0);
+    }
+
+    .btn-primary:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .btn-secondary {
+      background-color: transparent;
+      color: var(--color-primary);
+      border: 2px solid var(--color-primary);
+    }
+
+    .btn-secondary:hover {
+      background: rgba(77, 182, 172, 0.1);
+      box-shadow: 0 4px 15px rgba(77, 182, 172, 0.2);
+    }
+
+    .btn-secondary:active {
+      transform: scale(0.96);
+    }
+
+    .back-btn {
+      position: absolute;
+      top: var(--spacing-lg);
+      left: var(--spacing-lg);
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      background: rgba(77, 182, 172, 0.15);
+      border: 2px solid var(--color-primary);
+      color: var(--color-primary);
+      font-size: 24px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.3s ease;
+      z-index: 10;
+      font-weight: 700;
+    }
+
+    .back-btn:hover {
+      background: rgba(77, 182, 172, 0.25);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(77, 182, 172, 0.3);
+    }
+
+    .back-btn:active {
+      transform: scale(0.9);
+    }
+
+    /* ===== HOME SCREEN ===== */
+    .home-screen {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: var(--spacing-lg);
+      padding-top: var(--spacing-xl);
+      text-align: center;
+    }
+
+    .logo {
+      font-family: var(--font-title);
+      font-size: 42px;
+      font-weight: 800;
+      background: var(--grad-primary);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: var(--spacing-md);
+    }
+
+    .subtitle {
+      color: var(--text-secondary);
+      font-size: 14px;
+      text-align: center;
+      line-height: 1.6;
+    }
+
+    .stats-grid {
+      width: 100%;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: var(--spacing-md);
+      margin: var(--spacing-lg) 0;
+      max-width: 360px;
+    }
+
+    .stat-box {
+      background: linear-gradient(135deg, rgba(77, 182, 172, 0.1), rgba(244, 143, 177, 0.1));
+      border: 2px solid var(--color-border);
+      border-radius: var(--radius-lg);
+      padding: var(--spacing-lg);
+      text-align: center;
+      transition: all 0.3s ease;
+    }
+
+    .stat-box:hover {
+      border-color: var(--color-primary);
+      background: linear-gradient(135deg, rgba(77, 182, 172, 0.2), rgba(244, 143, 177, 0.2));
+      transform: translateY(-4px);
+    }
+
+    .stat-number {
+      font-size: 32px;
+      font-weight: 800;
+      color: var(--color-primary);
+      font-family: var(--font-title);
+    }
+
+    .stat-label {
+      font-size: 12px;
+      color: var(--text-secondary);
+      margin-top: var(--spacing-sm);
+      font-weight: 600;
+    }
+
+    /* ===== DIFFICULTY SELECT ===== */
+    .difficulty-screen {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(135deg, rgba(26, 26, 46, 0.98), rgba(22, 33, 62, 0.98));
+      backdrop-filter: blur(5px);
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: var(--spacing-lg);
+      padding: var(--spacing-xl) var(--spacing-md);
+      z-index: 50;
+      overflow-y: auto;
+    }
+
+    .difficulty-screen.active {
+      display: flex;
+    }
+
+    .difficulty-title {
+      font-family: var(--font-title);
+      font-size: 24px;
+      font-weight: 700;
+      margin-bottom: var(--spacing-lg);
+      text-align: center;
+      color: var(--text-primary);
+    }
+
+    .difficulty-btn {
+      width: 100%;
+      max-width: 280px;
+      padding: 16px;
+      border-radius: var(--radius-btn);
+      border: 2px solid var(--color-border);
+      background: rgba(22, 33, 62, 0.6);
+      color: var(--text-primary);
+      font-size: 16px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      font-family: var(--font-body);
+    }
+
+    .difficulty-btn:nth-child(2) {
+      border-color: var(--color-primary);
+      color: var(--color-primary);
+    }
+
+    .difficulty-btn:nth-child(3) {
+      border-color: var(--color-accent);
+      color: var(--color-accent);
+    }
+
+    .difficulty-btn:nth-child(4) {
+      border-color: var(--color-light);
+      color: var(--color-light);
+    }
+
+    .difficulty-btn:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 8px 20px rgba(77, 182, 172, 0.2);
+    }
+
+    .difficulty-btn:active {
+      transform: scale(0.96);
+    }
+
+    .back-btn.difficulty-back {
+      position: relative;
+      width: auto;
+      height: auto;
+      margin-top: var(--spacing-lg);
+      padding: var(--spacing-sm) var(--spacing-md);
+      background: var(--color-border);
+    }
+
+    /* ===== GAME SCREENS ===== */
+    .game-screen {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(135deg, var(--color-dark) 0%, var(--color-surface) 100%);
+      display: none;
+      flex-direction: column;
+      z-index: 40;
+      padding: var(--spacing-md);
+      overflow: hidden;
+    }
+
+    .game-screen.active {
+      display: flex;
+    }
+
+    .game-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: var(--spacing-lg);
+      gap: var(--spacing-md);
+      padding-bottom: var(--spacing-md);
+      border-bottom: 2px solid var(--color-border);
+    }
+
+    .game-title {
+      font-family: var(--font-title);
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+
+    .timer-bar {
+      flex: 1;
+      height: 8px;
+      background-color: var(--color-border);
+      border-radius: 4px;
+      overflow: hidden;
+      box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.3);
+    }
+
+    .timer-bar-fill {
+      height: 100%;
+      background: var(--grad-primary);
+      transition: width 0.9s linear;
+      border-radius: 4px;
+    }
+
+    .score-display {
+      font-size: 16px;
+      font-weight: 800;
+      color: var(--color-primary);
+      font-family: var(--font-title);
+      min-width: 50px;
+      text-align: right;
+    }
+
+    .game-content {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: var(--spacing-lg);
+      overflow: hidden;
+    }
+
+    /* ===== SUMA RÁPIDA ===== */
+    .operation-display {
+      font-size: 3em;
+      font-weight: 800;
+      color: var(--color-primary);
+      text-align: center;
+      line-height: 1;
+      font-family: var(--font-title);
+    }
+
+    .answer-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: var(--spacing-md);
+      width: 100%;
+      max-width: 320px;
+    }
+
+    .answer-btn {
+      padding: var(--spacing-md);
+      min-height: 70px;
+      font-size: 24px;
+      font-weight: 700;
+      background: rgba(22, 33, 62, 0.8);
+      color: var(--text-primary);
+      border: 2px solid var(--color-border);
+      border-radius: var(--radius-lg);
+      cursor: pointer;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      font-family: var(--font-body);
+    }
+
+    .answer-btn:hover {
+      border-color: var(--color-primary);
+      background: rgba(77, 182, 172, 0.15);
+      transform: translateY(-2px);
+    }
+
+    .answer-btn:active {
+      transform: scale(0.95);
+    }
+
+    .answer-btn.correct {
+      background: rgba(77, 182, 172, 0.25);
+      border-color: var(--color-primary);
+      color: var(--color-primary);
+      box-shadow: 0 0 15px rgba(77, 182, 172, 0.3);
+    }
+
+    .answer-btn.wrong {
+      background: rgba(244, 143, 177, 0.25);
+      border-color: var(--color-accent);
+      color: var(--color-accent);
+      box-shadow: 0 0 15px rgba(244, 143, 177, 0.3);
+    }
+
+    /* ===== MEMORIA SECUENCIAL ===== */
+    .color-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: var(--spacing-md);
+      width: 100%;
+      max-width: 280px;
+      aspect-ratio: 1;
+    }
+
+    .color-btn {
+      border: 3px solid transparent;
+      border-radius: var(--radius-lg);
+      cursor: pointer;
+      transition: all 0.15s ease;
+      opacity: 0.8;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+      font-weight: 700;
+      font-size: 24px;
+    }
+
+    .color-btn:hover {
+      opacity: 1;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.4);
+    }
+
+    .color-btn:active {
+      transform: scale(0.95);
+    }
+
+    .color-btn.playing {
+      opacity: 1;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5);
+      transform: scale(1.08);
+    }
+
+    .sequence-info {
+      text-align: center;
+      font-size: 16px;
+      color: var(--text-secondary);
+    }
+
+    .level-counter {
+      font-size: 28px;
+      font-weight: 800;
+      color: var(--color-accent);
+      font-family: var(--font-title);
+    }
+
+    /* ===== VELOCIDAD VISUAL ===== */
+    .visual-arena {
+      width: 100%;
+      max-width: 320px;
+      aspect-ratio: 1;
+      background: rgba(22, 33, 62, 0.6);
+      border-radius: var(--radius-lg);
+      border: 2px solid var(--color-border);
+      position: relative;
+      margin-bottom: var(--spacing-lg);
+      box-shadow: inset 0 4px 8px rgba(0, 0, 0, 0.3);
+    }
+
+    .visual-item {
+      position: absolute;
+      width: 60px;
+      height: 60px;
+      border-radius: var(--radius-md);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 28px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.1s ease;
+      user-select: none;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+    }
+
+    .visual-item:hover {
+      transform: scale(1.1);
+    }
+
+    .visual-item:active {
+      transform: scale(0.9);
+    }
+
+    .visual-target {
+      font-size: 14px;
+      color: var(--color-light);
+      text-align: center;
+      margin-bottom: var(--spacing-md);
+      font-weight: 600;
+      font-family: var(--font-title);
+    }
+
+    .visual-score {
+      font-size: 16px;
+      text-align: center;
+      color: var(--text-primary);
+      font-weight: 600;
+    }
+
+    /* ===== RESULT SCREEN ===== */
+    .result-screen {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(135deg, var(--color-dark) 0%, var(--color-surface) 100%);
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: var(--spacing-lg);
+      z-index: 45;
+      overflow-y: auto;
+    }
+
+    .result-screen.active {
+      display: flex;
+    }
+
+    .result-container {
+      text-align: center;
+      width: 100%;
+      max-width: 360px;
+      animation: slideUp 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    @keyframes slideUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .stars {
+      font-size: 60px;
+      margin: var(--spacing-lg) 0;
+      letter-spacing: 8px;
+    }
+
+    .result-title {
+      font-family: var(--font-title);
+      font-size: 28px;
+      font-weight: 800;
+      margin-bottom: var(--spacing-md);
+      background: var(--grad-primary);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .result-score {
+      font-size: 52px;
+      font-weight: 800;
+      color: var(--color-primary);
+      margin: var(--spacing-lg) 0;
+      font-family: var(--font-title);
+    }
+
+    .result-breakdown {
+      background: rgba(22, 33, 62, 0.8);
+      border: 2px solid var(--color-border);
+      border-radius: var(--radius-lg);
+      padding: var(--spacing-lg);
+      margin: var(--spacing-lg) 0;
+      text-align: left;
+    }
+
+    .breakdown-row {
+      display: flex;
+      justify-content: space-between;
+      padding: var(--spacing-md) 0;
+      border-bottom: 1px solid var(--color-border);
+    }
+
+    .breakdown-row:last-child {
+      border-bottom: none;
+    }
+
+    .breakdown-label {
+      color: var(--text-secondary);
+      font-weight: 600;
+    }
+
+    .breakdown-value {
+      font-weight: 800;
+      color: var(--color-accent);
+      font-family: var(--font-title);
+    }
+
+    /* ===== FEEDBACK TOAST ===== */
+    .toast {
+      position: fixed;
+      bottom: var(--spacing-lg);
+      left: 50%;
+      transform: translateX(-50%) translateY(120%);
+      background: rgba(22, 33, 62, 0.95);
+      color: var(--text-primary);
+      padding: var(--spacing-md) var(--spacing-lg);
+      border-radius: var(--radius-btn);
+      border-left: 4px solid var(--color-primary);
+      z-index: 100;
+      transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      font-size: 14px;
+      max-width: 90%;
+      font-weight: 600;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    }
+
+    .toast.show {
+      transform: translateX(-50%) translateY(0);
+    }
+
+    .toast.success {
+      border-left-color: var(--color-primary);
+    }
+
+    .toast.error {
+      border-left-color: var(--color-accent);
+    }
+
+    .toast.info {
+      border-left-color: var(--color-light);
+    }
+
+    /* ===== CONFETTI CANVAS ===== */
+    #confetti-canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 99;
+    }
+
+    /* ===== HISTORY SCREEN ===== */
+    .history-empty {
+      text-align: center;
+      padding: var(--spacing-xl) var(--spacing-lg);
+      color: var(--text-secondary);
+    }
+
+    .history-item {
+      background: rgba(22, 33, 62, 0.8);
+      border: 2px solid var(--color-border);
+      border-radius: var(--radius-lg);
+      padding: var(--spacing-lg);
+      margin-bottom: var(--spacing-md);
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: var(--spacing-lg);
+      align-items: center;
+      transition: all 0.3s ease;
+    }
+
+    .history-item:hover {
+      border-color: var(--color-primary);
+      background: rgba(22, 33, 62, 0.95);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(77, 182, 172, 0.1);
+    }
+
+    .history-info {
+      text-align: left;
+    }
+
+    .history-date {
+      font-size: 14px;
+      color: var(--text-secondary);
+      margin-bottom: var(--spacing-sm);
+      font-weight: 600;
+    }
+
+    .history-difficulty {
+      font-size: 12px;
+      display: inline-block;
+      padding: var(--spacing-sm);
+      background: rgba(77, 182, 172, 0.15);
+      border: 1px solid var(--color-primary);
+      border-radius: var(--radius-sm);
+      margin-right: var(--spacing-sm);
+      color: var(--color-primary);
+      font-weight: 700;
+      text-transform: uppercase;
+    }
+
+    .history-score {
+      font-size: 32px;
+      font-weight: 800;
+      color: var(--color-primary);
+      font-family: var(--font-title);
+    }
+
+    .history-stars {
+      font-size: 24px;
+      letter-spacing: 2px;
+    }
+
+    /* ===== INSTRUCTIONS ===== */
+    .instructions {
+      font-size: 14px;
+      line-height: 1.8;
+      color: var(--text-secondary);
+      margin-bottom: var(--spacing-lg);
+      padding: var(--spacing-lg);
+      background: rgba(22, 33, 62, 0.8);
+      border-radius: var(--radius-lg);
+      border-left: 4px solid var(--color-primary);
+    }
+
+    /* ===== FOOTER ===== */
+    .footer {
+      background: rgba(22, 33, 62, 0.95);
+      border-top: 2px solid var(--color-primary);
+      padding: var(--spacing-lg);
+      text-align: center;
+      color: var(--text-secondary);
+      font-size: 12px;
+      margin-top: auto;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: var(--spacing-sm);
+    }
+
+    .footer-logo {
+      font-family: var(--font-title);
+      font-size: 14px;
+      font-weight: 700;
+      background: var(--grad-primary);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .footer-tagline {
+      font-size: 12px;
+      color: var(--color-light);
+      font-weight: 600;
+      letter-spacing: 0.5px;
+    }
+
+    /* ===== RESPONSIVE ===== */
+    @media (max-width: 480px) {
+      .header {
+        flex-wrap: wrap;
+        gap: var(--spacing-sm);
+      }
+
+      .header-logo {
+        min-width: auto;
+      }
+
+      .tabs-nav {
+        order: 3;
+        width: 100%;
+        margin-top: var(--spacing-sm);
+      }
+
+      .tab-btn {
+        font-size: 12px;
+        padding: var(--spacing-sm);
+      }
+
+      .operation-display {
+        font-size: 2.5em;
+      }
+
+      .color-grid {
+        grid-template-columns: repeat(2, 1fr);
+        max-width: 220px;
+      }
+
+      .content-area {
+        padding: var(--spacing-md);
+      }
+
+      .stat-box {
+        padding: var(--spacing-md);
+      }
+    }
+
+    @media (max-width: 360px) {
+      .operation-display {
+        font-size: 2em;
+      }
+
+      .answer-grid {
+        max-width: 280px;
+      }
+
+      .result-score {
+        font-size: 42px;
+      }
+    }
+
+    /* ===== HISTORY SCREEN ===== */
+    #history-tab {
+      display: flex;
+      flex-direction: column;
+      gap: var(--spacing-md);
+    }
+  </style>
+</head>
+<body>
+  <div class="app-container">
+    <!-- HEADER WITH NAVIGATION -->
+    <header class="header">
+      <div class="header-logo">
+        <span class="header-logo-icon">🧠</span>
+        <span>AprendiendoLuk</span>
+      </div>
+      <nav class="tabs-nav">
+        <button class="tab-btn active" data-tab="home">🏠 Inicio</button>
+        <button class="tab-btn" data-tab="games">🎮 Juegos</button>
+        <button class="tab-btn" data-tab="history">📊 Historial</button>
+      </nav>
+    </header>
+
+    <!-- MAIN CONTENT AREA -->
+    <div class="content-area">
+      <!-- HOME TAB -->
+      <div id="home-tab" class="tab-content active">
+        <div class="home-screen">
+          <div class="logo">AprendiendoLuk</div>
+          <p class="subtitle">Entrena tu mente con 3 juegos desafiantes<br>y diviértete aprendiendo</p>
+
+          <div class="stats-grid">
+            <div class="stat-box">
+              <div class="stat-number" id="best-score">0</div>
+              <div class="stat-label">Mejor puntuación</div>
+            </div>
+            <div class="stat-box">
+              <div class="stat-number" id="total-sessions">0</div>
+              <div class="stat-label">Sesiones completadas</div>
+            </div>
+          </div>
+
+          <button class="btn btn-primary" style="width: 100%; max-width: 200px; margin-top: var(--spacing-lg);" onclick="STATE.ui.startSession()">
+            ▶ Empezar ahora
+          </button>
+        </div>
+      </div>
+
+      <!-- GAMES TAB -->
+      <div id="games-tab" class="tab-content">
+        <div style="margin-top: var(--spacing-md);">
+          <div class="card" onclick="STATE.ui.showDifficulty('suma')">
+            <h3>🔢 Suma Rápida</h3>
+            <p class="subtitle">Resuelve operaciones matemáticas en el menor tiempo posible y desafía tu rapidez mental</p>
+          </div>
+          <div class="card" onclick="STATE.ui.showDifficulty('memoria')">
+            <h3>🎨 Memoria Secuencial</h3>
+            <p class="subtitle">Memoriza y repite la secuencia de colores que aparecen. Aumenta el nivel con cada acierto</p>
+          </div>
+          <div class="card" onclick="STATE.ui.showDifficulty('visual')">
+            <h3>👁️ Velocidad Visual</h3>
+            <p class="subtitle">Identifica y toca los elementos correctos según la instrucción. Reacciona rápido y sé preciso</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- HISTORY TAB -->
+      <div id="history-tab" class="tab-content">
+        <div id="history-list" style="margin-top: var(--spacing-md);">
+          <div class="history-empty">
+            <p>No hay sesiones aún.<br>¡Empieza a jugar!</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- FOOTER -->
+    <footer class="footer">
+      <div class="footer-logo">CAPINI</div>
+      <div class="footer-tagline">Creciendo Juntos</div>
+    </footer>
+  </div>
+
+  <!-- DIFFICULTY SELECTION OVERLAY -->
+  <div id="difficulty-screen" class="difficulty-screen">
+    <button class="back-btn" onclick="STATE.ui.closeDifficulty()">←</button>
+    <div style="width: 100%; display: flex; flex-direction: column; align-items: center; gap: var(--spacing-lg);">
+      <h2 class="difficulty-title" id="difficulty-title">Elige dificultad</h2>
+      <button class="difficulty-btn" onclick="STATE.ui.startGame('facil')">⭐ Fácil</button>
+      <button class="difficulty-btn" onclick="STATE.ui.startGame('medio')">⭐⭐ Medio</button>
+      <button class="difficulty-btn" onclick="STATE.ui.startGame('dificil')">⭐⭐⭐ Difícil</button>
+    </div>
+  </div>
+
+  <!-- INSTRUCTIONS OVERLAY -->
+  <div id="instructions-screen" class="difficulty-screen" style="background: linear-gradient(135deg, rgba(26, 26, 46, 0.98), rgba(22, 33, 62, 0.98));">
+    <button class="back-btn" style="top: var(--spacing-lg);" onclick="closeInstructions()">←</button>
+    <div style="width: 100%; max-width: 360px; text-align: center; overflow-y: auto; padding-top: 60px;">
+      <h2 style="font-family: var(--font-title); font-size: 24px; font-weight: 700; margin-bottom: var(--spacing-lg);" id="instr-title">Instrucciones</h2>
+      <p id="instr-content" style="text-align: left; line-height: 1.8; color: #b0b0b0; margin-bottom: var(--spacing-xl);"></p>
+      <button class="btn btn-primary" style="width: 100%;" onclick="startCurrentGame()">Empezar →</button>
+    </div>
+  </div>
+
+  <!-- SUMA RÁPIDA GAME -->
+  <div id="suma-game" class="game-screen">
+    <div class="game-header">
+      <h2 class="game-title">🔢 Suma Rápida</h2>
+      <div class="timer-bar">
+        <div class="timer-bar-fill" id="suma-timer-bar"></div>
+      </div>
+      <span class="score-display" id="suma-score">0</span>
+    </div>
+    <div class="game-content">
+      <div class="operation-display" id="suma-operation">0 + 0</div>
+      <div class="answer-grid" id="suma-answers"></div>
+    </div>
+  </div>
+
+  <!-- MEMORIA SECUENCIAL GAME -->
+  <div id="memoria-game" class="game-screen">
+    <div class="game-header">
+      <h2 class="game-title">🎨 Memoria</h2>
+      <div class="timer-bar">
+        <div class="timer-bar-fill" style="width: 100%;" id="memoria-timer-bar"></div>
+      </div>
+      <span class="score-display" id="memoria-score">0</span>
+    </div>
+    <div class="game-content">
+      <div class="sequence-info">
+        Nivel <span class="level-counter" id="memoria-level">1</span> / <span id="memoria-max-level">5</span>
+      </div>
+      <div class="color-grid" id="memoria-colors"></div>
+      <p class="sequence-info" id="memoria-phase">Observa...</p>
+    </div>
+  </div>
+
+  <!-- VELOCIDAD VISUAL GAME -->
+  <div id="visual-game" class="game-screen">
+    <div class="game-header">
+      <h2 class="game-title">👁️ Velocidad Visual</h2>
+      <div class="timer-bar">
+        <div class="timer-bar-fill" id="visual-timer-bar"></div>
+      </div>
+      <span class="score-display" id="visual-score">0</span>
+    </div>
+    <div class="game-content">
+      <div class="visual-target" id="visual-target">Toca los números PARES</div>
+      <div class="visual-arena" id="visual-arena"></div>
+      <div class="visual-score">
+        ✓ <span id="visual-correct">0</span> | ✗ <span id="visual-wrong">0</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- RESULT SCREEN -->
+  <div id="result-screen" class="result-screen">
+    <div class="result-container">
+      <div class="stars" id="result-stars">⭐⭐⭐</div>
+      <h2 class="result-title" id="result-title">¡Excelente!</h2>
+      <div class="result-score" id="result-score">1250</div>
+
+      <div class="result-breakdown">
+        <div class="breakdown-row">
+          <span class="breakdown-label" id="game-name">Suma Rápida</span>
+          <span class="breakdown-value" id="game-score">450</span>
+        </div>
+      </div>
+
+      <button class="btn btn-primary" style="width: 100%; margin: var(--spacing-lg) 0;" onclick="STATE.ui.nextRound()">
+        Siguiente →
+      </button>
+      <button class="btn btn-secondary" style="width: 100%;" onclick="STATE.ui.endSession()">
+        Ir al inicio
+      </button>
+    </div>
+  </div>
+
+  <!-- CONFETTI CANVAS -->
+  <canvas id="confetti-canvas"></canvas>
+
+  <script>
+    // ========== GLOBAL STATE ==========
+    const STATE = {
+      session: {
+        active: false,
+        gameQueue: [],
+        currentGameIdx: 0,
+        scores: {},
+        totalScore: 0,
+        difficulty: null,
+        startTime: null
+      },
+      game: {
+        type: null,
+        round: 0,
+        score: 0,
+        suma: {
+          currentOp: null,
+          timerMax: 12,
+          timerRemaining: 12,
+          timerInterval: null,
+          correctAnswer: 0
+        },
+        memoria: {
+          sequence: [],
+          playerInput: [],
+          phase: 'observing',
+          level: 1,
+          maxLevels: 5,
+          attemptsLeft: 3,
+          colorBtns: [],
+          playInterval: null
+        },
+        visual: {
+          items: [],
+          target: 'even',
+          timeLeft: 30,
+          correct: 0,
+          wrong: 0,
+          timerInterval: null,
+          spawnInterval: null
+        }
+      },
+      storage: {
+        sessions: [],
+        bestScore: 0
+      },
+      ui: {
+        currentGameType: null,
+        showDifficulty(type) {
+          STATE.ui.currentGameType = type;
+          const gameNames = { suma: 'Suma Rápida', memoria: 'Memoria Secuencial', visual: 'Velocidad Visual' };
+          document.getElementById('difficulty-title').textContent = `Elige dificultad: ${gameNames[type]}`;
+          document.getElementById('difficulty-screen').classList.add('active');
+        },
+        closeDifficulty() {
+          document.getElementById('difficulty-screen').classList.remove('active');
+        },
+        startSession() {
+          STATE.ui.currentGameType = 'session';
+          document.getElementById('difficulty-title').textContent = 'Elige dificultad de sesión';
+          document.getElementById('difficulty-screen').classList.add('active');
+        },
+        startGame(difficulty) {
+          STATE.session.active = true;
+          STATE.session.difficulty = difficulty;
+          STATE.session.scores = { suma: 0, memoria: 0, visual: 0 };
+          STATE.session.totalScore = 0;
+          STATE.session.currentGameIdx = 0;
+          STATE.session.startTime = Date.now();
+
+          if (STATE.ui.currentGameType === 'session') {
+            STATE.session.gameQueue = shuffleArray(['suma', 'memoria', 'visual']);
+          } else {
+            STATE.session.gameQueue = [STATE.ui.currentGameType];
+          }
+
+          STATE.ui.closeDifficulty();
+          showTab('games');
+          STATE.ui.nextRound();
+        },
+        nextRound() {
+          if (STATE.session.currentGameIdx < STATE.session.gameQueue.length) {
+            const gameType = STATE.session.gameQueue[STATE.session.currentGameIdx];
+            STATE.game.type = gameType;
+            STATE.game.score = 0;
+            showInstructions(gameType);
+          } else {
+            STATE.ui.showSessionResult();
+          }
+        },
+        endSession() {
+          STATE.session.active = false;
+          hideAllGameScreens();
+          document.getElementById('result-screen').classList.remove('active');
+          showTab('home');
+          loadStorage();
+          updateHomeStats();
+          updateHistory();
+        },
+        showSessionResult() {
+          hideAllGameScreens();
+          const totalScore = Object.values(STATE.session.scores).reduce((a, b) => a + b, 0);
+          STATE.session.totalScore = totalScore;
+
+          const difficulty = STATE.session.difficulty;
+          const thresholds = {
+            facil: [200, 400, 600],
+            medio: [350, 700, 1050],
+            dificil: [500, 1000, 1500]
+          };
+          const [t1, t2, t3] = thresholds[difficulty];
+          let stars = 0;
+          if (totalScore >= t3) stars = 3;
+          else if (totalScore >= t2) stars = 2;
+          else if (totalScore >= t1) stars = 1;
+
+          const starDisplay = '⭐'.repeat(Math.max(1, stars)) + '☆'.repeat(Math.max(0, 3 - stars));
+
+          document.getElementById('result-stars').textContent = starDisplay;
+          document.getElementById('result-title').textContent =
+            stars === 3 ? '¡Excelente!' : stars === 2 ? '¡Muy bien!' : '¡Buen intento!';
+          document.getElementById('result-score').textContent = totalScore;
+
+          const breakdown = document.querySelector('.result-breakdown');
+          breakdown.innerHTML = Object.entries(STATE.session.scores).map(([game, score]) => {
+            const gameNames = { suma: 'Suma Rápida', memoria: 'Memoria Secuencial', visual: 'Velocidad Visual' };
+            return `<div class="breakdown-row">
+              <span class="breakdown-label">${gameNames[game]}</span>
+              <span class="breakdown-value">${score}</span>
+            </div>`;
+          }).join('');
+
+          // Save session
+          const session = {
+            id: Date.now(),
+            date: new Date().toLocaleString('es-MX', { year: '2-digit', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' }),
+            difficulty: STATE.session.difficulty,
+            scores: STATE.session.scores,
+            totalScore: totalScore,
+            stars: stars,
+            gameOrder: STATE.session.gameQueue
+          };
+
+          STATE.storage.sessions.unshift(session);
+          if (STATE.storage.sessions.length > 5) STATE.storage.sessions.pop();
+          if (totalScore > STATE.storage.bestScore) STATE.storage.bestScore = totalScore;
+          saveStorage();
+
+          document.getElementById('result-screen').classList.add('active');
+        }
+      }
+    };
+
+    // ========== STORAGE FUNCTIONS ==========
+    function saveStorage() {
+      localStorage.setItem('aprendiendo-luk-state', JSON.stringify(STATE.storage));
+    }
+
+    function loadStorage() {
+      const saved = localStorage.getItem('aprendiendo-luk-state');
+      if (saved) {
+        Object.assign(STATE.storage, JSON.parse(saved));
+      }
+    }
+
+    // ========== UI UPDATES ==========
+    function updateHomeStats() {
+      document.getElementById('best-score').textContent = STATE.storage.bestScore;
+      document.getElementById('total-sessions').textContent = STATE.storage.sessions.length;
+    }
+
+    function updateHistory() {
+      const historyList = document.getElementById('history-list');
+      if (STATE.storage.sessions.length === 0) {
+        historyList.innerHTML = '<div class="history-empty"><p>No hay sesiones aún.<br>¡Empieza a jugar!</p></div>';
+        return;
+      }
+
+      historyList.innerHTML = STATE.storage.sessions.map(session => {
+        const difficultyStyles = {
+          facil: 'Fácil',
+          medio: 'Medio',
+          dificil: 'Difícil'
+        };
+        return `
+          <div class="history-item">
+            <div class="history-info">
+              <div class="history-date">${session.date}</div>
+              <span class="history-difficulty">${difficultyStyles[session.difficulty]}</span>
+            </div>
+            <div>
+              <div class="history-score">${session.totalScore}</div>
+              <div class="history-stars">${'⭐'.repeat(session.stars)}${'☆'.repeat(3 - session.stars)}</div>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    // ========== TAB NAVIGATION ==========
+    function showTab(tabName) {
+      document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
+      document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+      document.getElementById(tabName + '-tab').classList.add('active');
+      document.querySelector(`[data-tab="${tabName}"]`).classList.add('active');
+    }
+
+    // ========== GAME FUNCTIONS ==========
+    function hideAllGameScreens() {
+      document.querySelectorAll('.game-screen').forEach(screen => screen.classList.remove('active'));
+    }
+
+    function shuffleArray(arr) {
+      const shuffled = [...arr];
+      for (let i = shuffled.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+      }
+      return shuffled;
+    }
+
+    function getRandomInt(min, max) {
+      return Math.floor(Math.random() * (max - min + 1)) + min;
+    }
+
+    // ========== TOAST NOTIFICATIONS ==========
+    function showToast(message, type = 'info') {
+      let toast = document.querySelector('.toast');
+      if (!toast) {
+        toast = document.createElement('div');
+        toast.className = 'toast';
+        document.body.appendChild(toast);
+      }
+      toast.textContent = message;
+      toast.className = `toast ${type}`;
+      toast.classList.add('show');
+      setTimeout(() => {
+        toast.classList.remove('show');
+      }, 2000);
+    }
+
+    // ========== CONFETTI ANIMATION ==========
+    function createConfetti() {
+      const canvas = document.getElementById('confetti-canvas');
+      const ctx = canvas.getContext('2d');
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+
+      const particles = [];
+      const colors = ['#4DB6AC', '#F48FB1', '#B2DFDB'];
+
+      for (let i = 0; i < 50; i++) {
+        particles.push({
+          x: Math.random() * canvas.width,
+          y: -10,
+          width: Math.random() * 10 + 5,
+          height: Math.random() * 10 + 5,
+          opacity: Math.random() * 0.5 + 0.5,
+          color: colors[Math.floor(Math.random() * colors.length)],
+          vx: Math.random() * 4 - 2,
+          vy: Math.random() * 3 + 2
+        });
+      }
+
+      function animate() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        let activeParticles = 0;
+
+        particles.forEach(p => {
+          if (p.y < canvas.height) {
+            p.x += p.vx;
+            p.y += p.vy;
+            p.vy += 0.1;
+            p.opacity -= 0.01;
+            activeParticles++;
+
+            ctx.save();
+            ctx.globalAlpha = Math.max(0, p.opacity);
+            ctx.fillStyle = p.color;
+            ctx.fillRect(p.x, p.y, p.width, p.height);
+            ctx.restore();
+          }
+        });
+
+        if (activeParticles > 0) {
+          requestAnimationFrame(animate);
+        }
+      }
+
+      animate();
+    }
+
+    // ========== SUMA RÁPIDA ===
+    function initSuma() {
+      const difficulty = STATE.session.difficulty;
+      const configs = {
+        facil: { timerMax: 12, operandMax: 10 },
+        medio: { timerMax: 10, operandMax: 20 },
+        dificil: { timerMax: 8, operandMax: 50 }
+      };
+      const config = configs[difficulty];
+
+      STATE.game.suma.timerMax = config.timerMax;
+      STATE.game.suma.timerRemaining = config.timerMax;
+      STATE.game.score = 0;
+      STATE.game.round = 0;
+
+      document.getElementById('suma-game').classList.add('active');
+      nextSumaQuestion(config);
+    }
+
+    function nextSumaQuestion(config) {
+      STATE.game.round++;
+      const a = getRandomInt(1, config.operandMax);
+      const b = getRandomInt(1, config.operandMax);
+      const op = ['+', '-'][Math.floor(Math.random() * 2)];
+      const correctAnswer = op === '+' ? a + b : a - b;
+
+      STATE.game.suma.currentOp = { a, b, op, correctAnswer };
+      document.getElementById('suma-operation').textContent = `${a} ${op} ${b}`;
+
+      const answers = [correctAnswer];
+      while (answers.length < 4) {
+        const wrong = correctAnswer + getRandomInt(-10, 10);
+        if (!answers.includes(wrong) && wrong > -50) answers.push(wrong);
+      }
+
+      const shuffledAnswers = shuffleArray(answers);
+      const answersHtml = shuffledAnswers.map(ans =>
+        `<button class="answer-btn" onclick="checkSumaAnswer(${ans})">${ans}</button>`
+      ).join('');
+
+      document.getElementById('suma-answers').innerHTML = answersHtml;
+
+      STATE.game.suma.timerRemaining = STATE.game.suma.timerMax;
+      STATE.game.suma.timerInterval = setInterval(updateSumaTimer, 1000);
+      updateSumaTimer();
+    }
+
+    function updateSumaTimer() {
+      STATE.game.suma.timerRemaining--;
+      const pct = (STATE.game.suma.timerRemaining / STATE.game.suma.timerMax) * 100;
+      document.getElementById('suma-timer-bar').style.width = pct + '%';
+      document.getElementById('suma-score').textContent = STATE.game.score;
+
+      if (STATE.game.suma.timerRemaining <= 0) {
+        clearInterval(STATE.game.suma.timerInterval);
+        finishSuma();
+      }
+    }
+
+    function checkSumaAnswer(answer) {
+      clearInterval(STATE.game.suma.timerInterval);
+
+      const isCorrect = answer === STATE.game.suma.currentOp.correctAnswer;
+      const btns = document.querySelectorAll('.answer-btn');
+      btns.forEach(btn => {
+        const btnAnswer = parseInt(btn.textContent);
+        if (btnAnswer === STATE.game.suma.currentOp.correctAnswer) {
+          btn.classList.add('correct');
+        } else if (btnAnswer === answer && !isCorrect) {
+          btn.classList.add('wrong');
+        }
+        btn.disabled = true;
+      });
+
+      if (isCorrect) {
+        const basePts = { facil: 10, medio: 15, dificil: 20 }[STATE.session.difficulty];
+        const timeBonusFactor = Math.ceil(STATE.game.suma.timerRemaining / STATE.game.suma.timerMax);
+        const points = basePts * timeBonusFactor;
+        STATE.game.score += points;
+        showToast('+' + points + ' puntos!', 'success');
+      } else {
+        showToast('Incorrecto', 'error');
+      }
+
+      setTimeout(() => {
+        const config = { facil: 10, medio: 20, dificil: 50 }[STATE.session.difficulty];
+        if (STATE.game.round < 5) {
+          nextSumaQuestion({ operandMax: config });
+        } else {
+          finishSuma();
+        }
+      }, 1500);
+    }
+
+    function finishSuma() {
+      clearInterval(STATE.game.suma.timerInterval);
+      STATE.session.scores.suma = STATE.game.score;
+      STATE.session.currentGameIdx++;
+      STATE.ui.nextRound();
+    }
+
+    // ========== MEMORIA SECUENCIAL ===
+    function initMemoria() {
+      STATE.game.memoria.sequence = [];
+      STATE.game.memoria.playerInput = [];
+      STATE.game.memoria.level = 1;
+      STATE.game.memoria.attemptsLeft = 3;
+      STATE.game.score = 0;
+
+      const colorBtns = document.getElementById('memoria-colors');
+      colorBtns.innerHTML = '';
+
+      const colors = ['#FF6B9D', '#4DB6AC', '#FFD93D'];
+      colors.forEach((color, idx) => {
+        const btn = document.createElement('button');
+        btn.className = 'color-btn';
+        btn.style.backgroundColor = color;
+        btn.onclick = () => playerMemoriaClick(idx);
+        colorBtns.appendChild(btn);
+      });
+
+      STATE.game.memoria.colorBtns = document.querySelectorAll('.color-btn');
+      document.getElementById('memoria-game').classList.add('active');
+      playMemoriaSequence();
+    }
+
+    function playMemoriaSequence() {
+      STATE.game.memoria.sequence.push(Math.floor(Math.random() * 3));
+      STATE.game.memoria.playerInput = [];
+      disableMemoriaButtons(true);
+
+      document.getElementById('memoria-level').textContent = STATE.game.memoria.level;
+      document.getElementById('memoria-phase').textContent = 'Observa...';
+
+      setTimeout(async () => {
+        for (let i = 0; i < STATE.game.memoria.sequence.length; i++) {
+          await new Promise(resolve => {
+            setTimeout(() => {
+              const btn = STATE.game.memoria.colorBtns[STATE.game.memoria.sequence[i]];
+              btn.classList.add('playing');
+              setTimeout(() => {
+                btn.classList.remove('playing');
+                resolve();
+              }, 500);
+            }, 800);
+          });
+        }
+        disableMemoriaButtons(false);
+        document.getElementById('memoria-phase').textContent = 'Tu turno...';
+      }, 1000);
+    }
+
+    function playerMemoriaClick(idx) {
+      STATE.game.memoria.playerInput.push(idx);
+      const btn = STATE.game.memoria.colorBtns[idx];
+      btn.classList.add('playing');
+      setTimeout(() => btn.classList.remove('playing'), 300);
+
+      if (idx !== STATE.game.memoria.sequence[STATE.game.memoria.playerInput.length - 1]) {
+        STATE.game.memoria.attemptsLeft--;
+        showToast('Incorrecto! Intentos: ' + STATE.game.memoria.attemptsLeft, 'error');
+
+        if (STATE.game.memoria.attemptsLeft <= 0) {
+          finishMemoria();
+          return;
+        }
+
+        disableMemoriaButtons(true);
+        setTimeout(() => playMemoriaSequence(), 1500);
+        return;
+      }
+
+      if (STATE.game.memoria.playerInput.length === STATE.game.memoria.sequence.length) {
+        STATE.game.memoria.level++;
+        STATE.game.score += { facil: 10, medio: 20, dificil: 30 }[STATE.session.difficulty];
+
+        if (STATE.game.memoria.level > STATE.game.memoria.maxLevels) {
+          showToast('¡Completaste todos los niveles!', 'success');
+          finishMemoria();
+          return;
+        }
+
+        disableMemoriaButtons(true);
+        setTimeout(() => playMemoriaSequence(), 1500);
+      }
+    }
+
+    function disableMemoriaButtons(disabled) {
+      STATE.game.memoria.colorBtns.forEach(btn => btn.style.pointerEvents = disabled ? 'none' : 'auto');
+    }
+
+    function finishMemoria() {
+      STATE.session.scores.memoria = STATE.game.score;
+      STATE.session.currentGameIdx++;
+      STATE.ui.nextRound();
+    }
+
+    // ===== VELOCIDAD VISUAL ===
+    function initVelocidadVisual() {
+      const difficulty = STATE.session.difficulty;
+      const configs = {
+        facil: { timerMax: 30, spawnMs: 1800, lifeMs: 3000, maxItems: 4 },
+        medio: { timerMax: 30, spawnMs: 1200, lifeMs: 2000, maxItems: 6 },
+        dificil: { timerMax: 30, spawnMs: 800, lifeMs: 1500, maxItems: 8 }
+      };
+      const config = configs[difficulty];
+
+      STATE.game.visual.timeLeft = config.timerMax;
+      STATE.game.visual.correct = 0;
+      STATE.game.visual.wrong = 0;
+      STATE.game.score = 0;
+      STATE.game.round = 0;
+
+      const targets = ['even', 'odd', 'red', 'blue'];
+      STATE.game.visual.target = targets[Math.floor(Math.random() * targets.length)];
+
+      const targetTexts = {
+        even: 'Toca los números PARES',
+        odd: 'Toca los números IMPARES',
+        red: 'Toca los números ROJOS',
+        blue: 'Toca los números AZULES'
+      };
+      document.getElementById('visual-target').textContent = targetTexts[STATE.game.visual.target];
+
+      document.getElementById('visual-game').classList.add('active');
+      startVisualGame(config);
+    }
+
+    function startVisualGame(config) {
+      clearInterval(STATE.game.visual.timerInterval);
+      clearInterval(STATE.game.visual.spawnInterval);
+
+      STATE.game.visual.timeLeft = config.timerMax;
+      updateVisualTimer(config);
+
+      STATE.game.visual.spawnInterval = setInterval(() => {
+        if (STATE.game.visual.items.length < config.maxItems) {
+          spawnVisualItem(config);
+        }
+      }, config.spawnMs);
+
+      STATE.game.visual.timerInterval = setInterval(() => {
+        STATE.game.visual.timeLeft--;
+        updateVisualTimer(config);
+        if (STATE.game.visual.timeLeft <= 0) {
+          finishVisual(config);
+        }
+      }, 1000);
+    }
+
+    function spawnVisualItem(config) {
+      const arena = document.getElementById('visual-arena');
+      const item = document.createElement('div');
+      const itemId = Date.now() + Math.random();
+      item.id = 'visual-' + itemId;
+      item.className = 'visual-item';
+
+      let content, isTarget;
+      const colors = ['#e74c3c', '#3498db'];
+      const color = colors[Math.floor(Math.random() * 2)];
+
+      if (STATE.game.visual.target === 'even') {
+        const num = getRandomInt(1, 10);
+        content = num;
+        isTarget = num % 2 === 0;
+      } else if (STATE.game.visual.target === 'odd') {
+        const num = getRandomInt(1, 10);
+        content = num;
+        isTarget = num % 2 === 1;
+      } else if (STATE.game.visual.target === 'red') {
+        content = '●';
+        isTarget = color === '#e74c3c';
+        item.style.color = color;
+      } else {
+        content = '●';
+        isTarget = color === '#3498db';
+        item.style.color = color;
+      }
+
+      item.textContent = content;
+      item.style.color = item.style.color || 'white';
+      item.style.left = Math.random() * (arena.clientWidth - 60) + 'px';
+      item.style.top = Math.random() * (arena.clientHeight - 60) + 'px';
+
+      item.onclick = (e) => {
+        e.stopPropagation();
+        if (isTarget) {
+          STATE.game.visual.correct++;
+          const basePts = { facil: 5, medio: 10, dificil: 15 }[STATE.session.difficulty];
+          STATE.game.score += basePts;
+          showToast('+' + basePts, 'success');
+        } else {
+          STATE.game.visual.wrong++;
+          const penalty = { facil: 1, medio: 2, dificil: 3 }[STATE.session.difficulty];
+          STATE.game.score = Math.max(0, STATE.game.score - penalty);
+          showToast('-' + penalty, 'error');
+        }
+        updateVisualScore();
+        removeVisualItem(itemId);
+      };
+
+      arena.appendChild(item);
+      STATE.game.visual.items.push({ id: itemId, isTarget });
+
+      setTimeout(() => {
+        removeVisualItem(itemId);
+      }, config.lifeMs);
+    }
+
+    function removeVisualItem(itemId) {
+      const el = document.getElementById('visual-' + itemId);
+      if (!el) return;
+      el.remove();
+      STATE.game.visual.items = STATE.game.visual.items.filter(i => i.id !== itemId);
+    }
+
+    function updateVisualScore() {
+      document.getElementById('visual-correct').textContent = STATE.game.visual.correct;
+      document.getElementById('visual-wrong').textContent = STATE.game.visual.wrong;
+      document.getElementById('visual-score').textContent = Math.max(0, STATE.game.score);
+    }
+
+    function updateVisualTimer(config) {
+      const pct = (STATE.game.visual.timeLeft / config.timerMax) * 100;
+      document.getElementById('visual-timer-bar').style.width = pct + '%';
+    }
+
+    function finishVisual(config) {
+      clearInterval(STATE.game.visual.timerInterval);
+      clearInterval(STATE.game.visual.spawnInterval);
+      document.getElementById('visual-arena').innerHTML = '';
+      STATE.session.scores.visual = STATE.game.score;
+      STATE.session.currentGameIdx++;
+      STATE.ui.nextRound();
+    }
+
+    // ========== INSTRUCTIONS ==========
+    function showInstructions(gameType) {
+      const instructions = {
+        suma: {
+          title: '🔢 Suma Rápida',
+          content: 'Resuelve las operaciones matemáticas lo más rápido posible.\n\n⏱️ Tienes un tiempo limitado para cada pregunta.\n\n💡 Ganas más puntos si respondes rápido.\n\n⭐ La dificultad afecta el tiempo y los puntos disponibles.'
+        },
+        memoria: {
+          title: '🎨 Memoria Secuencial',
+          content: 'Memoriza la secuencia de colores que aparecen.\n\n👀 Observa cuidadosamente cada color.\n\n📝 Repite la secuencia en el mismo orden.\n\n🎯 Cada nivel agrega un color más a la secuencia.\n\n⭐ Tienes un número limitado de intentos por nivel.'
+        },
+        visual: {
+          title: '👁️ Velocidad Visual',
+          content: 'Identifica y toca los elementos según la instrucción.\n\n⚡ Los elementos aparecen durante un tiempo limitado.\n\n✓ Toca los elementos correctos para ganar puntos.\n\n✗ Evita tocar los elementos incorrectos.\n\n⏱️ ¡Tienes 30 segundos para conseguir el máximo de puntos!'
+        }
+      };
+
+      const instr = instructions[gameType];
+      document.getElementById('instr-title').textContent = instr.title;
+      document.getElementById('instr-content').textContent = instr.content;
+      document.getElementById('instructions-screen').classList.add('active');
+    }
+
+    function closeInstructions() {
+      document.getElementById('instructions-screen').classList.remove('active');
+      STATE.ui.closeDifficulty();
+    }
+
+    function startCurrentGame() {
+      document.getElementById('instructions-screen').classList.remove('active');
+      initGame(STATE.game.type);
+    }
+
+    function initGame(type) {
+      hideAllGameScreens();
+      if (type === 'suma') {
+        initSuma();
+      } else if (type === 'memoria') {
+        initMemoria();
+      } else if (type === 'visual') {
+        initVelocidadVisual();
+      }
+
+      // Show confetti on score milestones
+      if (STATE.game.score % 100 === 0 && STATE.game.score > 0) {
+        createConfetti();
+      }
+    }
+
+    // ========== TAB NAVIGATION ==========
+    document.querySelectorAll('.tab-btn').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        showTab(e.target.dataset.tab);
+      });
+    });
+
+    // ========== INITIALIZATION ==========
+    window.addEventListener('load', () => {
+      loadStorage();
+      updateHomeStats();
+      updateHistory();
+    });
+
+    // Handle window resize for confetti
+    window.addEventListener('resize', () => {
+      const canvas = document.getElementById('confetti-canvas');
+      if (canvas) {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+      }
+    });
+  </script>
+</body>
+</html>
