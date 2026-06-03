@@ -1,7 +1,0 @@
-<?xml version='1.0' encoding='utf-8'?>
-<resources>
-    <string name="app_name">La Aventura Musical</string>
-    <string name="title_activity_main">La Aventura Musical</string>
-    <string name="package_name">com.capinimx.musica</string>
-    <string name="custom_url_scheme">com.capinimx.musica</string>
-</resources>
