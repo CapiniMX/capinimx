@@ -75,7 +75,15 @@
 
 ---
 
-## Cambios Técnicos Requeridos
+---
+
+## Estado: ✅ IMPLEMENTADO en v3.3/v3.4
+
+La octava grave C2 fue agregada exitosamente:
+- **Rango actual:** C2 → C5 (4 octavas, 28 teclas blancas)
+- **Commit:** `21b8034 v3.3: +1 octava grave (C2) = 4 octavas piano`
+- **Commit:** `24447be v3.4: 4 octavas piano (C2-C5) + fix octave-2 black keys rendering`
+- **min-width piano:** actualizado a 1700px (funcional en scroll horizontal móvil)
 
 ### 1. NOTES array
 Agregar 12 notas de Octava 2:
@@ -112,7 +120,9 @@ Aumentar `min-width` de 1050px a ~1400px
 
 ---
 
-## Alternativa: Si no se puede widen piano
+---
+
+*Investigación completada. Implementación activa en v3.4 (2026-06-03).*
 
 Si el piano de 4 octavas queda muy ancho para el diseño, alternativas:
 1. **Piano condensado:** Reducir width de teclas de 48px a 36px
