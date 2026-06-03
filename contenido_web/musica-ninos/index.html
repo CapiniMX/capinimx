@@ -39,7 +39,7 @@
     .piano-section { background: #0f3460; border-radius: 16px; padding: 10px; margin: 10px 0; }
     .piano-label { font-size: 0.8em; color: #aaa; text-align: center; margin-bottom: 8px; }
     .piano-wrap { overflow-x: auto; padding: 5px 0; -webkit-overflow-scrolling: touch; }
-    .piano { display: flex; position: relative; min-width: 1400px; height: 150px; }
+    .piano { display: flex; position: relative; min-width: 1700px; height: 150px; }
     
     .wk { width: 48px; height: 150px; background: white; border-radius: 0 0 5px 5px; border: 2px solid #bbb; display: flex; flex-direction: column; justify-content: flex-end; align-items: center; padding-bottom: 6px; transition: all 0.15s; cursor: pointer; margin-left: 2px; flex-shrink: 0; }
     .wk:hover { background: #f0f0f0; }
@@ -86,7 +86,7 @@
 
 <div class="header">
   <div style="font-size:1.6em;">🎹</div>
-  <h1>La Aventura Musical de Alexander <span class="version-badge">v3.2</span></h1>
+  <h1>La Aventura Musical de Alexander <span class="version-badge">v3.4</span></h1>
   <div style="font-size:0.75em;color:#aaa;margin-top:4px;">Alexander, 6 años · Aprende piano jugando</div>
 </div>
 
@@ -304,26 +304,35 @@ const LESSONS = {
   5: { title: '🎼 Lección 5: Tu Primera Melodía', desc: 'Combina notas para hacer canción', instruction: '¡Llegamos hasta la octava alta! Sigue cada nota', sequence: ['Do','Mi','Sol','Mi','Do','Re','Mi','Fa','Sol','La','Sol','Fa','Mi','Do','Sol','Sol','La','La','Sol','Fa','Mi','Re','Do','Do','Do'] }
 };
 
-// Black key positions for 2 octaves (left offset in piano container)
+// All natural notes (non-sharps) for piano rendering
+const NATURAL_NOTES = NOTES.filter(n => !n.isSharp);
+
+// Black key positions for all octaves (left offset in piano container)
 const BLACK_KEYS = [
+  // Octave 2 (lower - new with v3.4)
+  { eng: 'C#', left: 134, octave: 2 },
+  { eng: 'D#', left: 184, octave: 2 },
+  { eng: 'F#', left: 284, octave: 2 },
+  { eng: 'G#', left: 334, octave: 2 },
+  { eng: 'A#', left: 384, octave: 2 },
   // Octave 3
-  { eng: 'C#', left: 34 },
-  { eng: 'D#', left: 84 },
-  { eng: 'F#', left: 184 },
-  { eng: 'G#', left: 234 },
-  { eng: 'A#', left: 284 },
+  { eng: 'C#', left: 384, octave: 3 },
+  { eng: 'D#', left: 434, octave: 3 },
+  { eng: 'F#', left: 534, octave: 3 },
+  { eng: 'G#', left: 584, octave: 3 },
+  { eng: 'A#', left: 634, octave: 3 },
   // Octave 4
-  { eng: 'C#', left: 384 },
-  { eng: 'D#', left: 434 },
-  { eng: 'F#', left: 534 },
-  { eng: 'G#', left: 584 },
-  { eng: 'A#', left: 634 },
+  { eng: 'C#', left: 734, octave: 4 },
+  { eng: 'D#', left: 784, octave: 4 },
+  { eng: 'F#', left: 884, octave: 4 },
+  { eng: 'G#', left: 934, octave: 4 },
+  { eng: 'A#', left: 984, octave: 4 },
   // Octave 5
-  { eng: 'C#', left: 734 },
-  { eng: 'D#', left: 784 },
-  { eng: 'F#', left: 884 },
-  { eng: 'G#', left: 934 },
-  { eng: 'A#', left: 984 },
+  { eng: 'C#', left: 1134, octave: 5 },
+  { eng: 'D#', left: 1184, octave: 5 },
+  { eng: 'F#', left: 1284, octave: 5 },
+  { eng: 'G#', left: 1334, octave: 5 },
+  { eng: 'A#', left: 1384, octave: 5 },
 ];
 
 // Audio
@@ -364,7 +373,6 @@ function renderPiano() {
     if (!container) return;
     container.innerHTML = '';
     
-    // White keys - only natural notes (not sharps)
     const naturalNotes = NOTES.filter(n => !n.isSharp);
     naturalNotes.forEach((note, i) => {
       const wk = document.createElement('div');
@@ -375,9 +383,9 @@ function renderPiano() {
       container.appendChild(wk);
     });
     
-    // Black keys
+  // Black keys - all octaves
     BLACK_KEYS.forEach(bk => {
-      const note = NOTES.find(n => n.eng === bk.eng && n.isSharp);
+      const note = NOTES.find(n => n.eng === bk.eng && n.isSharp && n.octave === bk.octave);
       if (!note) return;
       const div = document.createElement('div');
       div.className = 'bk';
@@ -385,7 +393,7 @@ function renderPiano() {
       div.dataset.eng = bk.eng;
       div.style.left = bk.left + 'px';
       div.innerHTML = `<span class="kn">${bk.eng}</span>`;
-      div.onclick = () => { playNote(note.name); flashKey(container, i, true); showFeedback(`🎹 ${getName(note.name)}`); };
+      div.onclick = () => { playNote(note.name); flashKey(container, note.whiteIdx, true); showFeedback(`🎹 ${getName(note.name)}`); };
       container.appendChild(div);
     });
   });
@@ -403,15 +411,15 @@ function flashKey(container, idx, isSharp) {
   }
 }
 
-function lightKey(container, idx, isSharp) {
+function lightKey(container, natIdx, isSharp) {
   const wks = container.querySelectorAll('.wk');
   const bks = container.querySelectorAll('.bk');
   wks.forEach(w => w.classList.remove('lit'));
   bks.forEach(b => b.classList.remove('lit'));
   if (isSharp) {
-    if (bks[idx]) { bks[idx].classList.add('lit'); setTimeout(() => bks[idx].classList.remove('lit'), lessonSpeed - 50); }
+    if (bks[natIdx]) { bks[natIdx].classList.add('lit'); setTimeout(() => bks[natIdx].classList.remove('lit'), lessonSpeed - 50); }
   } else {
-    if (wks[idx]) { wks[idx].classList.add('lit'); setTimeout(() => wks[idx].classList.remove('lit'), lessonSpeed - 50); }
+    if (wks[natIdx]) { wks[natIdx].classList.add('lit'); setTimeout(() => wks[natIdx].classList.remove('lit'), lessonSpeed - 50); }
   }
 }
 
@@ -442,7 +450,7 @@ function updateNoteHint() {
     btn.className = 'note-hint-btn';
     btn.style.background = note.color;
     btn.textContent = getName(n);
-    btn.onclick = () => { playNote(n); const lp = document.getElementById('lessonPiano'); const natIdx = naturalNotes.findIndex(x => x.name === n); lightKey(lp, natIdx, false); };
+    btn.onclick = () => { playNote(n); const lp = document.getElementById('lessonPiano'); const note = NOTES.find(x => x.name === n); const natIdx = NATURAL_NOTES.findIndex(x => x.name === n); lightKey(lp, natIdx, note ? note.isSharp : false); };
     div.appendChild(btn);
   });
 }
@@ -489,11 +497,11 @@ function playOrComplete() {
     }
     const noteName = lesson.sequence[currentStep];
     playNote(noteName);
-    const natIdx = naturalNotes.findIndex(n => n.name === noteName);
-    const isSharp = !naturalNotes.some(n => n.name === noteName);
-    if (natIdx !== -1) {
+    const note = NOTES.find(n => n.name === noteName);
+    const natIdx = NATURAL_NOTES.findIndex(n => n.name === noteName);
+    if (note && natIdx !== -1) {
       const lp = document.getElementById('lessonPiano');
-      lightKey(lp, natIdx, false);
+      lightKey(lp, natIdx, note.isSharp);
     }
     currentStep++;
     const pct = (currentStep / lesson.sequence.length) * 100;
@@ -522,10 +530,11 @@ function repeatDemo() {
     if (i >= LESSONS[currentLesson].sequence.length) { isPlaying = false; return; }
     const n = LESSONS[currentLesson].sequence[i];
     playNote(n);
-    const natIdx = naturalNotes.findIndex(x => x.name === n);
+    const note = NOTES.find(x => x.name === n);
+    const natIdx = NATURAL_NOTES.findIndex(x => x.name === n);
     if (natIdx !== -1) {
       const lp = document.getElementById('lessonPiano');
-      lightKey(lp, natIdx, false);
+      lightKey(lp, natIdx, note ? note.isSharp : false);
     }
     i++;
     playTimer = setTimeout(next, lessonSpeed);
@@ -552,10 +561,11 @@ function playFreeDemo() {
   function next() {
     if (i >= demo.length) return;
     playNote(demo[i]);
-    const natIdx = naturalNotes.findIndex(x => x.name === demo[i]);
+    const note = NOTES.find(x => x.name === demo[i]);
+    const natIdx = NATURAL_NOTES.findIndex(x => x.name === demo[i]);
     if (natIdx !== -1) {
       const pd = document.getElementById('pianoDiv');
-      lightKey(pd, natIdx, false);
+      lightKey(pd, natIdx, note ? note.isSharp : false);
     }
     i++;
     setTimeout(next, 400);
@@ -584,10 +594,10 @@ document.addEventListener('keydown', e => {
   const note = NOTES.find(n => n.key === e.key.toLowerCase());
   if (note) { 
     playNote(note.name); 
-    const natIdx = naturalNotes.findIndex(n => n.name === note.name);
+    const natIdx = NATURAL_NOTES.findIndex(n => n.name === note.name);
     if (natIdx !== -1) {
       const containers = document.querySelectorAll('.piano');
-      containers.forEach(c => flashKey(c, natIdx, false));
+      containers.forEach(c => flashKey(c, natIdx, note.isSharp));
     }
     showFeedback(`🎹 ${getName(note.name)}`); 
   }
