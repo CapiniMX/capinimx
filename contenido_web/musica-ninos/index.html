@@ -38,8 +38,8 @@
     
     .piano-section { background: #0f3460; border-radius: 16px; padding: 10px; margin: 10px 0; }
     .piano-label { font-size: 0.8em; color: #aaa; text-align: center; margin-bottom: 8px; }
-    .piano-wrap { overflow-x: auto; padding: 5px 0; }
-    .piano { display: flex; position: relative; min-width: 600px; height: 150px; }
+    .piano-wrap { overflow-x: auto; padding: 5px 0; -webkit-overflow-scrolling: touch; }
+    .piano { display: flex; position: relative; min-width: 700px; height: 150px; }
     
     .wk { width: 48px; height: 150px; background: white; border-radius: 0 0 5px 5px; border: 2px solid #bbb; display: flex; flex-direction: column; justify-content: flex-end; align-items: center; padding-bottom: 6px; transition: all 0.15s; cursor: pointer; margin-left: 2px; flex-shrink: 0; }
     .wk:hover { background: #f0f0f0; }
@@ -86,7 +86,7 @@
 
 <div class="header">
   <div style="font-size:1.6em;">🎹</div>
-  <h1>La Aventura Musical de Alexander <span class="version-badge">v3.0</span></h1>
+  <h1>La Aventura Musical de Alexander <span class="version-badge">v3.1</span></h1>
   <div style="font-size:0.75em;color:#aaa;margin-top:4px;">Alexander, 6 años · Aprende piano jugando</div>
 </div>
 
@@ -94,9 +94,41 @@
   <button class="tab active" onclick="showTab('home')">🏠 Inicio</button>
   <button class="tab" onclick="showTab('lessons')">📚 Lecciones</button>
   <button class="tab" onclick="showTab('piano')">🎹 Piano</button>
+  <button class="tab" onclick="showTab('ear')">🎧 Oído</button>
 </div>
 
 <div class="content">
+  
+  <div id="ear" class="section">
+    <button class="back-btn" onclick="showTab('home')">← Inicio</button>
+    <div class="card">
+      <h2>🎧 Entrena tu Oído</h2>
+      <p>Escucha la nota y adivina cuál es</p>
+    </div>
+    <div class="info-box">
+      <h3>🔊 Cómo funciona</h3>
+      <p>Pulsa "Nueva" para escuchar una nota. Después selecciona cuál crees que es entre las opciones. ¡Entre más practiques, mejor escucharás!</p>
+    </div>
+    <div class="card">
+      <div class="name-mode-bar" style="margin-bottom:10px;">
+        <button class="name-mode-btn active" id="ear-mode-do" onclick="earSetMode('do')"><span>🎵</span> DO RE MI</button>
+        <button class="name-mode-btn" id="ear-mode-letter" onclick="earSetMode('letter')"><span>🔤</span> A B C</button>
+      </div>
+      <div id="earCadenceBtn" class="controls" style="margin-bottom:10px;">
+        <button class="secondary-btn" onclick="playEarCadence()">🔊 Escuchar Cadencia</button>
+        <button class="secondary-btn" onclick="earNewNote()">🎲 Nueva Nota</button>
+      </div>
+      <div id="earOptions" class="note-hint-row" style="margin:10px 0;"></div>
+      <div class="lesson-progress" style="margin-top:12px;">
+        <div class="lesson-progress-fill" id="earProgress" style="width:0%"></div>
+      </div>
+      <div class="lesson-status" id="earStatus">Aciertos: 0</div>
+      <div class="info-box" style="margin-top:10px;">
+        <h3>Nivel <span id="earLevel">1</span></h3>
+        <p id="earLevelDesc">4 notas: Do, Re, Mi, Sol</p>
+      </div>
+    </div>
+  </div>
   
   <div id="home" class="section active">
     <div class="card">
@@ -208,20 +240,34 @@ const NAME_MODES = {
 };
 let currentMode = 'do';
 
-// Notes - whiteIdx maps to position in the 7 white keys
+// Notes - 2 octaves (C3-B4)
 const NOTES = [
-  { name: 'Do', eng: 'C', freq: 261.63, color: '#e74c3c', key: 'a', whiteIdx: 0, isSharp: false },
-  { name: 'Do#', eng: 'C#', freq: 277.18, color: '#333', key: 'w', whiteIdx: 0, isSharp: true },
-  { name: 'Re', eng: 'D', freq: 293.66, color: '#e67e22', key: 's', whiteIdx: 1, isSharp: false },
-  { name: 'Re#', eng: 'D#', freq: 311.13, color: '#333', key: 'e', whiteIdx: 1, isSharp: true },
-  { name: 'Mi', eng: 'E', freq: 329.63, color: '#f1c40f', key: 'd', whiteIdx: 2, isSharp: false },
-  { name: 'Fa', eng: 'F', freq: 349.23, color: '#2ecc71', key: 'f', whiteIdx: 3, isSharp: false },
-  { name: 'Fa#', eng: 'F#', freq: 369.99, color: '#333', key: 't', whiteIdx: 3, isSharp: true },
-  { name: 'Sol', eng: 'G', freq: 392.00, color: '#3498db', key: 'g', whiteIdx: 4, isSharp: false },
-  { name: 'Sol#', eng: 'G#', freq: 415.30, color: '#333', key: 'y', whiteIdx: 4, isSharp: true },
-  { name: 'La', eng: 'A', freq: 440.00, color: '#9b59b6', key: 'h', whiteIdx: 5, isSharp: false },
-  { name: 'La#', eng: 'A#', freq: 466.16, color: '#333', key: 'u', whiteIdx: 5, isSharp: true },
-  { name: 'Si', eng: 'B', freq: 493.88, color: '#e91e63', key: 'j', whiteIdx: 6, isSharp: false },
+  // Octave 3 (lower)
+  { name: 'Do', eng: 'C', freq: 130.81, color: '#e74c3c', key: 'a', whiteIdx: 0, octave: 3, isSharp: false },
+  { name: 'Do#', eng: 'C#', freq: 138.59, color: '#333', key: 'w', whiteIdx: 0, octave: 3, isSharp: true },
+  { name: 'Re', eng: 'D', freq: 146.83, color: '#e67e22', key: 's', whiteIdx: 1, octave: 3, isSharp: false },
+  { name: 'Re#', eng: 'D#', freq: 155.56, color: '#333', key: 'e', whiteIdx: 1, octave: 3, isSharp: true },
+  { name: 'Mi', eng: 'E', freq: 164.81, color: '#f1c40f', key: 'd', whiteIdx: 2, octave: 3, isSharp: false },
+  { name: 'Fa', eng: 'F', freq: 174.61, color: '#2ecc71', key: 'f', whiteIdx: 3, octave: 3, isSharp: false },
+  { name: 'Fa#', eng: 'F#', freq: 185.00, color: '#333', key: 't', whiteIdx: 3, octave: 3, isSharp: true },
+  { name: 'Sol', eng: 'G', freq: 196.00, color: '#3498db', key: 'g', whiteIdx: 4, octave: 3, isSharp: false },
+  { name: 'Sol#', eng: 'G#', freq: 207.65, color: '#333', key: 'y', whiteIdx: 4, octave: 3, isSharp: true },
+  { name: 'La', eng: 'A', freq: 220.00, color: '#9b59b6', key: 'h', whiteIdx: 5, octave: 3, isSharp: false },
+  { name: 'La#', eng: 'A#', freq: 233.08, color: '#333', key: 'u', whiteIdx: 5, octave: 3, isSharp: true },
+  { name: 'Si', eng: 'B', freq: 246.94, color: '#e91e63', key: 'j', whiteIdx: 6, octave: 3, isSharp: false },
+  // Octave 4 (current)
+  { name: 'Do', eng: 'C', freq: 261.63, color: '#e74c3c', key: 'a', whiteIdx: 7, octave: 4, isSharp: false },
+  { name: 'Do#', eng: 'C#', freq: 277.18, color: '#333', key: 'w', whiteIdx: 7, octave: 4, isSharp: true },
+  { name: 'Re', eng: 'D', freq: 293.66, color: '#e67e22', key: 's', whiteIdx: 8, octave: 4, isSharp: false },
+  { name: 'Re#', eng: 'D#', freq: 311.13, color: '#333', key: 'e', whiteIdx: 8, octave: 4, isSharp: true },
+  { name: 'Mi', eng: 'E', freq: 329.63, color: '#f1c40f', key: 'd', whiteIdx: 9, octave: 4, isSharp: false },
+  { name: 'Fa', eng: 'F', freq: 349.23, color: '#2ecc71', key: 'f', whiteIdx: 10, octave: 4, isSharp: false },
+  { name: 'Fa#', eng: 'F#', freq: 369.99, color: '#333', key: 't', whiteIdx: 10, octave: 4, isSharp: true },
+  { name: 'Sol', eng: 'G', freq: 392.00, color: '#3498db', key: 'g', whiteIdx: 11, octave: 4, isSharp: false },
+  { name: 'Sol#', eng: 'G#', freq: 415.30, color: '#333', key: 'y', whiteIdx: 11, octave: 4, isSharp: true },
+  { name: 'La', eng: 'A', freq: 440.00, color: '#9b59b6', key: 'h', whiteIdx: 12, octave: 4, isSharp: false },
+  { name: 'La#', eng: 'A#', freq: 466.16, color: '#333', key: 'u', whiteIdx: 12, octave: 4, isSharp: true },
+  { name: 'Si', eng: 'B', freq: 493.88, color: '#e91e63', key: 'j', whiteIdx: 13, octave: 4, isSharp: false },
 ];
 
 const LESSONS = {
@@ -232,13 +278,20 @@ const LESSONS = {
   5: { title: '🎼 Lección 5: Tu Primera Melodía', desc: 'Combina notas para hacer canción', instruction: 'Sigue cada nota y crea tu primera canción', sequence: ['Do','Mi','Sol','Mi','Do','Re','Mi','Fa','Sol','La','Sol','Fa','Mi','Do'] }
 };
 
-// Black key positions (left offset in the piano container)
+// Black key positions for 2 octaves (left offset in piano container)
 const BLACK_KEYS = [
+  // Octave 3
   { eng: 'C#', left: 34 },
   { eng: 'D#', left: 84 },
   { eng: 'F#', left: 184 },
   { eng: 'G#', left: 234 },
   { eng: 'A#', left: 284 },
+  // Octave 4
+  { eng: 'C#', left: 384 },
+  { eng: 'D#', left: 434 },
+  { eng: 'F#', left: 534 },
+  { eng: 'G#', left: 584 },
+  { eng: 'A#', left: 634 },
 ];
 
 // Audio
@@ -291,10 +344,11 @@ function renderPiano() {
     
     // Black keys
     BLACK_KEYS.forEach(bk => {
-      const note = NOTES.find(n => n.eng === bk.eng);
+      const note = NOTES.find(n => n.eng === bk.eng && n.isSharp);
       if (!note) return;
       const div = document.createElement('div');
       div.className = 'bk';
+      div.dataset.eng = bk.eng;
       div.style.left = bk.left + 'px';
       div.innerHTML = `<span class="kn">${bk.eng}</span>`;
       div.onclick = () => { playNote(note.name); flashKey(container, note.whiteIdx, true); showFeedback(`🎹 ${getName(note.name)}`); };
@@ -309,18 +363,14 @@ function flashKey(container, whiteIdx, isSharp) {
   wks.forEach(w => w.classList.remove('lit'));
   bks.forEach(b => b.classList.remove('lit'));
   if (isSharp) {
-    // Find the black key at this position
-    const posMap = { 0: 0, 1: 1, 3: 2, 4: 3, 5: 4 };
-    const bkIdx = posMap[whiteIdx];
-    if (bkIdx !== undefined && bks[bkIdx]) {
-      bks[bkIdx].classList.add('lit');
-      setTimeout(() => bks[bkIdx].classList.remove('lit'), 400);
+    // Find black key by matching eng
+    const note = NOTES.find(n => n.whiteIdx === whiteIdx && n.isSharp);
+    if (note) {
+      const bk = container.querySelector(`.bk[data-eng="${note.eng}"]`);
+      if (bk) { bk.classList.add('lit'); setTimeout(() => bk.classList.remove('lit'), 400); }
     }
   } else {
-    if (wks[whiteIdx]) {
-      wks[whiteIdx].classList.add('lit');
-      setTimeout(() => wks[whiteIdx].classList.remove('lit'), 400);
-    }
+    if (wks[whiteIdx]) { wks[whiteIdx].classList.add('lit'); setTimeout(() => wks[whiteIdx].classList.remove('lit'), 400); }
   }
 }
 
@@ -330,17 +380,13 @@ function lightKey(container, whiteIdx, isSharp) {
   wks.forEach(w => w.classList.remove('lit'));
   bks.forEach(b => b.classList.remove('lit'));
   if (isSharp) {
-    const posMap = { 0: 0, 1: 1, 3: 2, 4: 3, 5: 4 };
-    const bkIdx = posMap[whiteIdx];
-    if (bkIdx !== undefined && bks[bkIdx]) {
-      bks[bkIdx].classList.add('lit');
-      setTimeout(() => bks[bkIdx].classList.remove('lit'), lessonSpeed - 50);
+    const note = NOTES.find(n => n.whiteIdx === whiteIdx && n.isSharp);
+    if (note) {
+      const bk = container.querySelector(`.bk[data-eng="${note.eng}"]`);
+      if (bk) { bk.classList.add('lit'); setTimeout(() => bk.classList.remove('lit'), lessonSpeed - 50); }
     }
   } else {
-    if (wks[whiteIdx]) {
-      wks[whiteIdx].classList.add('lit');
-      setTimeout(() => wks[whiteIdx].classList.remove('lit'), lessonSpeed - 50);
-    }
+    if (wks[whiteIdx]) { wks[whiteIdx].classList.add('lit'); setTimeout(() => wks[whiteIdx].classList.remove('lit'), lessonSpeed - 50); }
   }
 }
 
@@ -493,11 +539,12 @@ function playFreeDemo() {
 
 function showTab(name) {
   document.querySelectorAll('.tab').forEach((t,i) => {
-    t.classList.toggle('active', ['home','lessons','piano'][i] === name);
+    t.classList.toggle('active', ['home','lessons','piano','ear'][i] === name);
   });
   document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
   document.getElementById(name).classList.add('active');
   if (name === 'piano') setTimeout(renderPiano, 50);
+  if (name === 'ear') { renderEarOptions(); playEarCadence(); }
 }
 
 function showFeedback(text) {
@@ -517,9 +564,123 @@ document.addEventListener('keydown', e => {
   }
 });
 
+// Ear training (Functional Ear Trainer - Benbassat method)
+let earMode = 'do';
+let earLevel = 1;
+let earCorrect = 0;
+let earTotal = 0;
+let currentEarNote = null;
+
+const EAR_LEVELS = {
+  1: ['Do','Re','Mi','Sol'],
+  2: ['Do','Re','Mi','Sol','La'],
+  3: ['Do','Re','Mi','Fa','Sol','La','Si']
+};
+
+function earSetMode(mode) {
+  earMode = mode;
+  document.querySelectorAll('[id^="ear-mode-"]').forEach(b => b.classList.remove('active'));
+  const btn = document.getElementById('ear-mode-' + mode);
+  if (btn) btn.classList.add('active');
+  renderEarOptions();
+}
+
+function earGetName(name) {
+  const idx = NOTES.findIndex(n => n.name === name);
+  return NAME_MODES[earMode][idx] || name;
+}
+
+function playEarNote(name, duration = 0.5) {
+  initAudio();
+  if (!audioCtx) return;
+  try {
+    const osc = audioCtx.createOscillator();
+    const gain = audioCtx.createGain();
+    osc.connect(gain); gain.connect(audioCtx.destination);
+    const note = NOTES.find(n => n.name === name);
+    if (!note) return;
+    osc.frequency.value = note.freq;
+    osc.type = 'triangle';
+    gain.gain.setValueAtTime(0.5, audioCtx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + duration);
+    osc.start(); osc.stop(audioCtx.currentTime + duration);
+  } catch(e) {}
+}
+
+function playEarCadence() {
+  initAudio();
+  if (!audioCtx) return;
+  // I-IV-V-I cadence using notes Do, Fa, Sol, Do
+  const cadence = [
+    { name: 'Do', when: 0 },
+    { name: 'Fa', when: 500 },
+    { name: 'Sol', when: 1000 },
+    { name: 'Do', when: 1500 }
+  ];
+  cadence.forEach(c => {
+    setTimeout(() => playEarNote(c.name, 0.4), c.when);
+  });
+}
+
+function earNewNote() {
+  const notes = EAR_LEVELS[earLevel] || EAR_LEVELS[1];
+  const pick = notes[Math.floor(Math.random() * notes.length)];
+  currentEarNote = pick;
+  playEarNote(pick, 0.5);
+  showFeedback('🎧 Escucha...');
+  renderEarOptions();
+  // Auto-reset after 3s
+  setTimeout(() => {}, 3000);
+}
+
+function checkEarAnswer(name) {
+  if (!currentEarNote) return;
+  earTotal++;
+  if (name === currentEarNote) {
+    earCorrect++;
+    showFeedback('✅ ¡Correcto! ' + earGetName(name));
+    const pct = Math.round((earCorrect / earTotal) * 100);
+    document.getElementById('earProgress').style.width = pct + '%';
+    document.getElementById('earStatus').textContent = 'Aciertos: ' + earCorrect + '/' + earTotal;
+    // Level up check
+    if (earCorrect >= 5 && earLevel < 3) {
+      earLevel++;
+      earCorrect = 0;
+      document.getElementById('earLevel').textContent = earLevel;
+      document.getElementById('earLevelDesc').textContent = earLevel === 2 ? '5 notas: Do, Re, Mi, Sol, La' : '7 notas: escala completa';
+      showFeedback('🎉 ¡Subiste al nivel ' + earLevel + '!');
+    }
+  } else {
+    showFeedback('❌ Era ' + earGetName(currentEarNote));
+    earCorrect = Math.max(0, earCorrect - 1);
+    const pct = Math.round((earCorrect / earTotal) * 100);
+    document.getElementById('earProgress').style.width = pct + '%';
+    document.getElementById('earStatus').textContent = 'Aciertos: ' + earCorrect + '/' + earTotal;
+  }
+  setTimeout(earNewNote, 1500);
+}
+
+function renderEarOptions() {
+  const div = document.getElementById('earOptions');
+  if (!div) return;
+  div.innerHTML = '';
+  const notes = EAR_LEVELS[earLevel] || EAR_LEVELS[1];
+  notes.forEach(n => {
+    const note = NOTES.find(x => x.name === n);
+    if (!note) return;
+    const btn = document.createElement('button');
+    btn.className = 'note-hint-btn';
+    btn.style.background = note.color;
+    btn.textContent = earGetName(n);
+    btn.onclick = () => checkEarAnswer(n);
+    div.appendChild(btn);
+  });
+}
+
 // Init
 renderPiano();
 updateHome();
+renderEarOptions();
 </script>
 
 </body>
