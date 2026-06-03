@@ -77,7 +77,19 @@ La pestaña "🎧 Oído" ya tiene UNA VERSIÓN SIMPLIFICADA del método:
 
 ---
 
-## Mínimo Viable para Siguiente Iteración
+---
+
+## Estado: ✅ INVESTIGACIÓN COMPLETA
+
+El método Benbassat ya está PARCIALMENTE implementado en la pestaña "🎧 Oído":
+- Cadencia I-IV-V-I ✅
+- Niveles 1-3 progresivos ✅
+- Nueva nota aleatoria ✅
+- Reference melody ❌ (pendiente, enhancement futuro)
+
+**Siguiente mejora sugerida:** Agregar melodía de referencia de 3-4 notas del nivel actual antes de cada nota nueva.
+
+*Investigación completada 2026-06-03.*
 
 Para mejorar la pestaña "Oído" sin rebuild grande:
 
