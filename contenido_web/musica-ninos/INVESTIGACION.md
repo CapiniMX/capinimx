@@ -1,87 +1,101 @@
 # Investigación: Octavas del Piano
 
-## Estado Actual
+## Estado Actual (v3.6)
 
-**Rango:** 1 octava (C4-B4), 7 teclas blancas + 5 negras = 12 notas
-**Ancho piano:** min-width 600px
-**Teclas blancas:** 48px c/u + 2px margin = 350px por octava
-**Teclas negras:** posicionadas con `left` absoluto hardcodeado
+**Rango:** 5 octavas (C2-C6) — 60 notas totales
+**Ancho piano:** min-width 2100px
+**Teclas blancas:** 48px c/u + 2px margin
+**Scroll horizontal** necesario en móvil
 
-## Análisis: ¿Cuántas octavas agregar?
+### Distribución de octavas
+- Octava 2 (C2-B2): 12 notas — inferior extendida
+- Octava 3 (C3-B3): 12 notas — baja
+- Octava 4 (C4-B4): 12 notas — central (middle C)
+- Octava 5 (C5-B5): 12 notas — alta
+- Octava 6 (C6-B6): 12 notas — superior extendida
 
-### Opción A: +1 octava (2 octavas total)
-- **Feasible:** Sí, implementación simple
-- **Ancho total:** ~700px (scroll horizontal necesario en móvil)
-- **Beneficio:** Permite melodías más variadas, manos separadas
-- **UX Móvil:** Scroll horizontal con botones de navegación
+### Teclas blancas en piano: 28 (4 octavas naturales contadas doble + extras)
+- WhiteIdx: 0-27 para las 28 teclas blancas
 
-### Opción B: +2 octavas (3 octavas total)  
-- **Feasible:** Técnicamente sí, pero piano muy largo (~1050px)
-- **Beneficio extra:** Más rango melódico
-- **UX Móvil:** Más scroll, podría ser confuso para niños
+### Teclas negras: 20 (5 octavas × 5 teclas negras)
+- BLACK_KEYS[] hardcodeados con `left` en px para cada posición
 
-### Opción C: Toggle de octavas (botones ← →)
-- **Feasible:** Sí, mantiene UX limpia
-- **Visualización:** Solo 7 teclas visibles a la vez
-- **Ideal para:** Pantallas pequeñas, niños
+## Análisis UI/UX
 
-## Recomendación: Implementar Opción A + C combinadas
+### Problema identificado
+- Piano muy largo (2100px) — difícil navegación en móvil
+- Sin botones de navegación entre octavas
+- Todas las octavas visibles simultáneamente (sobrecarga visual para niños)
 
-- Renderizar 2 octavas (C3-B4)
-- Contenedor scroll horizontal
-- Botones de navegación lateral
-- En desktop se ven ambas octavas, en móvil scroll
+### Soluciones evaluadas
+1. **Botones ← →** para cambiar octava visible (mostrar ~1 octava a la vez)
+2. **Piano scrollable** con snap horizontal
+3. **Selector de octava** (desplegable)
 
-## Implementación Planificada (v3.1)
-
-1. Expandir NOTES[] para incluir 2da octava (C3-B3)
-2. Actualizar BLACK_KEYS[] con posiciones para octava inferior
-3. Hacer piano scrollable con min-width 900px
-4. Ajustar renderPiano() para soportar offset de octava
-5. Agregar botones de navegación ← → para cambiar octava visible
+### Recomendación
+Para la versión actual, mantener piano completo (2100px) con scroll horizontal nativo.
+Para versión futura: implementar botones de navegación con scroll animado.
 
 ---
 
 # Investigación: Functional Ear Trainer (Alain Benbassat)
 
-## Resumen del Método
+## Estado Implementado (v3.5/v3.6)
 
-### Filosofía
-Enseña reconocimiento **funcional** de notas (qué papel juegan en la tonalidad), no intervalos aislados. Como entender palabras en contexto vs. sonidos sueltos.
+### Lo que YA existe
+- Pestaña "🎧 Oído" con 3 niveles progresivos
+- Cadencia I-IV-V-I antes de cada nota (establece tónica)
+- Reference melody (3-4 notas del nivel antes de la nota a adivinar)
+- Opciones de botones con colores por nota
+- Level up automático después de 5 aciertos
+- Muestra nota correcta con color al fallar
 
-### Pasos Core
-1. **Cadencia inicial:** I-IV-V-I para establecer la tónica (Do)
-2. **Nota aleatoria:** Se toca una nota random de la escala
-3. **Identificar grado:** El usuario debe decir si es Do, Re, Mi, Fa, Sol, La, Ti
-4. **Resolución:** Después de adivinar, se toca una melodía que resuelve a la tónica
+### Lo que FALTA (parte del método Benbassat)
+- **Resolución melódica**: después de adivinar (correcto o incorrecto),
+  tocar una melodía corta que resuelve la nota a la tónica
+- Ejemplo: si la nota era Mi → resolver Mi-Re-Do
+- Ejemplo: si la nota era Fa → resolver Fa-Mi-Re-Do
 
-### Progresión de Niveles
-- **Nivel 1:** 4 notas (Do, Re, Mi, Sol) en C major
-- **Nivel 2:** 5 notas (agrega La)
-- **Nivel 3:** 7 notas (escala completa)
-- **Nivel 4:** Notas cromáticas
-- **Nivel 5:** Otras tonalidades mayores/menores
+## Método Completo de Benbassat
 
-### Mínimo Viable para "Oído" Tab
+### Paso 1: Cadencia (I-IV-V-I)
+Establece la tónica (Do) firmly. Plays Do-Fa-Sol-Do.
 
-**Sin rebuild grande,我们可以 agregar:**
+### Paso 2: Reference Melody (3-4 notas)
+Toca un fragmento melódico conocido del nivel actual.
+Esto pone la tónica en "memoria" auditivamente.
 
-1. **Nueva pestaña "🎧 Oído"** en el piano
-2. **Cadencia automática** (I-IV-V-I con Web Audio)
-3. **4 botones:** Do, Re, Mi, Sol (nivel 1 del método)
-4. **Lógica simple:**
-   - Tocar cadencia
-   - Tocar 1 nota random
-   - Usuario selecciona una de 4 opciones
-   - Feedbackvisual + audio
-5. **Progresión:** después de 5 aciertos, agregar La (5 notas)
+### Paso 3: Nota a adivinar
+Se toca una nota random del nivel.
 
-### Por qué funciona para niños
-- Solo 4 opciones al inicio (no abrumador)
-- Cadencia hace el contexto claro
-- Patrón Do-Re-Mi es intuitivo
-- 10 minutos diarios recomendados
+### Paso 4: Resolución (LO QUE FALTA)
+Después de la respuesta del usuario, se toca la resolución melódica:
+- Nota → dirección hacia Do → llegan a Do
+
+**Resoluciones estándar:**
+| Nota | Resolución a Do |
+|------|-----------------|
+| Mi (3) | Mi → Re → Do |
+| Fa (4) | Fa → Mi → Re → Do |
+| Sol (5) | Sol → Fa → Mi → Re → Do |
+| La (6) | La → Sol → Fa → Mi → Re → Do |
+| Ti (7) | Ti → Do (directo) |
+
+**Regla general:** la resolución desciende por semitonos hasta llegar a Do.
+
+### Progresión de Niveles Implementada
+- Nivel 1: 4 notas (Do, Re, Mi, Sol)
+- Nivel 2: 5 notas (+La)
+- Nivel 3: 7 notas (escala completa Do-Si)
+
+### Mínimo Viable: Resolución Melódica
+
+Para agregar la resolución, se necesita:
+1. Función `playResolution(noteName)` que construya la secuencia de resolución
+2. Llamar esta función después de `checkEarAnswer()` en ambos casos (correcto/incorrecto)
+3. Secuencias predefinidas para cada nota
 
 ## Referencias
 - https://www.functionalear.com (método original)
-- Alain Benbassat - "Why We Hear What We Hear" (teoría)
+- Alain Benbassat - teaching functional ear training
+- Serhii Korchan's implementation (Bemol app)

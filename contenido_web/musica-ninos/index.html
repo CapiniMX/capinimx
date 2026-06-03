@@ -86,7 +86,7 @@
 
 <div class="header">
   <div style="font-size:1.6em;">🎹</div>
-  <h1>La Aventura Musical de Alexander <span class="version-badge">v3.6</span></h1>
+  <h1>La Aventura Musical de Alexander <span class="version-badge">v3.7</span></h1>
   <div style="font-size:0.75em;color:#aaa;margin-top:4px;">Alexander, 6 años · Aprende piano jugando</div>
 </div>
 
@@ -107,7 +107,7 @@
     </div>
     <div class="info-box">
       <h3>🔊 Cómo funciona</h3>
-      <p>Pulsa "Nueva" para escuchar una nota. Después selecciona cuál crees que es entre las opciones. ¡Entre más practiques, mejor escucharás!</p>
+      <p>Pulsa "Nueva" para escuchar una nota. Después selecciona cuál crees que es. ¡Entre más practiques, mejor escucharás!<br><small style="color:#888">Después de cada nota escuchas la resolución → Do</small></p>
     </div>
     <div class="card">
       <div class="name-mode-bar" style="margin-bottom:10px;">
@@ -665,6 +665,31 @@ function playEarNote(name, duration = 0.5) {
   } catch(e) {}
 }
 
+// Resolución melódica - clave del método Benbassat
+// Después de cada nota, toca una secuencia que resuelve a la tónica (Do)
+const RESOLUTIONS = {
+  'Do': [], // Do ya es la tónica, no necesita resolución
+  'Re': ['Re','Do'],
+  'Mi': ['Mi','Re','Do'],
+  'Fa': ['Fa','Mi','Re','Do'],
+  'Sol': ['Sol','Fa','Mi','Re','Do'],
+  'La': ['La','Sol','Fa','Mi','Re','Do'],
+  'Si': ['Si','Do'] // Ti resuelve directo a Do (semitono)
+};
+
+function playResolution(noteName) {
+  const seq = RESOLUTIONS[noteName];
+  if (!seq || seq.length === 0) return;
+  let delay = 0;
+  seq.forEach((n, i) => {
+    setTimeout(() => {
+      playEarNote(n, 0.35);
+      showFeedback('→ ' + earGetName(n));
+    }, delay);
+    delay += 400;
+  });
+}
+
 function playEarCadence() {
   initAudio();
   if (!audioCtx) return;
@@ -710,6 +735,7 @@ function checkEarAnswer(name) {
   if (name === currentEarNote) {
     earCorrect++;
     showFeedback('✅ ¡Correcto! ' + earGetName(name));
+    playResolution(name); // Resolver a la tónica
     const pct = Math.round((earCorrect / earTotal) * 100);
     document.getElementById('earProgress').style.width = pct + '%';
     document.getElementById('earStatus').textContent = 'Aciertos: ' + earCorrect + '/' + earTotal;
@@ -726,6 +752,7 @@ function checkEarAnswer(name) {
     const note = NOTES.find(n => n.name === currentEarNote);
     const colorBox = note ? `<span style="background:${note.color};padding:2px 6px;border-radius:8px;">${earGetName(currentEarNote)}</span>` : earGetName(currentEarNote);
     showFeedback('❌ Era ' + colorBox);
+    playResolution(currentEarNote); // Resolver a la tónica
     earCorrect = Math.max(0, earCorrect - 1);
     const pct = Math.round((earCorrect / earTotal) * 100);
     document.getElementById('earProgress').style.width = pct + '%';
