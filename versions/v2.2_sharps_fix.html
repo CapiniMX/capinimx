@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>🎹 La Aventura Musical v2.1 🎹</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Nunito', 'Segoe UI', sans-serif; background: #1a1a2e; min-height: 100vh; color: white; overflow-x: hidden; }
+    
+    .header { background: linear-gradient(135deg, #e94560, #0f3460); text-align: center; padding: 10px; border-radius: 0 0 20px 20px; }
+    .header h1 { font-size: 1.2em; margin-bottom: 2px; }
+    
+    .tabs { display: flex; justify-content: center; gap: 5px; padding: 10px; flex-wrap: wrap; }
+    .tab { padding: 7px 12px; border-radius: 15px; border: none; cursor: pointer; font-size: 0.8em; font-weight: bold; }
+    .tab.active { background: #e94560; color: white; }
+    .tab:not(.active) { background: #16213e; color: #eee; }
+    
+    .content { max-width: 900px; margin: 0 auto; padding: 8px 10px 90px; }
+    .section { display: none; }
+    .section.active { display: block; }
+    
+    .card { background: #16213e; border-radius: 16px; padding: 14px; margin-bottom: 10px; text-align: center; }
+    .card h2 { color: #e94560; margin-bottom: 6px; font-size: 1em; }
+    .card p { color: #aaa; font-size: 0.85em; }
+    
+    .lesson-btn { display: block; width: 100%; padding: 12px; margin: 6px 0; background: linear-gradient(135deg, #e94560, #c73e54); border: none; border-radius: 12px; color: white; font-size: 0.95em; font-weight: bold; cursor: pointer; text-align: left; }
+    .lesson-btn .emoji { font-size: 1.3em; margin-right: 8px; }
+    .lesson-btn .title { display: block; }
+    .lesson-btn .desc { display: block; font-size: 0.7em; opacity: 0.8; margin-top: 2px; }
+    
+    .back-btn { background: #333; color: white; border: none; border-radius: 10px; padding: 7px 14px; font-size: 0.8em; cursor: pointer; margin-bottom: 10px; }
+    
+    .name-mode-bar { display: flex; justify-content: center; gap: 6px; padding: 8px; background: #0f3460; border-radius: 12px; margin: 8px 0; flex-wrap: wrap; }
+    .name-mode-btn { padding: 6px 12px; border-radius: 10px; border: 2px solid transparent; font-size: 0.8em; cursor: pointer; font-weight: bold; }
+    .name-mode-btn.active { border-color: #e94560; }
+    .name-mode-btn span { font-size: 1.1em; }
+    
+    .piano-section { background: #0f3460; border-radius: 16px; padding: 10px; margin: 10px 0; }
+    .piano-label { font-size: 0.8em; color: #aaa; text-align: center; margin-bottom: 8px; }
+    .piano-wrap { overflow-x: auto; padding: 5px 0; }
+    .piano { display: flex; position: relative; min-width: 600px; height: 150px; }
+    
+    .wk { width: 48px; height: 150px; background: white; border-radius: 0 0 5px 5px; border: 2px solid #bbb; display: flex; flex-direction: column; justify-content: flex-end; align-items: center; padding-bottom: 6px; transition: all 0.15s; cursor: pointer; margin-left: 2px; flex-shrink: 0; }
+    .wk:hover { background: #f0f0f0; }
+    .wk.lit { background: #ff6b6b; box-shadow: 0 0 20px rgba(255,107,107,0.7); }
+    .wk .kn { font-size: 0.6em; color: #444; font-weight: bold; }
+    .wk .ki { font-size: 0.45em; color: #999; }
+    
+    .bk { width: 30px; height: 95px; background: #222; border-radius: 0 0 4px 4px; position: absolute; top: 0; z-index: 2; display: flex; flex-direction: column; justify-content: flex-end; align-items: center; padding-bottom: 4px; cursor: pointer; }
+    .bk:hover { background: #333; }
+    .bk.lit { background: #ff6b6b; box-shadow: 0 0 15px rgba(255,107,107,0.7); }
+    .bk .kn { font-size: 0.5em; color: #888; font-weight: bold; }
+    
+    .controls { display: flex; justify-content: center; gap: 8px; margin: 10px 0; flex-wrap: wrap; }
+    .play-btn { background: #e94560; color: white; border: none; border-radius: 50%; width: 60px; height: 60px; font-size: 1.3em; cursor: pointer; transition: 0.3s; }
+    .play-btn:hover { transform: scale(1.08); }
+    .play-btn:disabled { background: #555; cursor: not-allowed; }
+    
+    .secondary-btn { background: #333; color: white; border: none; border-radius: 10px; padding: 8px 14px; font-size: 0.8em; cursor: pointer; }
+    .secondary-btn:hover { background: #444; }
+    
+    .speed-select { background: #333; color: white; border: none; border-radius: 8px; padding: 7px 10px; font-size: 0.8em; cursor: pointer; }
+    
+    .info-box { background: #0f3460; border-radius: 10px; padding: 10px; margin: 6px 0; text-align: center; }
+    .info-box h3 { color: #e94560; margin-bottom: 4px; font-size: 0.85em; }
+    .info-box p { font-size: 0.8em; color: #ccc; }
+    
+    .lesson-progress { background: #333; border-radius: 8px; height: 14px; margin: 8px 0; overflow: hidden; }
+    .lesson-progress-fill { background: linear-gradient(90deg, #e94560, #f39c12); height: 100%; border-radius: 8px; transition: 0.3s; }
+    .lesson-status { font-size: 0.8em; color: #888; margin-top: 4px; }
+    .lesson-instruction { font-size: 0.85em; color: #f39c12; margin: 6px 0; font-weight: bold; }
+    
+    .note-hint-row { display: flex; justify-content: center; gap: 5px; margin: 8px 0; flex-wrap: wrap; }
+    .note-hint-btn { padding: 5px 10px; border-radius: 15px; font-size: 0.8em; font-weight: bold; cursor: pointer; transition: 0.2s; }
+    .note-hint-btn:hover { transform: scale(1.1); }
+    
+    .feedback { position: fixed; bottom: 18px; left: 50%; transform: translateX(-50%); background: #e94560; color: white; padding: 9px 20px; border-radius: 22px; font-weight: bold; font-size: 0.95em; opacity: 0; transition: 0.3s; pointer-events: none; z-index: 100; }
+    .feedback.show { opacity: 1; }
+    .stars { font-size: 1.4em; margin: 4px 0; }
+    
+    .version-badge { font-size: 0.7em; background: #333; padding: 2px 8px; border-radius: 8px; margin-left: 5px; }
+  </style>
+</head>
+<body>
+
+<div class="header">
+  <div style="font-size:1.6em;">🎹</div>
+  <h1>La Aventura Musical de Alexander <span class="version-badge">v2.2</span></h1>
+  <div style="font-size:0.8em;color:#aaa;">¡Aprende piano jugando!</div>
+</div>
+
+<div class="tabs">
+  <button class="tab active" onclick="showTab('home')">🏠 Inicio</button>
+  <button class="tab" onclick="showTab('lessons')">📚 Lecciones</button>
+  <button class="tab" onclick="showTab('piano')">🎹 Piano</button>
+</div>
+
+<div class="content">
+  
+  <div id="home" class="section active">
+    <div class="card">
+      <h2>🎹 ¡Tu Piano Mágico!</h2>
+      <p>Toca las teclas y escucha la música</p>
+      <button class="play-btn" onclick="showTab('piano')">▶</button>
+    </div>
+    <div class="card">
+      <h2>📚 Lecciones</h2>
+      <p>Aprende nota por nota jugando</p>
+      <button class="play-btn" onclick="showTab('lessons')">📚</button>
+    </div>
+    <div class="card">
+      <h2>🏆 Tus Logros</h2>
+      <div class="stars" id="homeStars">—</div>
+      <p id="homeProgress">0 de 5 lecciones completadas</p>
+    </div>
+  </div>
+  
+  <div id="lessons" class="section">
+    <button class="back-btn" onclick="showTab('home')">← Inicio</button>
+    <button class="lesson-btn" onclick="startLesson(1)"><span class="emoji">🎵</span><span class="title">Lección 1: Las 7 Notas Mágicas</span><span class="desc">Aprende DO RE MI FA SOL LA SI</span></button>
+    <button class="lesson-btn" onclick="startLesson(2)"><span class="emoji">🖐️</span><span class="title">Lección 2: Tus Manos en el Piano</span><span class="desc">Sube y baja por las teclas</span></button>
+    <button class="lesson-btn" onclick="startLesson(3)"><span class="emoji">🎤</span><span class="title">Lección 3: "Do Re Mi" la canción</span><span class="desc">La más famosa del mundo</span></button>
+    <button class="lesson-btn" onclick="startLesson(4)"><span class="emoji">🌈</span><span class="title">Lección 4: El Arcoíris Musical</span><span class="desc">Los colores de las notas</span></button>
+    <button class="lesson-btn" onclick="startLesson(5)"><span class="emoji">🎼</span><span class="title">Lección 5: Tu Primera Melodía</span><span class="desc">Combina notas para hacer canción</span></button>
+  </div>
+  
+  <div id="lesson-player" class="section">
+    <button class="back-btn" onclick="exitLesson()">← Salir</button>
+    <div class="card">
+      <h2 id="lessonTitle">Lección 1</h2>
+      <p id="lessonDesc">Las 7 notas mágicas</p>
+      <p class="lesson-instruction" id="lessonInstruction"></p>
+      
+      <div class="name-mode-bar">
+        <button class="name-mode-btn active" id="mode-do" onclick="setMode('do')"><span>🎵</span> DO RE MI</button>
+        <button class="name-mode-btn" id="mode-letter" onclick="setMode('letter')"><span>🔤</span> A B C D</button>
+        <button class="name-mode-btn" id="mode-number" onclick="setMode('number')"><span>🔢</span> 1 2 3 4</button>
+      </div>
+      
+      <div class="note-hint-row" id="noteHint"></div>
+      
+      <div class="lesson-progress">
+        <div class="lesson-progress-fill" id="lessonProgress" style="width:0%"></div>
+      </div>
+      <div class="lesson-status" id="lessonStatus">Paso 0 de 0</div>
+      
+      <div class="controls">
+        <button class="secondary-btn" onclick="repeatDemo()">🔄 Repetir</button>
+        <button class="play-btn" id="playBtn" onclick="playOrComplete()">▶</button>
+        <select class="speed-select" id="speedSelect" onchange="lessonSpeed=parseInt(this.value)">
+          <option value="1000">🐢 Lento</option>
+          <option value="600" selected>🐇 Normal</option>
+          <option value="350">⚡ Rápido</option>
+        </select>
+      </div>
+    </div>
+    
+    <div class="piano-section">
+      <div class="piano-label">🎹 Observa las teclas que se iluminan</div>
+      <div class="piano-wrap">
+        <div class="piano" id="lessonPiano"></div>
+      </div>
+    </div>
+  </div>
+  
+  <div id="piano" class="section">
+    <button class="back-btn" onclick="showTab('home')">← Inicio</button>
+    
+    <div class="name-mode-bar">
+      <button class="name-mode-btn active" id="piano-mode-do" onclick="setMode('do');renderPiano()"><span>🎵</span> DO RE MI</button>
+      <button class="name-mode-btn" id="piano-mode-letter" onclick="setMode('letter');renderPiano()"><span>🔤</span> A B C D</button>
+      <button class="name-mode-btn" id="piano-mode-number" onclick="setMode('number');renderPiano()"><span>🔢</span> 1 2 3 4</button>
+    </div>
+    
+    <div class="card">
+      <h2>🎹 Piano Libre</h2>
+      <p>¡Toca libremente! Las teclas se iluminan al presionarlas</p>
+      <div class="piano-wrap">
+        <div class="piano" id="pianoDiv"></div>
+      </div>
+      <div class="controls">
+        <button class="secondary-btn" onclick="playFreeDemo()">🎶 Demostración</button>
+        <button class="secondary-btn" onclick="clearLights()">🧹 Limpiar</button>
+      </div>
+    </div>
+    
+    <div class="info-box">
+      <h3>⌨️ Teclado: A S D F G H J (blancas) W E T Y U (negras)</h3>
+    </div>
+  </div>
+  
+</div>
+
+<div class="feedback" id="feedback"></div>
+
+<script>
+// Name modes - includes sharps for all 12 notes
+const NAME_MODES = {
+  do: ['Do','Do#','Re','Re#','Mi','Fa','Fa#','Sol','Sol#','La','La#','Si'],
+  letter: ['C','C#','D','D#','E','F','F#','G','G#','A','A#','B'],
+  number: ['1','2','3','4','5','6','7']
+};
+let currentMode = 'do';
+
+// Notes - whiteIdx maps to position in the 7 white keys
+const NOTES = [
+  { name: 'Do', eng: 'C', freq: 261.63, color: '#e74c3c', key: 'a', whiteIdx: 0, isSharp: false },
+  { name: 'Do#', eng: 'C#', freq: 277.18, color: '#333', key: 'w', whiteIdx: 0, isSharp: true },
+  { name: 'Re', eng: 'D', freq: 293.66, color: '#e67e22', key: 's', whiteIdx: 1, isSharp: false },
+  { name: 'Re#', eng: 'D#', freq: 311.13, color: '#333', key: 'e', whiteIdx: 1, isSharp: true },
+  { name: 'Mi', eng: 'E', freq: 329.63, color: '#f1c40f', key: 'd', whiteIdx: 2, isSharp: false },
+  { name: 'Fa', eng: 'F', freq: 349.23, color: '#2ecc71', key: 'f', whiteIdx: 3, isSharp: false },
+  { name: 'Fa#', eng: 'F#', freq: 369.99, color: '#333', key: 't', whiteIdx: 3, isSharp: true },
+  { name: 'Sol', eng: 'G', freq: 392.00, color: '#3498db', key: 'g', whiteIdx: 4, isSharp: false },
+  { name: 'Sol#', eng: 'G#', freq: 415.30, color: '#333', key: 'y', whiteIdx: 4, isSharp: true },
+  { name: 'La', eng: 'A', freq: 440.00, color: '#9b59b6', key: 'h', whiteIdx: 5, isSharp: false },
+  { name: 'La#', eng: 'A#', freq: 466.16, color: '#333', key: 'u', whiteIdx: 5, isSharp: true },
+  { name: 'Si', eng: 'B', freq: 493.88, color: '#e91e63', key: 'j', whiteIdx: 6, isSharp: false },
+];
+
+const LESSONS = {
+  1: { title: '🎵 Lección 1: Las 7 Notas Mágicas', desc: 'Cada nota tiene su nombre', instruction: 'Dale ▶ para ver las notas en el piano', sequence: ['Do','Re','Mi','Fa','Sol','La','Si'] },
+  2: { title: '🖐️ Lección 2: Tus Manos en el Piano', desc: 'Sube y baja como escalera', instruction: 'Sigue la secuencia derecha a izquierda', sequence: ['Do','Re','Mi','Fa','Sol','La','Si','La','Sol','Fa','Mi','Re','Do'] },
+  3: { title: '🎤 Lección 3: "Do Re Mi" la canción', desc: 'La canción más famosa', instruction: '¡Esta canción la cantan en películas!', sequence: ['Do','Do','Re','Re','Mi','Mi','Do','Do','La','La','Sol','Sol','Fa','Fa','Mi','Mi','Re','Re','Do'] },
+  4: { title: '🌈 Lección 4: El Arcoíris Musical', desc: 'Los colores de las notas', instruction: 'Mira el piano iluminarse como arcoíris', sequence: ['Do','Re','Mi','Fa','Sol','La','Si','Sol','Fa','Mi','Re','Do'] },
+  5: { title: '🎼 Lección 5: Tu Primera Melodía', desc: 'Combina notas para hacer canción', instruction: 'Sigue cada nota y crea tu primera canción', sequence: ['Do','Mi','Sol','Mi','Do','Re','Mi','Fa','Sol','La','Sol','Fa','Mi','Do'] }
+};
+
+// Black key positions (left offset in the piano container)
+const BLACK_KEYS = [
+  { eng: 'C#', left: 34 },
+  { eng: 'D#', left: 84 },
+  { eng: 'F#', left: 184 },
+  { eng: 'G#', left: 234 },
+  { eng: 'A#', left: 284 },
+];
+
+// Audio
+let audioCtx = null;
+function initAudio() {
+  try {
+    if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    if (audioCtx.state === 'suspended') audioCtx.resume();
+  } catch(e) { audioCtx = null; }
+}
+
+function playNote(name) {
+  const note = NOTES.find(n => n.name === name);
+  if (!note) return;
+  initAudio();
+  if (!audioCtx) return;
+  try {
+    const osc = audioCtx.createOscillator();
+    const gain = audioCtx.createGain();
+    osc.connect(gain); gain.connect(audioCtx.destination);
+    osc.frequency.value = note.freq;
+    osc.type = 'triangle';
+    gain.gain.setValueAtTime(0.5, audioCtx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.35);
+    osc.start(); osc.stop(audioCtx.currentTime + 0.35);
+  } catch(e) {}
+}
+
+function getName(name) {
+  const idx = NOTES.findIndex(n => n.name === name);
+  return NAME_MODES[currentMode][idx] || name;
+}
+
+// Render piano in a container
+function renderPiano() {
+  ['lessonPiano','pianoDiv'].forEach(id => {
+    const container = document.getElementById(id);
+    if (!container) return;
+    container.innerHTML = '';
+    
+    // White keys - only natural notes (not sharps)
+    const naturalNotes = NOTES.filter(n => !n.isSharp);
+    naturalNotes.forEach((note, i) => {
+      const wk = document.createElement('div');
+      wk.className = 'wk';
+      wk.innerHTML = `<span class="kn">${getName(note.name)}</span><span class="ki">${i+1}</span>`;
+      wk.onclick = () => { playNote(note.name); flashKey(container, note.whiteIdx, false); showFeedback(`🎹 ${getName(note.name)}`); };
+      container.appendChild(wk);
+    });
+    
+    // Black keys
+    BLACK_KEYS.forEach(bk => {
+      const note = NOTES.find(n => n.eng === bk.eng);
+      if (!note) return;
+      const div = document.createElement('div');
+      div.className = 'bk';
+      div.style.left = bk.left + 'px';
+      div.innerHTML = `<span class="kn">${bk.eng}</span>`;
+      div.onclick = () => { playNote(note.name); flashKey(container, note.whiteIdx, true); showFeedback(`🎹 ${getName(note.name)}`); };
+      container.appendChild(div);
+    });
+  });
+}
+
+function flashKey(container, whiteIdx, isSharp) {
+  const wks = container.querySelectorAll('.wk');
+  const bks = container.querySelectorAll('.bk');
+  wks.forEach(w => w.classList.remove('lit'));
+  bks.forEach(b => b.classList.remove('lit'));
+  if (isSharp) {
+    // Find the black key at this position
+    const posMap = { 0: 0, 1: 1, 3: 2, 4: 3, 5: 4 };
+    const bkIdx = posMap[whiteIdx];
+    if (bkIdx !== undefined && bks[bkIdx]) {
+      bks[bkIdx].classList.add('lit');
+      setTimeout(() => bks[bkIdx].classList.remove('lit'), 400);
+    }
+  } else {
+    if (wks[whiteIdx]) {
+      wks[whiteIdx].classList.add('lit');
+      setTimeout(() => wks[whiteIdx].classList.remove('lit'), 400);
+    }
+  }
+}
+
+function lightKey(container, whiteIdx, isSharp) {
+  const wks = container.querySelectorAll('.wk');
+  const bks = container.querySelectorAll('.bk');
+  wks.forEach(w => w.classList.remove('lit'));
+  bks.forEach(b => b.classList.remove('lit'));
+  if (isSharp) {
+    const posMap = { 0: 0, 1: 1, 3: 2, 4: 3, 5: 4 };
+    const bkIdx = posMap[whiteIdx];
+    if (bkIdx !== undefined && bks[bkIdx]) {
+      bks[bkIdx].classList.add('lit');
+      setTimeout(() => bks[bkIdx].classList.remove('lit'), lessonSpeed - 50);
+    }
+  } else {
+    if (wks[whiteIdx]) {
+      wks[whiteIdx].classList.add('lit');
+      setTimeout(() => wks[whiteIdx].classList.remove('lit'), lessonSpeed - 50);
+    }
+  }
+}
+
+function clearLights() {
+  document.querySelectorAll('.lit').forEach(k => k.classList.remove('lit'));
+}
+
+// Mode change
+function setMode(mode) {
+  currentMode = mode;
+  document.querySelectorAll('.name-mode-btn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll(`[id$="mode-${mode}"], [id^="mode-${mode}"]`).forEach(b => b.classList.add('active'));
+  renderPiano();
+  updateNoteHint();
+}
+
+// Note hints
+function updateNoteHint() {
+  const div = document.getElementById('noteHint');
+  if (!div) return;
+  div.innerHTML = '';
+  const lesson = LESSONS[currentLesson];
+  if (!lesson) return;
+  lesson.sequence.forEach(n => {
+    const note = NOTES.find(x => x.name === n);
+    if (!note) return;
+    const btn = document.createElement('button');
+    btn.className = 'note-hint-btn';
+    btn.style.background = note.color;
+    btn.textContent = getName(n);
+    btn.onclick = () => { playNote(n); const lp = document.getElementById('lessonPiano'); const note = NOTES.find(x => x.name === n); lightKey(lp, note.whiteIdx, note.isSharp); };
+    div.appendChild(btn);
+  });
+}
+
+// Lesson system
+let currentLesson = 1;
+let currentStep = 0;
+let lessonSpeed = 600;
+let isPlaying = false;
+let playTimer = null;
+let lessonCompleted = JSON.parse(localStorage.getItem('music_v2_1') || '{}');
+
+function startLesson(num) {
+  if (playTimer) { clearTimeout(playTimer); playTimer = null; }
+  currentLesson = num;
+  currentStep = 0;
+  isPlaying = false;
+  const lesson = LESSONS[num];
+  document.getElementById('lessonTitle').textContent = lesson.title;
+  document.getElementById('lessonDesc').textContent = lesson.desc;
+  document.getElementById('lessonInstruction').textContent = lesson.instruction;
+  document.getElementById('lessonProgress').style.width = '0%';
+  document.getElementById('lessonStatus').textContent = `Paso 0 de ${lesson.sequence.length}`;
+  document.getElementById('playBtn').textContent = '▶';
+  renderPiano();
+  updateNoteHint();
+  showTab('lesson-player');
+}
+
+function playOrComplete() {
+  if (isPlaying) return;
+  const lesson = LESSONS[currentLesson];
+  if (currentStep >= lesson.sequence.length) {
+    completeLesson(); return;
+  }
+  isPlaying = true;
+  document.getElementById('playBtn').textContent = '⏸';
+  
+  function nextStep() {
+    if (!isPlaying || currentStep >= lesson.sequence.length) {
+      isPlaying = false;
+      document.getElementById('playBtn').textContent = '▶';
+      return;
+    }
+    const noteName = lesson.sequence[currentStep];
+    playNote(noteName);
+    const note = NOTES.find(n => n.name === noteName);
+    if (note) {
+      const lp = document.getElementById('lessonPiano');
+      lightKey(lp, note.whiteIdx, note.isSharp);
+    }
+    currentStep++;
+    const pct = (currentStep / lesson.sequence.length) * 100;
+    document.getElementById('lessonProgress').style.width = pct + '%';
+    document.getElementById('lessonStatus').textContent = `Paso ${currentStep} de ${lesson.sequence.length}`;
+    playTimer = setTimeout(nextStep, lessonSpeed);
+  }
+  nextStep();
+}
+
+function completeLesson() {
+  if (playTimer) { clearTimeout(playTimer); playTimer = null; }
+  isPlaying = false;
+  lessonCompleted[currentLesson] = true;
+  localStorage.setItem('music_v2_1', JSON.stringify(lessonCompleted));
+  showFeedback('🎉 ¡Lección completada! ⭐');
+  document.getElementById('playBtn').textContent = '✅';
+  updateHome();
+}
+
+function repeatDemo() {
+  if (playTimer) { clearTimeout(playTimer); playTimer = null; }
+  isPlaying = true;
+  let i = 0;
+  function next() {
+    if (i >= LESSONS[currentLesson].sequence.length) { isPlaying = false; return; }
+    const n = LESSONS[currentLesson].sequence[i];
+    playNote(n);
+    const note = NOTES.find(x => x.name === n);
+    if (note) {
+      const lp = document.getElementById('lessonPiano');
+      lightKey(lp, note.whiteIdx);
+    }
+    i++;
+    playTimer = setTimeout(next, lessonSpeed);
+  }
+  next();
+}
+
+function exitLesson() {
+  if (playTimer) { clearTimeout(playTimer); playTimer = null; }
+  isPlaying = false;
+  showTab('lessons');
+  updateHome();
+}
+
+function updateHome() {
+  const count = Object.keys(lessonCompleted).length;
+  document.getElementById('homeProgress').textContent = `${count} de 5 lecciones completadas`;
+  document.getElementById('homeStars').textContent = '⭐'.repeat(count) || '—';
+}
+
+function playFreeDemo() {
+  const demo = ['Do','Mi','Sol','Mi','Do','Re','Mi','Fa','Sol','La','Sol','Fa','Mi','Do'];
+  let i = 0;
+  function next() {
+    if (i >= demo.length) return;
+    playNote(demo[i]);
+    const note = NOTES.find(x => x.name === demo[i]);
+    if (note) {
+      const pd = document.getElementById('pianoDiv');
+      lightKey(pd, note.whiteIdx, note.isSharp);
+    }
+    i++;
+    setTimeout(next, 400);
+  }
+  next();
+}
+
+function showTab(name) {
+  document.querySelectorAll('.tab').forEach((t,i) => {
+    t.classList.toggle('active', ['home','lessons','piano'][i] === name);
+  });
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.getElementById(name).classList.add('active');
+  if (name === 'piano') setTimeout(renderPiano, 50);
+}
+
+function showFeedback(text) {
+  const fb = document.getElementById('feedback');
+  fb.textContent = text; fb.classList.add('show');
+  setTimeout(() => fb.classList.remove('show'), 2000);
+}
+
+// Keyboard - includes sharps W E T Y U for black keys
+document.addEventListener('keydown', e => {
+  const note = NOTES.find(n => n.key === e.key.toLowerCase());
+  if (note) { 
+    playNote(note.name); 
+    const containers = document.querySelectorAll('.piano');
+    containers.forEach(c => flashKey(c, note.whiteIdx, note.isSharp));
+    showFeedback(`🎹 ${getName(note.name)}`); 
+  }
+});
+
+// Init
+renderPiano();
+updateHome();
+</script>
+
+</body>
+</html>
