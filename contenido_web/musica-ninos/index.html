@@ -39,7 +39,7 @@
     .piano-section { background: #0f3460; border-radius: 16px; padding: 10px; margin: 10px 0; }
     .piano-label { font-size: 0.8em; color: #aaa; text-align: center; margin-bottom: 8px; }
     .piano-wrap { overflow-x: auto; padding: 5px 0; -webkit-overflow-scrolling: touch; }
-    .piano { display: flex; position: relative; min-width: 1050px; height: 150px; }
+    .piano { display: flex; position: relative; min-width: 1400px; height: 150px; }
     
     .wk { width: 48px; height: 150px; background: white; border-radius: 0 0 5px 5px; border: 2px solid #bbb; display: flex; flex-direction: column; justify-content: flex-end; align-items: center; padding-bottom: 6px; transition: all 0.15s; cursor: pointer; margin-left: 2px; flex-shrink: 0; }
     .wk:hover { background: #f0f0f0; }
@@ -86,7 +86,7 @@
 
 <div class="header">
   <div style="font-size:1.6em;">🎹</div>
-  <h1>La Aventura Musical de Alexander <span class="version-badge">v3.1</span></h1>
+  <h1>La Aventura Musical de Alexander <span class="version-badge">v3.2</span></h1>
   <div style="font-size:0.75em;color:#aaa;margin-top:4px;">Alexander, 6 años · Aprende piano jugando</div>
 </div>
 
@@ -242,6 +242,19 @@ let currentMode = 'do';
 
 // Notes - 2 octaves (C3-B4)
 const NOTES = [
+  // Octave 2 (lower - added for extended range)
+  { name: 'Do', eng: 'C', freq: 65.41, color: '#e74c3c', key: '', whiteIdx: 0, octave: 2, isSharp: false },
+  { name: 'Do#', eng: 'C#', freq: 69.30, color: '#333', key: '', whiteIdx: 0, octave: 2, isSharp: true },
+  { name: 'Re', eng: 'D', freq: 73.42, color: '#e67e22', key: '', whiteIdx: 1, octave: 2, isSharp: false },
+  { name: 'Re#', eng: 'D#', freq: 77.78, color: '#333', key: '', whiteIdx: 1, octave: 2, isSharp: true },
+  { name: 'Mi', eng: 'E', freq: 82.41, color: '#f1c40f', key: '', whiteIdx: 2, octave: 2, isSharp: false },
+  { name: 'Fa', eng: 'F', freq: 87.31, color: '#2ecc71', key: '', whiteIdx: 3, octave: 2, isSharp: false },
+  { name: 'Fa#', eng: 'F#', freq: 92.50, color: '#333', key: '', whiteIdx: 3, octave: 2, isSharp: true },
+  { name: 'Sol', eng: 'G', freq: 98.00, color: '#3498db', key: '', whiteIdx: 4, octave: 2, isSharp: false },
+  { name: 'Sol#', eng: 'G#', freq: 103.83, color: '#333', key: '', whiteIdx: 4, octave: 2, isSharp: true },
+  { name: 'La', eng: 'A', freq: 110.00, color: '#9b59b6', key: '', whiteIdx: 5, octave: 2, isSharp: false },
+  { name: 'La#', eng: 'A#', freq: 116.54, color: '#333', key: '', whiteIdx: 5, octave: 2, isSharp: true },
+  { name: 'Si', eng: 'B', freq: 123.47, color: '#e91e63', key: '', whiteIdx: 6, octave: 2, isSharp: false },
   // Octave 3 (lower)
   { name: 'Do', eng: 'C', freq: 130.81, color: '#e74c3c', key: 'a', whiteIdx: 0, octave: 3, isSharp: false },
   { name: 'Do#', eng: 'C#', freq: 138.59, color: '#333', key: 'w', whiteIdx: 0, octave: 3, isSharp: true },
@@ -356,8 +369,9 @@ function renderPiano() {
     naturalNotes.forEach((note, i) => {
       const wk = document.createElement('div');
       wk.className = 'wk';
+      wk.dataset.noteName = note.name;
       wk.innerHTML = `<span class="kn">${getName(note.name)}</span><span class="ki">${i+1}</span>`;
-      wk.onclick = () => { playNote(note.name); flashKey(container, note.whiteIdx, false); showFeedback(`🎹 ${getName(note.name)}`); };
+      wk.onclick = () => { playNote(note.name); flashKey(container, i, false); showFeedback(`🎹 ${getName(note.name)}`); };
       container.appendChild(wk);
     });
     
@@ -367,45 +381,37 @@ function renderPiano() {
       if (!note) return;
       const div = document.createElement('div');
       div.className = 'bk';
+      div.dataset.noteName = note.name;
       div.dataset.eng = bk.eng;
       div.style.left = bk.left + 'px';
       div.innerHTML = `<span class="kn">${bk.eng}</span>`;
-      div.onclick = () => { playNote(note.name); flashKey(container, note.whiteIdx, true); showFeedback(`🎹 ${getName(note.name)}`); };
+      div.onclick = () => { playNote(note.name); flashKey(container, i, true); showFeedback(`🎹 ${getName(note.name)}`); };
       container.appendChild(div);
     });
   });
 }
 
-function flashKey(container, whiteIdx, isSharp) {
+function flashKey(container, idx, isSharp) {
   const wks = container.querySelectorAll('.wk');
   const bks = container.querySelectorAll('.bk');
   wks.forEach(w => w.classList.remove('lit'));
   bks.forEach(b => b.classList.remove('lit'));
   if (isSharp) {
-    // Find black key by matching eng
-    const note = NOTES.find(n => n.whiteIdx === whiteIdx && n.isSharp);
-    if (note) {
-      const bk = container.querySelector(`.bk[data-eng="${note.eng}"]`);
-      if (bk) { bk.classList.add('lit'); setTimeout(() => bk.classList.remove('lit'), 400); }
-    }
+    if (bks[idx]) { bks[idx].classList.add('lit'); setTimeout(() => bks[idx].classList.remove('lit'), 400); }
   } else {
-    if (wks[whiteIdx]) { wks[whiteIdx].classList.add('lit'); setTimeout(() => wks[whiteIdx].classList.remove('lit'), 400); }
+    if (wks[idx]) { wks[idx].classList.add('lit'); setTimeout(() => wks[idx].classList.remove('lit'), 400); }
   }
 }
 
-function lightKey(container, whiteIdx, isSharp) {
+function lightKey(container, idx, isSharp) {
   const wks = container.querySelectorAll('.wk');
   const bks = container.querySelectorAll('.bk');
   wks.forEach(w => w.classList.remove('lit'));
   bks.forEach(b => b.classList.remove('lit'));
   if (isSharp) {
-    const note = NOTES.find(n => n.whiteIdx === whiteIdx && n.isSharp);
-    if (note) {
-      const bk = container.querySelector(`.bk[data-eng="${note.eng}"]`);
-      if (bk) { bk.classList.add('lit'); setTimeout(() => bk.classList.remove('lit'), lessonSpeed - 50); }
-    }
+    if (bks[idx]) { bks[idx].classList.add('lit'); setTimeout(() => bks[idx].classList.remove('lit'), lessonSpeed - 50); }
   } else {
-    if (wks[whiteIdx]) { wks[whiteIdx].classList.add('lit'); setTimeout(() => wks[whiteIdx].classList.remove('lit'), lessonSpeed - 50); }
+    if (wks[idx]) { wks[idx].classList.add('lit'); setTimeout(() => wks[idx].classList.remove('lit'), lessonSpeed - 50); }
   }
 }
 
@@ -436,7 +442,7 @@ function updateNoteHint() {
     btn.className = 'note-hint-btn';
     btn.style.background = note.color;
     btn.textContent = getName(n);
-    btn.onclick = () => { playNote(n); const lp = document.getElementById('lessonPiano'); const note = NOTES.find(x => x.name === n); lightKey(lp, note.whiteIdx, note.isSharp); };
+    btn.onclick = () => { playNote(n); const lp = document.getElementById('lessonPiano'); const natIdx = naturalNotes.findIndex(x => x.name === n); lightKey(lp, natIdx, false); };
     div.appendChild(btn);
   });
 }
@@ -483,10 +489,11 @@ function playOrComplete() {
     }
     const noteName = lesson.sequence[currentStep];
     playNote(noteName);
-    const note = NOTES.find(n => n.name === noteName);
-    if (note) {
+    const natIdx = naturalNotes.findIndex(n => n.name === noteName);
+    const isSharp = !naturalNotes.some(n => n.name === noteName);
+    if (natIdx !== -1) {
       const lp = document.getElementById('lessonPiano');
-      lightKey(lp, note.whiteIdx, note.isSharp);
+      lightKey(lp, natIdx, false);
     }
     currentStep++;
     const pct = (currentStep / lesson.sequence.length) * 100;
@@ -515,10 +522,10 @@ function repeatDemo() {
     if (i >= LESSONS[currentLesson].sequence.length) { isPlaying = false; return; }
     const n = LESSONS[currentLesson].sequence[i];
     playNote(n);
-    const note = NOTES.find(x => x.name === n);
-    if (note) {
+    const natIdx = naturalNotes.findIndex(x => x.name === n);
+    if (natIdx !== -1) {
       const lp = document.getElementById('lessonPiano');
-      lightKey(lp, note.whiteIdx);
+      lightKey(lp, natIdx, false);
     }
     i++;
     playTimer = setTimeout(next, lessonSpeed);
@@ -545,10 +552,10 @@ function playFreeDemo() {
   function next() {
     if (i >= demo.length) return;
     playNote(demo[i]);
-    const note = NOTES.find(x => x.name === demo[i]);
-    if (note) {
+    const natIdx = naturalNotes.findIndex(x => x.name === demo[i]);
+    if (natIdx !== -1) {
       const pd = document.getElementById('pianoDiv');
-      lightKey(pd, note.whiteIdx, note.isSharp);
+      lightKey(pd, natIdx, false);
     }
     i++;
     setTimeout(next, 400);
@@ -577,8 +584,11 @@ document.addEventListener('keydown', e => {
   const note = NOTES.find(n => n.key === e.key.toLowerCase());
   if (note) { 
     playNote(note.name); 
-    const containers = document.querySelectorAll('.piano');
-    containers.forEach(c => flashKey(c, note.whiteIdx, note.isSharp));
+    const natIdx = naturalNotes.findIndex(n => n.name === note.name);
+    if (natIdx !== -1) {
+      const containers = document.querySelectorAll('.piano');
+      containers.forEach(c => flashKey(c, natIdx, false));
+    }
     showFeedback(`🎹 ${getName(note.name)}`); 
   }
 });
