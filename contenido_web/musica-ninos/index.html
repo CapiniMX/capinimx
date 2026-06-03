@@ -662,14 +662,27 @@ function playEarCadence() {
 }
 
 function earNewNote() {
+  // Reference melody: 3-4 notas del nivel actual antes de la nota a adivinar
   const notes = EAR_LEVELS[earLevel] || EAR_LEVELS[1];
-  const pick = notes[Math.floor(Math.random() * notes.length)];
-  currentEarNote = pick;
-  playEarNote(pick, 0.5);
-  showFeedback('🎧 Escucha...');
-  renderEarOptions();
-  // Auto-reset after 3s
-  setTimeout(() => {}, 3000);
+  const refNotes = notes.slice(0, Math.min(4, notes.length));
+  currentEarNote = notes[Math.floor(Math.random() * notes.length)];
+  
+  // 1. Cadencia I-IV-V-I
+  playEarCadence();
+  
+  // 2. Reference melody (3-4 notas del nivel)
+  let delay = 2000;
+  refNotes.forEach((n, i) => {
+    setTimeout(() => playEarNote(n, 0.3), delay);
+    delay += 350;
+  });
+  
+  // 3. Nota a adivinar después de la referencia
+  setTimeout(() => {
+    playEarNote(currentEarNote, 0.5);
+    showFeedback('🎧 Escucha...');
+    renderEarOptions();
+  }, delay + 200);
 }
 
 function checkEarAnswer(name) {
@@ -690,13 +703,16 @@ function checkEarAnswer(name) {
       showFeedback('🎉 ¡Subiste al nivel ' + earLevel + '!');
     }
   } else {
-    showFeedback('❌ Era ' + earGetName(currentEarNote));
+    // Mostrar la nota correcta con su nombre
+    const note = NOTES.find(n => n.name === currentEarNote);
+    const colorBox = note ? `<span style="background:${note.color};padding:2px 6px;border-radius:8px;">${earGetName(currentEarNote)}</span>` : earGetName(currentEarNote);
+    showFeedback('❌ Era ' + colorBox);
     earCorrect = Math.max(0, earCorrect - 1);
     const pct = Math.round((earCorrect / earTotal) * 100);
     document.getElementById('earProgress').style.width = pct + '%';
     document.getElementById('earStatus').textContent = 'Aciertos: ' + earCorrect + '/' + earTotal;
   }
-  setTimeout(earNewNote, 1500);
+  setTimeout(earNewNote, 2000);
 }
 
 function renderEarOptions() {
