@@ -86,7 +86,7 @@
 
 <div class="header">
   <div style="font-size:1.6em;">🎹</div>
-  <h1>La Aventura Musical de Alexander <span class="version-badge">v3.8</span></h1>
+  <h1>La Aventura Musical de Alexander <span class="version-badge">v3.7</span></h1>
   <div style="font-size:0.75em;color:#aaa;margin-top:4px;">Alexander, 6 años · Aprende piano jugando</div>
 </div>
 
@@ -236,13 +236,26 @@
 const NAME_MODES = {
   do: ['Do','Do#','Re','Re#','Mi','Fa','Fa#','Sol','Sol#','La','La#','Si'],
   letter: ['C','C#','D','D#','E','F','F#','G','G#','A','A#','B'],
-  number: ['1','2','3','4','5','6','7','1','2','3','4','5','6','7','1','2','3','4','5','6','7']
+  number: ['1','2','3','4','5','6','7']
 };
 let currentMode = 'do';
 
-// Notes - 3 octaves (C3-B5, middle A=440Hz)
+// Notes - 2 octaves (C3-B4)
 const NOTES = [
-  // Octave 3
+  // Octave 2 (lower - added for extended range)
+  { name: 'Do', eng: 'C', freq: 65.41, color: '#e74c3c', key: '', whiteIdx: 0, octave: 2, isSharp: false },
+  { name: 'Do#', eng: 'C#', freq: 69.30, color: '#333', key: '', whiteIdx: 0, octave: 2, isSharp: true },
+  { name: 'Re', eng: 'D', freq: 73.42, color: '#e67e22', key: '', whiteIdx: 1, octave: 2, isSharp: false },
+  { name: 'Re#', eng: 'D#', freq: 77.78, color: '#333', key: '', whiteIdx: 1, octave: 2, isSharp: true },
+  { name: 'Mi', eng: 'E', freq: 82.41, color: '#f1c40f', key: '', whiteIdx: 2, octave: 2, isSharp: false },
+  { name: 'Fa', eng: 'F', freq: 87.31, color: '#2ecc71', key: '', whiteIdx: 3, octave: 2, isSharp: false },
+  { name: 'Fa#', eng: 'F#', freq: 92.50, color: '#333', key: '', whiteIdx: 3, octave: 2, isSharp: true },
+  { name: 'Sol', eng: 'G', freq: 98.00, color: '#3498db', key: '', whiteIdx: 4, octave: 2, isSharp: false },
+  { name: 'Sol#', eng: 'G#', freq: 103.83, color: '#333', key: '', whiteIdx: 4, octave: 2, isSharp: true },
+  { name: 'La', eng: 'A', freq: 110.00, color: '#9b59b6', key: '', whiteIdx: 5, octave: 2, isSharp: false },
+  { name: 'La#', eng: 'A#', freq: 116.54, color: '#333', key: '', whiteIdx: 5, octave: 2, isSharp: true },
+  { name: 'Si', eng: 'B', freq: 123.47, color: '#e91e63', key: '', whiteIdx: 6, octave: 2, isSharp: false },
+  // Octave 3 (lower)
   { name: 'Do', eng: 'C', freq: 130.81, color: '#e74c3c', key: 'a', whiteIdx: 0, octave: 3, isSharp: false },
   { name: 'Do#', eng: 'C#', freq: 138.59, color: '#333', key: 'w', whiteIdx: 0, octave: 3, isSharp: true },
   { name: 'Re', eng: 'D', freq: 146.83, color: '#e67e22', key: 's', whiteIdx: 1, octave: 3, isSharp: false },
@@ -255,7 +268,7 @@ const NOTES = [
   { name: 'La', eng: 'A', freq: 220.00, color: '#9b59b6', key: 'h', whiteIdx: 5, octave: 3, isSharp: false },
   { name: 'La#', eng: 'A#', freq: 233.08, color: '#333', key: 'u', whiteIdx: 5, octave: 3, isSharp: true },
   { name: 'Si', eng: 'B', freq: 246.94, color: '#e91e63', key: 'j', whiteIdx: 6, octave: 3, isSharp: false },
-  // Octave 4 (middle - A=440Hz)
+  // Octave 4 (current)
   { name: 'Do', eng: 'C', freq: 261.63, color: '#e74c3c', key: 'a', whiteIdx: 7, octave: 4, isSharp: false },
   { name: 'Do#', eng: 'C#', freq: 277.18, color: '#333', key: 'w', whiteIdx: 7, octave: 4, isSharp: true },
   { name: 'Re', eng: 'D', freq: 293.66, color: '#e67e22', key: 's', whiteIdx: 8, octave: 4, isSharp: false },
@@ -268,7 +281,7 @@ const NOTES = [
   { name: 'La', eng: 'A', freq: 440.00, color: '#9b59b6', key: 'h', whiteIdx: 12, octave: 4, isSharp: false },
   { name: 'La#', eng: 'A#', freq: 466.16, color: '#333', key: 'u', whiteIdx: 12, octave: 4, isSharp: true },
   { name: 'Si', eng: 'B', freq: 493.88, color: '#e91e63', key: 'j', whiteIdx: 13, octave: 4, isSharp: false },
-  // Octave 5
+  // Octave 5 (upper)
   { name: 'Do', eng: 'C', freq: 523.25, color: '#e74c3c', key: '', whiteIdx: 14, octave: 5, isSharp: false },
   { name: 'Do#', eng: 'C#', freq: 554.37, color: '#333', key: '', whiteIdx: 14, octave: 5, isSharp: true },
   { name: 'Re', eng: 'D', freq: 587.33, color: '#e67e22', key: '', whiteIdx: 15, octave: 5, isSharp: false },
@@ -277,11 +290,25 @@ const NOTES = [
   { name: 'Fa', eng: 'F', freq: 698.46, color: '#2ecc71', key: '', whiteIdx: 17, octave: 5, isSharp: false },
   { name: 'Fa#', eng: 'F#', freq: 739.99, color: '#333', key: '', whiteIdx: 17, octave: 5, isSharp: true },
   { name: 'Sol', eng: 'G', freq: 783.99, color: '#3498db', key: '', whiteIdx: 18, octave: 5, isSharp: false },
-  { name: 'Sol#', eng: 'G#', freq: 830.61, color: '#333', key: '', whiteIdx: 018, octave: 5, isSharp: true },
+  { name: 'Sol#', eng: 'G#', freq: 830.61, color: '#333', key: '', whiteIdx: 18, octave: 5, isSharp: true },
   { name: 'La', eng: 'A', freq: 880.00, color: '#9b59b6', key: '', whiteIdx: 19, octave: 5, isSharp: false },
   { name: 'La#', eng: 'A#', freq: 932.33, color: '#333', key: '', whiteIdx: 19, octave: 5, isSharp: true },
   { name: 'Si', eng: 'B', freq: 987.77, color: '#e91e63', key: '', whiteIdx: 20, octave: 5, isSharp: false },
+  // Octave 6 (upper extended - v3.6)
+  { name: 'Do', eng: 'C', freq: 1046.50, color: '#e74c3c', key: '', whiteIdx: 21, octave: 6, isSharp: false },
+  { name: 'Do#', eng: 'C#', freq: 1108.73, color: '#333', key: '', whiteIdx: 21, octave: 6, isSharp: true },
+  { name: 'Re', eng: 'D', freq: 1174.66, color: '#e67e22', key: '', whiteIdx: 22, octave: 6, isSharp: false },
+  { name: 'Re#', eng: 'D#', freq: 1244.51, color: '#333', key: '', whiteIdx: 22, octave: 6, isSharp: true },
+  { name: 'Mi', eng: 'E', freq: 1318.51, color: '#f1c40f', key: '', whiteIdx: 23, octave: 6, isSharp: false },
+  { name: 'Fa', eng: 'F', freq: 1396.91, color: '#2ecc71', key: '', whiteIdx: 24, octave: 6, isSharp: false },
+  { name: 'Fa#', eng: 'F#', freq: 1479.98, color: '#333', key: '', whiteIdx: 24, octave: 6, isSharp: true },
+  { name: 'Sol', eng: 'G', freq: 1567.98, color: '#3498db', key: '', whiteIdx: 25, octave: 6, isSharp: false },
+  { name: 'Sol#', eng: 'G#', freq: 1661.22, color: '#333', key: '', whiteIdx: 25, octave: 6, isSharp: true },
+  { name: 'La', eng: 'A', freq: 1760.00, color: '#9b59b6', key: '', whiteIdx: 26, octave: 6, isSharp: false },
+  { name: 'La#', eng: 'A#', freq: 1864.66, color: '#333', key: '', whiteIdx: 26, octave: 6, isSharp: true },
+  { name: 'Si', eng: 'B', freq: 1975.53, color: '#e91e63', key: '', whiteIdx: 27, octave: 6, isSharp: false },
 ];
+
 const LESSONS = {
   1: { title: '🎵 Lección 1: Las 7 Notas Mágicas', desc: 'Cada nota tiene su nombre', instruction: 'Dale ▶ para ver las notas en el piano', sequence: ['Do','Re','Mi','Fa','Sol','La','Si'] },
   2: { title: '🖐️ Lección 2: Tus Manos en el Piano', desc: 'Sube y baja como escalera', instruction: 'Sigue la secuencia derecha a izquierda', sequence: ['Do','Re','Mi','Fa','Sol','La','Si','La','Sol','Fa','Mi','Re','Do'] },
@@ -295,25 +322,38 @@ const NATURAL_NOTES = NOTES.filter(n => !n.isSharp);
 
 // Black key positions for all octaves (left offset in piano container)
 const BLACK_KEYS = [
+  // Octave 2 (lower - new with v3.4)
+  { eng: 'C#', left: 134, octave: 2 },
+  { eng: 'D#', left: 184, octave: 2 },
+  { eng: 'F#', left: 284, octave: 2 },
+  { eng: 'G#', left: 334, octave: 2 },
+  { eng: 'A#', left: 384, octave: 2 },
   // Octave 3
-  { eng: 'C#', left: 50, octave: 3 },
-  { eng: 'D#', left: 100, octave: 3 },
-  { eng: 'F#', left: 200, octave: 3 },
-  { eng: 'G#', left: 250, octave: 3 },
-  { eng: 'A#', left: 300, octave: 3 },
+  { eng: 'C#', left: 384, octave: 3 },
+  { eng: 'D#', left: 434, octave: 3 },
+  { eng: 'F#', left: 534, octave: 3 },
+  { eng: 'G#', left: 584, octave: 3 },
+  { eng: 'A#', left: 634, octave: 3 },
   // Octave 4
-  { eng: 'C#', left: 400, octave: 4 },
-  { eng: 'D#', left: 450, octave: 4 },
-  { eng: 'F#', left: 550, octave: 4 },
-  { eng: 'G#', left: 600, octave: 4 },
-  { eng: 'A#', left: 650, octave: 4 },
+  { eng: 'C#', left: 734, octave: 4 },
+  { eng: 'D#', left: 784, octave: 4 },
+  { eng: 'F#', left: 884, octave: 4 },
+  { eng: 'G#', left: 934, octave: 4 },
+  { eng: 'A#', left: 984, octave: 4 },
   // Octave 5
-  { eng: 'C#', left: 800, octave: 5 },
-  { eng: 'D#', left: 850, octave: 5 },
-  { eng: 'F#', left: 950, octave: 5 },
-  { eng: 'G#', left: 1000, octave: 5 },
-  { eng: 'A#', left: 1050, octave: 5 },
+  { eng: 'C#', left: 1134, octave: 5 },
+  { eng: 'D#', left: 1184, octave: 5 },
+  { eng: 'F#', left: 1284, octave: 5 },
+  { eng: 'G#', left: 1334, octave: 5 },
+  { eng: 'A#', left: 1384, octave: 5 },
+  // Octave 6 (upper extended - v3.6)
+  { eng: 'C#', left: 1534, octave: 6 },
+  { eng: 'D#', left: 1584, octave: 6 },
+  { eng: 'F#', left: 1684, octave: 6 },
+  { eng: 'G#', left: 1734, octave: 6 },
+  { eng: 'A#', left: 1784, octave: 6 },
 ];
+
 // Audio
 let audioCtx = null;
 function initAudio() {
