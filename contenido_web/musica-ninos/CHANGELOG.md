@@ -2,6 +2,33 @@
 
 ---
 
+## v2.3 — 03/Jun/2026
+### Investigación: Octavas Extra en el Piano
+
+**Análisis:**
+- Piano actual: 1 octava (C4-B4, 7 teclas blancas + 5 negras)
+- Añadida 2da octava (C5-E5): 3 teclas blancas adicionales (Do↑, Re↑, Mi↑) con sus sostenidos
+- whiteIdx refactorizado: 0-6 para octava 4, 7-9 para octava 5
+- Lógica de iluminación: búsqueda por eng name en lugar de posMap frágil
+
+**Factibilidad:**
+- ✅ 1 octava extra = 10 teclas blancas total → scroll horizontal necesario en móvil (ok)
+- ✅ 2 octavas extras = 14 teclas blancas → piano muy angosto en móvil (evitar)
+- ✅ Web Audio API maneja frecuencias sin cambios
+- ⚠️ Lecciones existentes no usan notas de octava 5 (no hay conflicto)
+
+**Cambios:**
+- NOTES array: 17 notas (12 octava 4 + 5 octava 5)
+- BLACK_KEYS: 7 teclas negras (5 octava 4 + 2 octava 5)
+- displayName: `Do+` → `Do↑` para indicar octava alta
+- Teclas de teclado adicionales: K L O P ; para octava 5
+- v2.3 en título y badge
+
+**Resultado:**
+✅ Committed en `feature/piano-octaves`. Listo para PR.
+
+---
+
 ## v2.2 — 02/Jun/2026
 ### Petición:
 > "Las teclas negras de sostenido suenan idénticas a la tecla anterior, no tienen su sonido particular"
