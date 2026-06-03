@@ -370,8 +370,9 @@ function renderPiano() {
       wk.className = 'wk';
       wk.dataset.noteName = note.name;
       wk.dataset.natIdx = i;
-      wk.innerHTML = `<span class="kn">${NAME_MODES[currentMode][POSITION_MAP[i % 7]] || note.name}</span><span class="ki">${(i % 7) + 1}</span>`;
-      wk.onclick = () => { playNote(note.name); flashKey(container, i, false); showFeedback(`🎹 ${NAME_MODES[currentMode][POSITION_MAP[i % 7]] || note.name}`); };
+      const label = currentMode === 'number' ? String((i % 7) + 1) : (NAME_MODES[currentMode][POSITION_MAP[i % 7]] || note.name);
+      wk.innerHTML = `<span class="kn">${label}</span><span class="ki">${(i % 7) + 1}</span>`;
+      wk.onclick = () => { playNote(note.name); flashKey(container, i, false); showFeedback(`🎹 ${label}`); };
       container.appendChild(wk);
     });
     
