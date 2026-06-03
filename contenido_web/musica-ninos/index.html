@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>🎹 Capini - AprendiendoLuk 🎹</title>
+  <title>🎹 La Aventura Musical de Alexander 🎹</title>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body { font-family: 'Nunito', 'Segoe UI', sans-serif; background: #1a1a2e; min-height: 100vh; color: white; overflow-x: hidden; }
@@ -86,8 +86,8 @@
 
 <div class="header">
   <div style="font-size:1.6em;">🎹</div>
-  <h1>Capini - AprendiendoLuk <span class="version-badge">v4.0</span></h1>
-  <div style="font-size:0.75em;color:#aaa;margin-top:4px;">Luk, 6 años · Aprende piano jugando</div>
+  <h1>La Aventura Musical de Alexander <span class="version-badge">v3.9</span></h1>
+  <div style="font-size:0.75em;color:#aaa;margin-top:4px;">Alexander, 6 años · Aprende piano jugando</div>
 </div>
 
 <div class="tabs">
@@ -236,7 +236,7 @@
 const NAME_MODES = {
   do: ['Do','Do#','Re','Re#','Mi','Fa','Fa#','Sol','Sol#','La','La#','Si'],
   letter: ['C','C#','D','D#','E','F','F#','G','G#','A','A#','B'],
-  number: ['1','2','3','4','5','6','7']
+  number: ['1','2','3','4','5','6','7','1','2','3','4','5','6','7','1','2','3','4','5','6','7']
 };
 let currentMode = 'do';
 
@@ -364,13 +364,14 @@ function renderPiano() {
     container.innerHTML = '';
     
     const naturalNotes = NOTES.filter(n => !n.isSharp);
+    const POSITION_MAP = [0, 2, 4, 5, 7, 9, 11]; // natural note positions (Do=0, Re=2, Mi=4, Fa=5, Sol=7, La=9, Si=11)
     naturalNotes.forEach((note, i) => {
       const wk = document.createElement('div');
       wk.className = 'wk';
       wk.dataset.noteName = note.name;
       wk.dataset.natIdx = i;
-      wk.innerHTML = `<span class="kn">${NAME_MODES[currentMode][i % NAME_MODES[currentMode].length] || note.name}</span><span class="ki">${(i % 7) + 1}</span>`;
-      wk.onclick = () => { playNote(note.name); flashKey(container, i, false); showFeedback(`🎹 ${NAME_MODES[currentMode][i % NAME_MODES[currentMode].length] || note.name}`); };
+      wk.innerHTML = `<span class="kn">${NAME_MODES[currentMode][POSITION_MAP[i % 7]] || note.name}</span><span class="ki">${(i % 7) + 1}</span>`;
+      wk.onclick = () => { playNote(note.name); flashKey(container, i, false); showFeedback(`🎹 ${NAME_MODES[currentMode][POSITION_MAP[i % 7]] || note.name}`); };
       container.appendChild(wk);
     });
     
