@@ -86,7 +86,7 @@
 
 <div class="header">
   <div style="font-size:1.6em;">🎹</div>
-  <h1>La Aventura Musical de Alexander <span class="version-badge">v3.8</span></h1>
+  <h1>La Aventura Musical de Alexander <span class="version-badge">v3.9</span></h1>
   <div style="font-size:0.75em;color:#aaa;margin-top:4px;">Alexander, 6 años · Aprende piano jugando</div>
 </div>
 
@@ -341,8 +341,19 @@ function playNote(name) {
 }
 
 function getName(name) {
-  const idx = NOTES.findIndex(n => n.name === name);
-  return NAME_MODES[currentMode][idx] || name;
+  // Find the note in NOTES array
+  const note = NOTES.find(n => n.name === name);
+  if (!note) return name;
+  if (note.isSharp) {
+    // For sharps in current mode, return SHARP notation (C#, D#, etc.)
+    if (currentMode === 'do') return note.name; // "Do#"
+    if (currentMode === 'letter') return note.eng; // "C#"
+    if (currentMode === 'number') return note.eng; // "C#" (no number for sharps)
+  }
+  // Natural notes: use current mode display
+  const naturalIdx = NATURAL_NOTES.findIndex(n => n.name === name);
+  if (naturalIdx === -1) return name;
+  return NAME_MODES[currentMode][naturalIdx] || name;
 }
 
 // Render piano in a container
@@ -357,8 +368,9 @@ function renderPiano() {
       const wk = document.createElement('div');
       wk.className = 'wk';
       wk.dataset.noteName = note.name;
-      wk.innerHTML = `<span class="kn">${getName(note.name)}</span><span class="ki">${i+1}</span>`;
-      wk.onclick = () => { playNote(note.name); flashKey(container, i, false); showFeedback(`🎹 ${getName(note.name)}`); };
+      wk.dataset.natIdx = i;
+      wk.innerHTML = `<span class="kn">${NAME_MODES[currentMode][i] || note.name}</span><span class="ki">${i+1}</span>`;
+      wk.onclick = () => { playNote(note.name); flashKey(container, i, false); showFeedback(`🎹 ${NAME_MODES[currentMode][i] || note.name}`); };
       container.appendChild(wk);
     });
     
@@ -370,9 +382,10 @@ function renderPiano() {
       div.className = 'bk';
       div.dataset.noteName = note.name;
       div.dataset.eng = bk.eng;
+      div.dataset.octave = bk.octave;
       div.style.left = bk.left + 'px';
       div.innerHTML = `<span class="kn">${bk.eng}</span>`;
-      div.onclick = () => { playNote(note.name); flashKey(container, note.whiteIdx, true); showFeedback(`🎹 ${getName(note.name)}`); };
+      div.onclick = () => { playNote(note.name); container.dataset.lastNote = note.name; flashKey(container, 0, true); showFeedback(`🎹 ${getName(note.name)}`); };
       container.appendChild(div);
     });
   });
@@ -384,7 +397,13 @@ function flashKey(container, idx, isSharp) {
   wks.forEach(w => w.classList.remove('lit'));
   bks.forEach(b => b.classList.remove('lit'));
   if (isSharp) {
-    if (bks[idx]) { bks[idx].classList.add('lit'); setTimeout(() => bks[idx].classList.remove('lit'), 400); }
+    const noteName = container.dataset.lastNote || '';
+    bks.forEach(bk => {
+      if (bk.dataset.noteName === noteName) {
+        bk.classList.add('lit');
+        setTimeout(() => bk.classList.remove('lit'), 400);
+      }
+    });
   } else {
     if (wks[idx]) { wks[idx].classList.add('lit'); setTimeout(() => wks[idx].classList.remove('lit'), 400); }
   }
