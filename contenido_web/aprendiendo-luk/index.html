@@ -1886,6 +1886,53 @@
         canvas.height = window.innerHeight;
       }
     });
+
+    // ========== AUDIO CONFIGURATION ==========
+    const AUDIO_URLS = {
+      tutorials: {
+        suma: 'audio/tutoriales/tutorial_suma_rapida.mp3',
+        memoria: 'audio/tutoriales/tutorial_memoria_secuencial.mp3',
+        visual: 'audio/tutoriales/tutorial_velocidad_visual.mp3'
+      },
+      celebrations: {
+        excellent: 'audio/celebraciones/celebration_excellent.mp3',
+        levelComplete: 'audio/celebraciones/celebration_level_complete.mp3',
+        sessionWin: 'audio/celebraciones/celebration_session_win.mp3'
+      },
+      motivation: {
+        tryAgain: 'audio/motivacion/motivation_try_again.mp3',
+        keepGoing: 'audio/motivacion/motivation_keep_going.mp3',
+        sessionLow: 'audio/motivacion/motivation_session_low.mp3'
+      },
+      instructions: {
+        welcome: 'audio/instrucciones/intro_welcome.mp3',
+        difficulty: 'audio/instrucciones/difficulty_selection.mp3',
+        start: 'audio/instrucciones/session_start.mp3'
+      }
+    };
+
+    function playAudio(category, name) {
+      try {
+        const audioUrl = AUDIO_URLS[category] && AUDIO_URLS[category][name];
+        if (audioUrl) {
+          const audio = new Audio(audioUrl);
+          audio.volume = 0.8;
+          audio.play().catch(err => console.log('Audio play blocked or failed:', err));
+        }
+      } catch (err) {
+        console.log('Error playing audio:', err);
+      }
+    }
+
+    // Integrate audio into game events
+    const originalShowInstructions = showInstructions;
+    showInstructions = function(gameType) {
+      originalShowInstructions(gameType);
+      // Play tutorial audio based on game type
+      if (gameType === 'suma') playAudio('tutorials', 'suma');
+      else if (gameType === 'memoria') playAudio('tutorials', 'memoria');
+      else if (gameType === 'visual') playAudio('tutorials', 'visual');
+    };
   </script>
 </body>
 </html>
