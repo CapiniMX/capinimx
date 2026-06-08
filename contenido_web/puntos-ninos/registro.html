@@ -14,7 +14,8 @@
 
     .card { background: #fff; border-radius: 20px; padding: 20px; width: 100%; max-width: 480px; box-shadow: 0 4px 15px #0001; }
 
-    .selector-nino { display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; justify-content: center; }
+    .selector-nino { display: flex; gap: 10px; margin-bottom: 12px; flex-wrap: wrap; justify-content: center; }
+    .actividad-wrap { width: 100%; }
     .nino-btn { display: flex; flex-direction: column; align-items: center; gap: 4px; padding: 12px 16px; border: 2px solid #B2DFDB; border-radius: 16px; background: #fff; color: #333; font-size: 0.9em; font-weight: 600; cursor: pointer; transition: all 0.2s; min-width: 90px; }
     .nino-btn .icon { font-size: 1.8em; }
     .nino-btn:hover { border-color: #4DB6AC; background: #E0F2F1; }
@@ -86,6 +87,33 @@
       </button>
     </div>
 
+    <div class="actividad-wrap">
+      <label for="actividadSelect" style="font-size:0.8em;color:#888;font-weight:600;margin-bottom:4px;display:block;text-align:center;">Actividad completada</label>
+      <select id="actividadSelect" onchange="actividad=this.value" style="width:100%;padding:9px 12px;border:2px solid #B2DFDB;border-radius:12px;font-size:0.95em;font-family:'Nunito',sans-serif;color:#555;background:#fff;cursor:pointer;margin-bottom:12px;">
+        <option value="">-- Selecciona una actividad --</option>
+        <option value="Hacer la tarea">📚 Hacer la tarea</option>
+        <option value="Lavarse los dientes AM">🦷 Dientes (mañana)</option>
+        <option value="Lavarse los dientes PM">🦷 Dientes (noche)</option>
+        <option value="Tender la cama">🛏️ Tender la cama</option>
+        <option value="Bañarse">🧼 Bañarse</option>
+        <option value="Recoger ropa">👕 Recoger ropa</option>
+        <option value="Recoger juguetes">🧹 Recoger juguetes</option>
+        <option value="Limpiar escritorio">📖 Limpiar escritorio</option>
+        <option value="Tarea sin pedir">⭐ Tarea sin que se la pidan</option>
+        <option value="Ayudar con compra">🛒 Ayudar con la compra</option>
+        <option value="Lavar platos">🍽️ Lavar platos</option>
+        <option value="Regar plantas">🌱 Regar plantas</option>
+        <option value="Sacar basura">🗑️ Sacar basura</option>
+        <option value="Hacer ejercicio">🏃 Ejercicio/actividad física</option>
+        <option value="Practicar instrumento">🎵 Practicar instrumento</option>
+        <option value="Ayudar hermano">🤝 Ayudar hermano/hermana</option>
+        <option value="Organizar habitación">🏠 Organizar habitación</option>
+        <option value="Preparar mochila">🎒 Preparar mochila</option>
+        <option value="Practicar tablas">📐 Practicar tablas</option>
+        <option value="Leer libro">📚 Leer un libro</option>
+      </select>
+    </div>
+
     <div class="puntos-display" id="puntos-display">+100</div>
 
     <div class="puntos-botones">
@@ -135,6 +163,7 @@
 
   <script>
     let nino = 'Luke';
+    let actividad = '';
     let puntos = 100;
     let vista = 'diario';
     const storageKey = 'puntos_kids_v4';
@@ -279,7 +308,7 @@
         const li = document.createElement('li');
         const cls = r.p < 0 ? 'pts-neg' : 'pts';
         const signo = r.p < 0 ? r.p : `+${r.p}`;
-        li.innerHTML = `<span><span class="nino">${r.n}</span> <span class="${cls}">${signo}</span></span><span class="fecha">${r.f}</span>`;
+        li.innerHTML = `<span><span class="nino">${r.n}</span> <span class="${cls}">${signo}</span>${r.a ? '<br><span style="color:#888;font-size:0.78em">'+r.a+'</span>' : ''}</span><span class="fecha">${r.f}</span>`;
         hist.appendChild(li);
       });
     }
@@ -288,7 +317,9 @@
       const data = getData();
       const hoy = getToday();
       const semana = getWeekKey(new Date());
-      data.historial.push({ n: nino, p: puntos, f: fmt() });
+      data.historial.push({ n: nino, p: puntos, a: actividad, f: fmt() });
+      actividad = '';
+      document.getElementById('actividadSelect').value = '';
       data.totales[nino] = (data.totales[nino] || 0) + puntos;
       if (!data.diario[hoy]) data.diario[hoy] = { Luke: 0, Dalia: 0, Iris: 0 };
       data.diario[hoy][nino] = (data.diario[hoy][nino] || 0) + puntos;
