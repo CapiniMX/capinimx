@@ -6,88 +6,283 @@
   <title>🎹 Capini - AprendiendoLuk 🎹</title>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
-    body { font-family: 'Nunito', 'Segoe UI', sans-serif; background: #1a1a2e; min-height: 100vh; color: white; overflow-x: hidden; }
     
-    .header { background: linear-gradient(135deg, #e94560, #0f3460); text-align: center; padding: 10px; border-radius: 0 0 20px 20px; }
-    .header h1 { font-size: 1.2em; margin-bottom: 2px; }
+    :root {
+      /* CAPINI Color Palette */
+      --color-primary: #4DB6AC;
+      --color-accent: #F48FB1;
+      --color-light: #B2DFDB;
+      --color-dark: #1a1a2e;
+      --color-surface: #16213e;
+      --color-border: #0f3460;
+      --text-primary: #ffffff;
+      --text-secondary: #b0b0b0;
+      
+      /* Gradients */
+      --grad-primary: linear-gradient(135deg, #4DB6AC, #F48FB1);
+      --grad-soft: linear-gradient(135deg, #B2DFDB, #4DB6AC);
+      
+      /* Typography */
+      --font-title: 'Montserrat', sans-serif;
+      --font-body: 'Nunito', sans-serif;
+      
+      /* Spacing */
+      --spacing-xs: 4px;
+      --spacing-sm: 8px;
+      --spacing-md: 16px;
+      --spacing-lg: 24px;
+      --spacing-xl: 32px;
+      
+      /* Border Radius */
+      --radius-sm: 8px;
+      --radius-md: 16px;
+      --radius-lg: 20px;
+      --radius-btn: 26px;
+      
+      /* Transitions */
+      --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
     
-    .tabs { display: flex; justify-content: center; gap: 5px; padding: 10px; flex-wrap: wrap; }
-    .tab { padding: 7px 12px; border-radius: 15px; border: none; cursor: pointer; font-size: 0.8em; font-weight: bold; }
-    .tab.active { background: #e94560; color: white; }
-    .tab:not(.active) { background: #16213e; color: #eee; }
+    body { font-family: var(--font-body), 'Segoe UI', sans-serif; background: var(--color-dark); min-height: 100vh; color: var(--text-primary); overflow-x: hidden; }
     
-    .content { max-width: 900px; margin: 0 auto; padding: 8px 10px 90px; }
+    .header {
+  background: rgba(22, 33, 62, 0.95);
+  backdrop-filter: blur(10px);
+  border-bottom: 2px solid var(--color-primary);
+  padding: var(--spacing-md) var(--spacing-lg);
+  position: sticky;
+  top: 0;
+  z-index: 30;
+  text-align: center;
+}
+.header-inner {
+  max-width: 900px;
+  margin: 0 auto;
+}
+.header-logo {
+  font-family: var(--font-title);
+  font-size: 18px;
+  font-weight: 800;
+  background: var(--grad-primary);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.header-tagline {
+  font-size: 11px;
+  color: var(--color-light);
+  font-family: var(--font-body);
+  margin-top: var(--spacing-xs);
+}
+
+/* Hero Section */
+.hero {
+  text-align: center;
+  padding: var(--spacing-lg) var(--spacing-md);
+  background: linear-gradient(180deg, rgba(22, 33, 62, 0.5) 0%, transparent 100%);
+}
+.hero-icon {
+  font-size: 2.5em;
+  margin-bottom: var(--spacing-sm);
+}
+.hero-title {
+  font-family: var(--font-title);
+  font-size: 1.5em;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+.hero-subtitle {
+  font-size: 0.85em;
+  color: var(--text-secondary);
+  margin-top: var(--spacing-xs);
+}
+    
+    .tabs { display: flex; justify-content: center; gap: var(--spacing-xs); padding: var(--spacing-sm); flex-wrap: wrap; border-bottom: 2px solid var(--color-border); background: rgba(22, 33, 62, 0.5); }
+    .tab { padding: var(--spacing-sm) var(--spacing-md); border-radius: 0; border: none; border-bottom: 3px solid transparent; cursor: pointer; font-size: 0.8em; font-weight: 700; font-family: var(--font-title); color: var(--text-secondary); background: transparent; transition: var(--transition-smooth); }
+    .tab.active { background: transparent; color: var(--color-primary); border-bottom-color: var(--color-primary); }
+    .tab:not(.active) { background: transparent; }
+    .tab:hover { color: var(--color-primary); background: rgba(77, 182, 172, 0.1); }
+    
+    
+.footer { background: rgba(22, 33, 62, 0.95); border-top: 2px solid var(--color-primary); padding: var(--spacing-lg); text-align: center; display: flex; flex-direction: column; gap: var(--spacing-sm); }
+.footer-logo { font-family: var(--font-title); font-size: 14px; font-weight: 700; background: var(--grad-primary); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+.footer-tagline { font-size: 12px; color: var(--color-light); font-family: var(--font-body); }
+.content { max-width: 900px; margin: 0 auto; padding: var(--spacing-sm) var(--spacing-sm) 90px; }
     .section { display: none; }
     .section.active { display: block; }
     
-    .card { background: #16213e; border-radius: 16px; padding: 14px; margin-bottom: 10px; text-align: center; }
-    .card h2 { color: #e94560; margin-bottom: 6px; font-size: 1em; }
-    .card p { color: #aaa; font-size: 0.85em; }
+    .card { background: rgba(22, 33, 62, 0.8); border: 2px solid var(--color-border); border-radius: var(--radius-lg); padding: var(--spacing-lg); margin-bottom: var(--spacing-md); text-align: center; transition: var(--transition-smooth); position: relative; overflow: hidden; }
+    .card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: linear-gradient(135deg, rgba(77, 182, 172, 0.1), transparent);
+      opacity: 0;
+      transition: opacity 0.3s ease;
+      pointer-events: none;
+    }
+    .card:hover { border-color: var(--color-primary); transform: translateY(-4px); box-shadow: 0 8px 24px rgba(77, 182, 172, 0.15); }
+    .card:hover::before { opacity: 1; }
+    .card h2 { color: var(--color-primary); margin-bottom: var(--spacing-xs); font-size: 1em; font-family: var(--font-title); font-weight: 700; }
+    .card p { color: var(--text-secondary); font-size: 0.85em; font-family: var(--font-body); }
     
-    .lesson-btn { display: block; width: 100%; padding: 12px; margin: 6px 0; background: linear-gradient(135deg, #e94560, #c73e54); border: none; border-radius: 12px; color: white; font-size: 0.95em; font-weight: bold; cursor: pointer; text-align: left; }
+    .lesson-btn { display: block; width: 100%; padding: 14px 20px; margin: 6px 0; background: var(--grad-primary); border: none; border-radius: var(--radius-btn); color: var(--color-dark); font-size: 0.95em; font-weight: 800; cursor: pointer; text-align: left; font-family: var(--font-body); box-shadow: 0 4px 15px rgba(77, 182, 172, 0.3); transition: var(--transition-smooth); position: relative; overflow: hidden; }
+    .lesson-btn::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: rgba(255, 255, 255, 0.2);
+      transition: left 0.3s ease;
+    }
+    .lesson-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(77, 182, 172, 0.4); }
+    .lesson-btn:hover::before { left: 100%; }
     .lesson-btn .emoji { font-size: 1.3em; margin-right: 8px; }
     .lesson-btn .title { display: block; }
     .lesson-btn .desc { display: block; font-size: 0.7em; opacity: 0.8; margin-top: 2px; }
     
-    .back-btn { background: #333; color: white; border: none; border-radius: 10px; padding: 7px 14px; font-size: 0.8em; cursor: pointer; margin-bottom: 10px; }
+    .back-btn { background: transparent; color: var(--color-primary); border: 2px solid var(--color-primary); border-radius: var(--radius-btn); padding: 8px 16px; font-size: 0.8em; font-weight: 700; cursor: pointer; margin-bottom: var(--spacing-sm); font-family: var(--font-body); transition: var(--transition-smooth); }
+    .back-btn:hover { background: rgba(77, 182, 172, 0.1); box-shadow: 0 4px 15px rgba(77, 182, 172, 0.2); }
     
-    .name-mode-bar { display: flex; justify-content: center; gap: 6px; padding: 8px; background: #0f3460; border-radius: 12px; margin: 8px 0; flex-wrap: wrap; }
-    .name-mode-btn { padding: 6px 12px; border-radius: 10px; border: 2px solid transparent; font-size: 0.8em; cursor: pointer; font-weight: bold; }
-    .name-mode-btn.active { border-color: #e94560; }
+    .name-mode-bar { display: flex; justify-content: center; gap: var(--spacing-xs); padding: var(--spacing-sm); background: var(--color-surface); border-radius: var(--radius-md); margin: var(--spacing-sm) 0; flex-wrap: wrap; border: 2px solid var(--color-border); }
+    .name-mode-btn { padding: var(--spacing-xs) var(--spacing-sm); border-radius: var(--radius-sm); border: 2px solid transparent; font-size: 0.8em; cursor: pointer; font-weight: 700; font-family: var(--font-body); background: transparent; color: var(--text-secondary); transition: var(--transition-smooth); }
+    .name-mode-btn.active { border-color: var(--color-primary); color: var(--color-primary); background: rgba(77, 182, 172, 0.1); }
     .name-mode-btn span { font-size: 1.1em; }
     
-    .piano-section { background: #0f3460; border-radius: 16px; padding: 10px; margin: 10px 0; }
-    .piano-label { font-size: 0.8em; color: #aaa; text-align: center; margin-bottom: 8px; }
+    .piano-section { background: var(--color-surface); border-radius: var(--radius-lg); padding: var(--spacing-sm); margin: var(--spacing-sm) 0; border: 2px solid var(--color-border); }
+    .piano-label { font-size: 0.8em; color: var(--text-secondary); text-align: center; margin-bottom: var(--spacing-sm); font-family: var(--font-body); }
     .piano-wrap { overflow-x: auto; padding: 5px 0; }
     .piano { display: flex; position: relative; min-width: 600px; height: 150px; }
     
     .wk { width: 48px; height: 150px; background: white; border-radius: 0 0 5px 5px; border: 2px solid #bbb; display: flex; flex-direction: column; justify-content: flex-end; align-items: center; padding-bottom: 6px; transition: all 0.15s; cursor: pointer; margin-left: 2px; flex-shrink: 0; }
     .wk:hover { background: #f0f0f0; }
-    .wk.lit { background: #ff6b6b; box-shadow: 0 0 20px rgba(255,107,107,0.7); }
+    .wk.lit { background: var(--color-primary); box-shadow: 0 0 20px rgba(77, 182, 172, 0.7); }
     .wk .kn { font-size: 0.6em; color: #444; font-weight: bold; }
     .wk .ki { font-size: 0.45em; color: #999; }
     
     .bk { width: 30px; height: 95px; background: #222; border-radius: 0 0 4px 4px; position: absolute; top: 0; z-index: 2; display: flex; flex-direction: column; justify-content: flex-end; align-items: center; padding-bottom: 4px; cursor: pointer; }
     .bk:hover { background: #333; }
-    .bk.lit { background: #ff6b6b; box-shadow: 0 0 15px rgba(255,107,107,0.7); }
+    .bk.lit { background: var(--color-primary); box-shadow: 0 0 15px rgba(77, 182, 172, 0.7); }
     .bk .kn { font-size: 0.5em; color: #888; font-weight: bold; }
     
     .controls { display: flex; justify-content: center; gap: 8px; margin: 10px 0; flex-wrap: wrap; }
-    .play-btn { background: #e94560; color: white; border: none; border-radius: 50%; width: 60px; height: 60px; font-size: 1.3em; cursor: pointer; transition: 0.3s; }
-    .play-btn:hover { transform: scale(1.08); }
-    .play-btn:disabled { background: #555; cursor: not-allowed; }
+    .play-btn { background: var(--grad-primary); color: var(--color-dark); border: none; border-radius: 50%; width: 60px; height: 60px; font-size: 1.3em; font-weight: 800; cursor: pointer; transition: var(--transition-smooth); box-shadow: 0 4px 15px rgba(77, 182, 172, 0.3); position: relative; overflow: hidden; }
+    .play-btn::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: rgba(255, 255, 255, 0.2);
+      transition: left 0.3s ease;
+      border-radius: 50%;
+    }
+    .play-btn:hover { box-shadow: 0 6px 20px rgba(77, 182, 172, 0.4); transform: translateY(-2px) scale(1.05); }
+    .play-btn:hover::before { left: 100%; }
+    .play-btn:disabled { background: #555; cursor: not-allowed; transform: none; box-shadow: none; }
     
-    .secondary-btn { background: #333; color: white; border: none; border-radius: 10px; padding: 8px 14px; font-size: 0.8em; cursor: pointer; }
-    .secondary-btn:hover { background: #444; }
+    .secondary-btn { background: transparent; color: var(--color-primary); border: 2px solid var(--color-primary); border-radius: var(--radius-btn); padding: 8px 16px; font-size: 0.8em; font-weight: 700; cursor: pointer; font-family: var(--font-body); transition: var(--transition-smooth); }
+    .secondary-btn:hover { background: rgba(77, 182, 172, 0.1); box-shadow: 0 4px 15px rgba(77, 182, 172, 0.2); }
     
-    .speed-select { background: #333; color: white; border: none; border-radius: 8px; padding: 7px 10px; font-size: 0.8em; cursor: pointer; }
+    .speed-select { background: var(--color-surface); color: var(--text-primary); border: 2px solid var(--color-border); border-radius: var(--radius-sm); padding: 7px 10px; font-size: 0.8em; cursor: pointer; font-family: var(--font-body); }
     
-    .info-box { background: #0f3460; border-radius: 10px; padding: 10px; margin: 6px 0; text-align: center; }
-    .info-box h3 { color: #e94560; margin-bottom: 4px; font-size: 0.85em; }
-    .info-box p { font-size: 0.8em; color: #ccc; }
+    .info-box { background: var(--color-surface); border-radius: var(--radius-md); padding: var(--spacing-sm); margin: var(--spacing-xs) 0; text-align: center; border: 2px solid var(--color-border); }
+    .info-box h3 { color: var(--color-primary); margin-bottom: var(--spacing-xs); font-size: 0.85em; font-family: var(--font-title); }
+    .info-box p { font-size: 0.8em; color: var(--text-secondary); }
     
-    .lesson-progress { background: #333; border-radius: 8px; height: 14px; margin: 8px 0; overflow: hidden; }
-    .lesson-progress-fill { background: linear-gradient(90deg, #e94560, #f39c12); height: 100%; border-radius: 8px; transition: 0.3s; }
-    .lesson-status { font-size: 0.8em; color: #888; margin-top: 4px; }
-    .lesson-instruction { font-size: 0.85em; color: #f39c12; margin: 6px 0; font-weight: bold; }
+    .lesson-progress { background: var(--color-border); border-radius: var(--radius-sm); height: 14px; margin: var(--spacing-sm) 0; overflow: hidden; box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.3); }
+    .lesson-progress-fill { background: var(--grad-primary); height: 100%; border-radius: var(--radius-sm); transition: 0.3s; }
+    .lesson-status { font-size: 0.8em; color: var(--text-secondary); margin-top: var(--spacing-xs); }
+    .lesson-instruction { font-size: 0.85em; color: var(--color-accent); margin: var(--spacing-xs) 0; font-weight: bold; }
     
     .note-hint-row { display: flex; justify-content: center; gap: 5px; margin: 8px 0; flex-wrap: wrap; }
     .note-hint-btn { padding: 5px 10px; border-radius: 15px; font-size: 0.8em; font-weight: bold; cursor: pointer; transition: 0.2s; }
     .note-hint-btn:hover { transform: scale(1.1); }
     
-    .feedback { position: fixed; bottom: 18px; left: 50%; transform: translateX(-50%); background: #e94560; color: white; padding: 9px 20px; border-radius: 22px; font-weight: bold; font-size: 0.95em; opacity: 0; transition: 0.3s; pointer-events: none; z-index: 100; }
-    .feedback.show { opacity: 1; }
+    .feedback { position: fixed; bottom: var(--spacing-lg); left: 50%; transform: translateX(-50%) translateY(120%); background: rgba(22, 33, 62, 0.95); color: var(--text-primary); padding: var(--spacing-sm) var(--spacing-lg); border-radius: var(--radius-btn); border-left: 4px solid var(--color-primary); font-weight: 600; font-size: 0.95em; opacity: 0; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); pointer-events: none; z-index: 100; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3); }
+    .feedback.show { opacity: 1; transform: translateX(-50%) translateY(0); }
     .stars { font-size: 1.4em; margin: 4px 0; }
     
-    .version-badge { font-size: 0.7em; background: #333; padding: 2px 8px; border-radius: 8px; margin-left: 5px; }
+    .version-badge { font-size: 0.7em; background: var(--color-border); padding: 2px 8px; border-radius: var(--radius-sm); margin-left: 5px; color: var(--text-secondary); }
+    
+    /* Animations */
+    @keyframes slideUp {
+      from { opacity: 0; transform: translateY(30px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    .section.active {
+      animation: slideUp 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    
+    /* Focus states for accessibility */
+    .tab:focus-visible,
+    .lesson-btn:focus-visible,
+    .play-btn:focus-visible,
+    .back-btn:focus-visible,
+    .secondary-btn:focus-visible {
+      outline: 2px solid var(--color-primary);
+      outline-offset: 2px;
+    }
+    
+    /* Reduced motion */
+    @media (prefers-reduced-motion: reduce) {
+      * {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+      }
+    }
+    
+    /* Responsive CAPINI */
+    @media (max-width: 480px) {
+      .header { padding: var(--spacing-sm); }
+      .hero { padding: var(--spacing-md) var(--spacing-sm); }
+      .hero-icon { font-size: 2em; }
+      .hero-title { font-size: 1.2em; }
+      .hero-subtitle { font-size: 0.75em; }
+      .tabs { gap: 2px; padding: var(--spacing-xs); }
+      .tab { padding: var(--spacing-xs) var(--spacing-sm); font-size: 0.75em; }
+      .card { padding: var(--spacing-md); margin-bottom: var(--spacing-sm); }
+      .lesson-btn { padding: 12px 16px; }
+      .lesson-btn .title { font-size: 0.9em; }
+      .content { padding: var(--spacing-xs) var(--spacing-xs) 80px; }
+      .piano { min-width: 350px; height: 120px; }
+      .wk { width: 32px; height: 120px; }
+      .bk { width: 22px; height: 75px; }
+      .play-btn { width: 50px; height: 50px; font-size: 1.1em; }
+    }
+    
+    @media (max-width: 360px) {
+      .hero-title { font-size: 1em; }
+      .hero-subtitle { font-size: 0.7em; }
+      .tab { font-size: 0.7em; padding: 6px 8px; }
+      .piano { min-width: 300px; }
+      .wk { width: 28px; }
+      .bk { width: 18px; }
+    }
   </style>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
 
 <div class="header">
-  <div style="font-size:1.6em;">🎹</div>
-  <h1>Capini - AprendiendoLuk <span class="version-badge">v3.0-Luk</span></h1>
-  <div style="font-size:0.75em;color:#aaa;margin-top:4px;">Luk, 6 años · Aprende piano jugando · Aprende piano jugando</div>
+  <div class="header-inner">
+    <div class="header-logo">Capini - AprendiendoLuk</div>
+    <div class="header-tagline">Creciendo Juntos</div>
+  </div>
+</div>
+
+<div class="hero">
+  <div class="hero-icon">🎹</div>
+  <h1 class="hero-title">Capini - AprendiendoLuk <span class="version-badge">v3.0-Luk</span></h1>
+  <div class="hero-subtitle">Luk, 6 años · Aprende piano jugando</div>
 </div>
 
 <div class="tabs">
@@ -114,10 +309,10 @@
       <div class="stars" id="homeStars">—</div>
       <p id="homeProgress">0 de 5 lecciones completadas</p>
     </div>
-    <div class="card" style="background:#0f3460;">
-      <h2>📲 ¡Descarga la App!</h2>
+    <div class="card" style="background: rgba(22, 33, 62, 0.95); border-color: var(--color-accent);">
+      <h2 style="color: var(--color-accent);">📲 ¡Descarga la App!</h2>
       <p>Usa la app completa en tu celular</p>
-      <button class="play-btn" style="background:#25d366;" onclick="window.open('https://t.me/Capinibot?start=download','_blank');">📥 Descargar App</button>
+      <button class="play-btn" onclick="window.open('https://t.me/Capinibot?start=download','_blank');">📥</button>
     </div>
   </div>
   
@@ -140,7 +335,7 @@
       <div class="name-mode-bar">
         <button class="name-mode-btn active" id="mode-do" onclick="setMode('do')"><span>🎵</span> DO RE MI</button>
         <button class="name-mode-btn" id="mode-letter" onclick="setMode('letter')"><span>🔤</span> A B C D</button>
-        <button class="name-mode-btn" id="mode-number" onclick="setMode('number')"><span>🔢</span> 1 2 3 4</button>
+        <button class="name-mode-btn" id="mode-number" onclick="setMode('number')"><span>🔢</span> 1 2 3 4 5 6 7</button>
       </div>
       
       <div class="note-hint-row" id="noteHint"></div>
@@ -175,7 +370,7 @@
     <div class="name-mode-bar">
       <button class="name-mode-btn active" id="piano-mode-do" onclick="setMode('do');renderPiano()"><span>🎵</span> DO RE MI</button>
       <button class="name-mode-btn" id="piano-mode-letter" onclick="setMode('letter');renderPiano()"><span>🔤</span> A B C D</button>
-      <button class="name-mode-btn" id="piano-mode-number" onclick="setMode('number');renderPiano()"><span>🔢</span> 1 2 3 4</button>
+      <button class="name-mode-btn" id="piano-mode-number" onclick="setMode('number');renderPiano()"><span>🔢</span> 1 2 3 4 5 6 7</button>
     </div>
     
     <div class="card">
@@ -268,6 +463,14 @@ function playNote(name) {
 }
 
 function getName(name) {
+  const note = NOTES.find(n => n.name === name);
+  if (!note) return name;
+  // For number mode, use whiteIdx (0-6) for natural notes, show empty for sharps
+  if (currentMode === 'number') {
+    if (note.isSharp) return ''; // Black keys show no number
+    return NAME_MODES.number[note.whiteIdx] || name;
+  }
+  // For do and letter modes, use the full array index
   const idx = NOTES.findIndex(n => n.name === name);
   return NAME_MODES[currentMode][idx] || name;
 }
@@ -522,5 +725,6 @@ renderPiano();
 updateHome();
 </script>
 
+<div class="footer"><div class="footer-logo">Capini - AprendiendoLuk</div><div class="footer-tagline">Creciendo Juntos</div></div>
 </body>
 </html>
