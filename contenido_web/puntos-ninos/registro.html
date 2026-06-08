@@ -5,114 +5,128 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>⭐ Puntos Kids</title>
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⭐</text></svg>">
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
-    body { font-family: 'Segoe UI', sans-serif; background: #1a1a2e; color: #fff; min-height: 100vh; display: flex; flex-direction: column; align-items: center; padding: 15px; }
-    h1 { color: #ffd700; margin-bottom: 15px; font-size: 1.8em; }
+    body { font-family: 'Nunito', sans-serif; background: #F5F5F5; color: #333; min-height: 100vh; display: flex; flex-direction: column; align-items: center; padding: 20px; }
+    h1 { font-family: 'Montserrat', sans-serif; color: #4DB6AC; margin-bottom: 20px; font-size: 2em; font-weight: 700; }
 
-    .selector-nino { display: flex; gap: 8px; margin-bottom: 15px; flex-wrap: wrap; justify-content: center; }
-    .nino-btn { padding: 8px 16px; border: 2px solid #444; border-radius: 10px; background: #2a2a4a; color: #fff; font-size: 0.95em; cursor: pointer; transition: all 0.2s; }
-    .nino-btn:hover { border-color: #ffd700; }
-    .nino-btn.active { border-color: #ffd700; background: #3a3a6a; box-shadow: 0 0 10px #ffd70044; }
+    .card { background: #fff; border-radius: 20px; padding: 20px; width: 100%; max-width: 480px; box-shadow: 0 4px 15px #0001; }
 
-    .puntos-display { font-size: 2.5em; color: #ffd700; margin: 15px 0; font-weight: bold; }
+    .selector-nino { display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; justify-content: center; }
+    .nino-btn { display: flex; flex-direction: column; align-items: center; gap: 4px; padding: 12px 16px; border: 2px solid #B2DFDB; border-radius: 16px; background: #fff; color: #333; font-size: 0.9em; font-weight: 600; cursor: pointer; transition: all 0.2s; min-width: 90px; }
+    .nino-btn .icon { font-size: 1.8em; }
+    .nino-btn:hover { border-color: #4DB6AC; background: #E0F2F1; }
+    .nino-btn.active { border-color: #4DB6AC; background: #E0F2F1; box-shadow: 0 0 0 3px #B2DFDB; }
 
-    .puntos-botones { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; margin-bottom: 15px; width: 100%; max-width: 420px; }
-    .pto-btn { padding: 12px 5px; border: 2px solid #444; border-radius: 10px; background: #2a2a4a; color: #fff; font-size: 1em; cursor: pointer; transition: all 0.2s; text-align: center; }
-    .pto-btn:hover { border-color: #4caf50; background: #2a4a2a; }
+    .puntos-display { font-family: 'Montserrat', sans-serif; font-size: 2.8em; color: #4DB6AC; margin: 15px 0; font-weight: 700; text-align: center; }
+
+    .puntos-botones { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; margin-bottom: 15px; }
+    .pto-btn { padding: 12px 4px; border: 2px solid #F48FB1; border-radius: 12px; background: #fff; color: #333; font-size: 1em; font-weight: 700; cursor: pointer; transition: all 0.2s; text-align: center; }
+    .pto-btn:hover { border-color: #F48FB1; background: #FCE4EC; }
     .pto-btn:active { transform: scale(0.95); }
 
     .action-bar { display: flex; gap: 10px; margin-bottom: 10px; flex-wrap: wrap; justify-content: center; }
-    .registrar-btn { padding: 12px 25px; background: #4caf50; color: #fff; border: none; border-radius: 12px; font-size: 1.1em; font-weight: bold; cursor: pointer; transition: all 0.2s; }
-    .registrar-btn:hover { background: #66bb6a; transform: scale(1.05); }
-    .quitar-btn { padding: 12px 25px; background: #e74c3c; color: #fff; border: none; border-radius: 12px; font-size: 1.1em; font-weight: bold; cursor: pointer; transition: all 0.2s; }
-    .quitar-btn:hover { background: #c0392b; transform: scale(1.05); }
-    .msg { margin-top: 8px; color: #4caf50; font-size: 0.9em; height: 18px; }
+    .registrar-btn { padding: 12px 24px; background: #4DB6AC; color: #fff; border: none; border-radius: 12px; font-size: 1em; font-weight: 700; cursor: pointer; transition: all 0.2s; font-family: 'Nunito', sans-serif; }
+    .registrar-btn:hover { background: #3D9E91; transform: scale(1.05); }
+    .quitar-btn { padding: 12px 24px; background: #F48FB1; color: #fff; border: none; border-radius: 12px; font-size: 1em; font-weight: 700; cursor: pointer; transition: all 0.2s; font-family: 'Nunito', sans-serif; }
+    .quitar-btn:hover { background: #E91E63; transform: scale(1.05); }
+    .msg { margin-top: 8px; color: #4DB6AC; font-size: 0.9em; font-weight: 600; height: 20px; text-align: center; }
 
-    .tabs { display: flex; gap: 5px; margin: 20px 0 10px; }
-    .tab { padding: 8px 16px; border: 2px solid #444; border-radius: 8px; background: #2a2a4a; color: #aaa; font-size: 0.9em; cursor: pointer; }
-    .tab.active { border-color: #ffd700; color: #ffd700; background: #3a3a6a; }
+    .tabs { display: flex; gap: 6px; margin: 20px 0 12px; }
+    .tab { flex: 1; padding: 8px; border: 2px solid #B2DFDB; border-radius: 10px; background: #fff; color: #4DB6AC; font-size: 0.85em; font-weight: 600; cursor: pointer; text-align: center; font-family: 'Nunito', sans-serif; }
+    .tab.active { background: #4DB6AC; color: #fff; border-color: #4DB6AC; }
 
-    .totales { margin-top: 10px; background: #2a2a4a; padding: 15px; border-radius: 12px; width: 100%; max-width: 500px; }
-    .totales h2 { color: #aaa; margin-bottom: 10px; font-size: 1.1em; }
+    .totales { background: #E0F2F1; padding: 15px; border-radius: 16px; margin-top: 10px; }
+    .totales h2 { color: #4DB6AC; margin-bottom: 10px; font-size: 1em; font-family: 'Montserrat', sans-serif; }
     .totales-lista { list-style: none; }
-    .totales-lista li { display: flex; justify-content: space-between; padding: 6px 0; border-bottom: 1px solid #3a3a5a; }
+    .totales-lista li { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px solid #B2DFDB; }
     .totales-lista li:last-child { border-bottom: none; }
-    .totales-lista .pos { color: #888; font-size: 0.8em; width: 20px; }
-    .totales-lista .tnom { color: #4caf50; font-weight: bold; }
-    .totales-lista .tpts { color: #ffd700; font-weight: bold; }
+    .totales-lista .pos { font-size: 1.2em; width: 30px; text-align: center; }
+    .totales-lista .tnom { font-weight: 700; color: #333; }
+    .totales-lista .tpts { color: #4DB6AC; font-weight: 700; font-size: 1.1em; }
 
-    .historial { margin-top: 20px; width: 100%; max-width: 500px; }
-    .historial h2 { color: #aaa; margin-bottom: 10px; font-size: 1.1em; }
-    .historial-lista { list-style: none; max-height: 250px; overflow-y: auto; }
-    .historial-lista li { background: #2a2a4a; padding: 8px 12px; border-radius: 8px; margin-bottom: 4px; display: flex; justify-content: space-between; align-items: center; }
-    .historial-lista .nino { color: #4caf50; font-weight: bold; }
-    .historial-lista .pts { color: #ffd700; font-weight: bold; }
-    .historial-lista .pts-neg { color: #e74c3c; font-weight: bold; }
-    .historial-lista .fecha { color: #888; font-size: 0.8em; }
+    .historial { margin-top: 20px; }
+    .historial h2 { color: #4DB6AC; margin-bottom: 10px; font-size: 1em; font-family: 'Montserrat', sans-serif; }
+    .historial-lista { list-style: none; max-height: 200px; overflow-y: auto; }
+    .historial-lista li { background: #fff; padding: 8px 12px; border-radius: 10px; margin-bottom: 4px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 1px 4px #0001; }
+    .historial-lista .nino { font-weight: 700; color: #333; }
+    .historial-lista .pts { font-weight: 700; color: #4DB6AC; }
+    .historial-lista .pts-neg { color: #F48FB1; font-weight: 700; }
+    .historial-lista .fecha { color: #999; font-size: 0.8em; }
 
-    .reset-btn { margin-top: 20px; padding: 8px 20px; background: #c0392b; color: #fff; border: none; border-radius: 8px; cursor: pointer; font-size: 0.85em; }
-    .reset-btn:hover { background: #e74c3c; }
+    .reset-btn { margin-top: 20px; padding: 8px 20px; background: #fff; color: #F48FB1; border: 2px solid #F48FB1; border-radius: 8px; cursor: pointer; font-size: 0.85em; font-family: 'Nunito', sans-serif; font-weight: 600; }
+    .reset-btn:hover { background: #FCE4EC; }
 
     @media (max-width: 400px) {
-      .puntos-botones { grid-template-columns: repeat(5, 1fr); gap: 5px; }
-      .pto-btn { padding: 10px 3px; font-size: 0.9em; }
-      .puntos-display { font-size: 2em; }
+      .puntos-botones { gap: 5px; }
+      .pto-btn { padding: 10px 2px; font-size: 0.9em; }
+      .puntos-display { font-size: 2.2em; }
+      .nino-btn { min-width: 80px; padding: 10px 12px; }
     }
   </style>
 </head>
 <body>
-  <h1>⭐ Registro de Puntos</h1>
+  <h1>⭐ Puntos Kids</h1>
 
-  <div class="selector-nino">
-    <button class="nino-btn active" onclick="selNino('Luke')">Luke</button>
-    <button class="nino-btn" onclick="selNino('Dalia')">Dalia</button>
-    <button class="nino-btn" onclick="selNino('Iris')">Iris</button>
+  <div class="card">
+    <div class="selector-nino">
+      <button class="nino-btn active" onclick="selNino('Luke')">
+        <span class="icon">👦</span>
+        <span>Luke</span>
+      </button>
+      <button class="nino-btn" onclick="selNino('Dalia')">
+        <span class="icon">👧</span>
+        <span>Dalia</span>
+      </button>
+      <button class="nino-btn" onclick="selNino('Iris')">
+        <span class="icon">👶</span>
+        <span>Iris</span>
+      </button>
+    </div>
+
+    <div class="puntos-display" id="puntos-display">+100</div>
+
+    <div class="puntos-botones">
+      <button class="pto-btn" onclick="selPts(100, this)">100</button>
+      <button class="pto-btn" onclick="selPts(200, this)">200</button>
+      <button class="pto-btn" onclick="selPts(300, this)">300</button>
+      <button class="pto-btn" onclick="selPts(400, this)">400</button>
+      <button class="pto-btn" onclick="selPts(500, this)">500</button>
+    </div>
+
+    <div class="action-bar">
+      <button class="registrar-btn" onclick="registrar()">✅ Dar puntos</button>
+      <button class="quitar-btn" onclick="quitar()">❌ Quitar puntos</button>
+    </div>
+    <div class="msg" id="msg"></div>
+
+    <div class="tabs">
+      <button class="tab active" id="tab-diario" onclick="verDiario()">📅 Hoy</button>
+      <button class="tab" id="tab-semanal" onclick="verSemanal()">📆 Semana</button>
+      <button class="tab" id="tab-total" onclick="verTotal()">🏆 Total</button>
+    </div>
+
+    <div class="totales">
+      <h2 id="totales-titulo">Puntos de hoy</h2>
+      <ul class="totales-lista" id="totales"></ul>
+    </div>
+
+    <div class="historial">
+      <h2>📋 Últimos registros</h2>
+      <ul class="historial-lista" id="historial"></ul>
+    </div>
+
+    <button class="reset-btn" onclick="resetear()">🗑️ Limpiar todo</button>
   </div>
-
-  <div class="puntos-display" id="puntos-display">+100</div>
-
-  <div class="puntos-botones">
-    <button class="pto-btn" onclick="selPts(100, this)">100</button>
-    <button class="pto-btn" onclick="selPts(200, this)">200</button>
-    <button class="pto-btn" onclick="selPts(300, this)">300</button>
-    <button class="pto-btn" onclick="selPts(400, this)">400</button>
-    <button class="pto-btn" onclick="selPts(500, this)">500</button>
-  </div>
-
-  <div class="action-bar">
-    <button class="registrar-btn" onclick="registrar()">✅ Dar puntos</button>
-    <button class="quitar-btn" onclick="quitar()">❌ Quitar puntos</button>
-  </div>
-  <div class="msg" id="msg"></div>
-
-  <div class="tabs">
-    <button class="tab active" id="tab-diario" onclick="verDiario()">📅 Hoy</button>
-    <button class="tab" id="tab-semanal" onclick="verSemanal()">📆 Esta semana</button>
-    <button class="tab" id="tab-total" onclick="verTotal()">🏆 Total</button>
-  </div>
-
-  <div class="totales">
-    <h2 id="totales-titulo">Puntos de hoy</h2>
-    <ul class="totales-lista" id="totales"></ul>
-  </div>
-
-  <div class="historial">
-    <h2>📋 Últimos registros</h2>
-    <ul class="historial-lista" id="historial"></ul>
-  </div>
-
-  <button class="reset-btn" onclick="resetear()">🗑️ Limpiar todo</button>
 
   <script>
     let nino = 'Luke';
     let puntos = 100;
     let vista = 'diario';
-    const storageKey = 'puntos_kids_v3';
+    const storageKey = 'puntos_kids_v4';
 
-    function getToday() {
-      return new Date().toISOString().split('T')[0];
-    }
+    function getToday() { return new Date().toISOString().split('T')[0]; }
 
     function getWeekKey(d) {
       const date = new Date(d);
@@ -120,10 +134,7 @@
       const dayNum = date.getDay();
       const diff = date.getDate() - dayNum + (dayNum === 0 ? -6 : 1);
       const monday = new Date(date.setDate(diff));
-      const y = monday.getFullYear();
-      const m = String(monday.getMonth() + 1).padStart(2, '0');
-      const day = String(monday.getDate()).padStart(2, '0');
-      return `${y}-${m}-${day}`;
+      return `${monday.getFullYear()}-${String(monday.getMonth()+1).padStart(2,'0')}-${String(monday.getDate()).padStart(2,'0')}`;
     }
 
     function selNino(n) {
@@ -135,8 +146,8 @@
     function selPts(p, el) {
       puntos = p;
       document.getElementById('puntos-display').textContent = `+${puntos}`;
-      document.querySelectorAll('.pto-btn').forEach(b => b.style.borderColor = '#444');
-      el.style.borderColor = '#4caf50';
+      document.querySelectorAll('.pto-btn').forEach(b => b.style.borderColor = '#F48FB1');
+      el.style.borderColor = '#E91E63';
     }
 
     function getData() {
@@ -162,7 +173,7 @@
     function verSemanal() { vista = 'semanal'; document.querySelectorAll('.tab').forEach(t => t.classList.remove('active')); document.getElementById('tab-semanal').classList.add('active'); document.getElementById('totales-titulo').textContent = 'Puntos de esta semana'; render(getData()); }
     function verTotal() { vista = 'total'; document.querySelectorAll('.tab').forEach(t => t.classList.remove('active')); document.getElementById('tab-total').classList.add('active'); document.getElementById('totales-titulo').textContent = 'Total acumulado'; render(getData()); }
 
-    function fmt(d) {
+    function fmt() {
       return new Date().toLocaleString('es-MX', { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' });
     }
 
@@ -172,7 +183,8 @@
       calcTotales(data, vista).forEach((r, i) => {
         const li = document.createElement('li');
         const pos = i === 0 ? '🥇' : i === 1 ? '🥈' : i === 2 ? '🥉' : `${i+1}º`;
-        li.innerHTML = `<span><span class="pos">${pos}</span> <span class="tnom">${r.n}</span></span><span class="tpts">⭐ ${r.p}</span>`;
+        const icon = r.n === 'Luke' ? '👦' : r.n === 'Dalia' ? '👧' : '👶';
+        li.innerHTML = `<span><span class="pos">${pos}</span><span class="tnom">${icon} ${r.n}</span></span><span class="tpts">⭐ ${r.p}</span>`;
         tot.appendChild(li);
       });
       const hist = document.getElementById('historial');
