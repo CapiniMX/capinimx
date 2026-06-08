@@ -80,7 +80,7 @@
         <span>Dalia</span>
       </button>
       <button class="nino-btn" onclick="selNino('Iris')">
-        <span class="icon">👶</span>
+        <span class="icon">👻</span>
         <span>Iris</span>
       </button>
     </div>
@@ -183,7 +183,7 @@
       calcTotales(data, vista).forEach((r, i) => {
         const li = document.createElement('li');
         const pos = i === 0 ? '🥇' : i === 1 ? '🥈' : i === 2 ? '🥉' : `${i+1}º`;
-        const icon = r.n === 'Luke' ? '👦' : r.n === 'Dalia' ? '👧' : '👶';
+        const icon = r.n === 'Luke' ? '👦' : r.n === 'Dalia' ? '👧' : '👻';
         li.innerHTML = `<span><span class="pos">${pos}</span><span class="tnom">${icon} ${r.n}</span></span><span class="tpts">⭐ ${r.p}</span>`;
         tot.appendChild(li);
       });
