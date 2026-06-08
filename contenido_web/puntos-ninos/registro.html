@@ -4,7 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>⭐ Puntos Kids</title>
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⭐</text></svg>">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%234DB6AC'/><text x='50' y='68' font-size='55' text-anchor='middle' fill='white'>🏆</text></svg>">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -105,6 +106,18 @@
       <button class="tab active" id="tab-diario" onclick="verDiario()">📅 Hoy</button>
       <button class="tab" id="tab-semanal" onclick="verSemanal()">📆 Semana</button>
       <button class="tab" id="tab-total" onclick="verTotal()">🏆 Total</button>
+      <button class="tab" id="tab-graficos" onclick="verGraficos()">📊 Gráficos</button>
+    </div>
+
+    <div id="seccion-graficos" style="display:none">
+      <div class="totales">
+        <h2>📊 Puntos de la semana</h2>
+        <canvas id="chartSemanal" height="160"></canvas>
+      </div>
+      <div class="totales" style="margin-top:12px">
+        <h2>🥧 Total acumulado</h2>
+        <canvas id="chartTotal" height="160"></canvas>
+      </div>
     </div>
 
     <div class="totales">
@@ -169,9 +182,83 @@
       return result.sort((a, b) => b.p - a.p);
     }
 
-    function verDiario() { vista = 'diario'; document.querySelectorAll('.tab').forEach(t => t.classList.remove('active')); document.getElementById('tab-diario').classList.add('active'); document.getElementById('totales-titulo').textContent = 'Puntos de hoy'; render(getData()); }
-    function verSemanal() { vista = 'semanal'; document.querySelectorAll('.tab').forEach(t => t.classList.remove('active')); document.getElementById('tab-semanal').classList.add('active'); document.getElementById('totales-titulo').textContent = 'Puntos de esta semana'; render(getData()); }
-    function verTotal() { vista = 'total'; document.querySelectorAll('.tab').forEach(t => t.classList.remove('active')); document.getElementById('tab-total').classList.add('active'); document.getElementById('totales-titulo').textContent = 'Total acumulado'; render(getData()); }
+    let chartS, chartT;
+
+    function verGraficos() {
+      vista = 'graficos';
+      document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+      document.getElementById('tab-graficos').classList.add('active');
+      document.getElementById('totales-titulo').textContent = 'Gráficos';
+      document.getElementById('seccion-graficos').style.display = 'block';
+      renderGraficos(getData());
+    }
+
+    function renderGraficos(data) {
+      const kids = ['Luke','Dalia','Iris'];
+      const icons = ['👦','👧','👻'];
+      const colors = ['#4DB6AC','#F48FB1','#B2DFDB'];
+      const borderColors = ['#3D9E91','#E91E63','#80CBC4'];
+
+      // Semana
+      const semanaLabels = [];
+      const semanaData = [[],[],[]];
+      for (let i = 6; i >= 0; i--) {
+        const d = new Date();
+        d.setDate(d.getDate() - i);
+        const key = d.toISOString().split('T')[0];
+        const label = d.toLocaleDateString('es-MX', { weekday: 'short', day: 'numeric' });
+        semanaLabels.push(label);
+        kids.forEach((k, idx) => {
+          if (data.diario[key]) {
+            semanaData[idx].push(data.diario[key][k] || 0);
+          } else {
+            semanaData[idx].push(0);
+          }
+        });
+      }
+
+      if (chartS) chartS.destroy();
+      const ctxS = document.getElementById('chartSemanal').getContext('2d');
+      chartS = new Chart(ctxS, {
+        type: 'bar',
+        data: {
+          labels: semanaLabels,
+          datasets: kids.map((k, i) => ({
+            label: `${icons[i]} ${k}`,
+            data: semanaData[i],
+            backgroundColor: colors[i],
+            borderColor: borderColors[i],
+            borderWidth: 2,
+            borderRadius: 8,
+          }))
+        },
+        options: {
+          responsive: true,
+          plugins: { legend: { position: 'bottom', labels: { color: '#333', font: { family: 'Nunito' } } } },
+          scales: { y: { beginAtZero: true, ticks: { color: '#888' }, grid: { color: '#eee' } }, x: { ticks: { color: '#888' }, grid: { display: false } } }
+        }
+      });
+
+      // Total
+      const totalData = kids.map(k => data.totales[k] || 0);
+      if (chartT) chartT.destroy();
+      const ctxT = document.getElementById('chartTotal').getContext('2d');
+      chartT = new Chart(ctxT, {
+        type: 'doughnut',
+        data: {
+          labels: kids.map((k, i) => `${icons[i]} ${k}`),
+          datasets: [{ data: totalData, backgroundColor: colors, borderColor: '#fff', borderWidth: 3 }]
+        },
+        options: {
+          responsive: true,
+          plugins: { legend: { position: 'bottom', labels: { color: '#333', font: { family: 'Nunito' } } } }
+        }
+      });
+    }
+
+    function verDiario() { vista = 'diario'; document.querySelectorAll('.tab').forEach(t => t.classList.remove('active')); document.getElementById('tab-diario').classList.add('active'); document.getElementById('totales-titulo').textContent = 'Puntos de hoy'; document.getElementById('seccion-graficos').style.display = 'none'; render(getData()); }
+    function verSemanal() { vista = 'semanal'; document.querySelectorAll('.tab').forEach(t => t.classList.remove('active')); document.getElementById('tab-semanal').classList.add('active'); document.getElementById('totales-titulo').textContent = 'Puntos de esta semana'; document.getElementById('seccion-graficos').style.display = 'none'; render(getData()); }
+    function verTotal() { vista = 'total'; document.querySelectorAll('.tab').forEach(t => t.classList.remove('active')); document.getElementById('tab-total').classList.add('active'); document.getElementById('totales-titulo').textContent = 'Total acumulado'; document.getElementById('seccion-graficos').style.display = 'none'; render(getData()); }
 
     function fmt() {
       return new Date().toLocaleString('es-MX', { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' });
