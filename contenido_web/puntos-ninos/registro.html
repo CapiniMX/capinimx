@@ -21,8 +21,11 @@
     .pto-btn:hover { border-color: #4caf50; background: #2a4a2a; }
     .pto-btn:active { transform: scale(0.95); }
 
-    .registrar-btn { padding: 12px 35px; background: #ffd700; color: #1a1a2e; border: none; border-radius: 12px; font-size: 1.1em; font-weight: bold; cursor: pointer; transition: all 0.2s; }
-    .registrar-btn:hover { background: #ffed4a; transform: scale(1.05); }
+    .action-bar { display: flex; gap: 10px; margin-bottom: 10px; flex-wrap: wrap; justify-content: center; }
+    .registrar-btn { padding: 12px 25px; background: #4caf50; color: #fff; border: none; border-radius: 12px; font-size: 1.1em; font-weight: bold; cursor: pointer; transition: all 0.2s; }
+    .registrar-btn:hover { background: #66bb6a; transform: scale(1.05); }
+    .quitar-btn { padding: 12px 25px; background: #e74c3c; color: #fff; border: none; border-radius: 12px; font-size: 1.1em; font-weight: bold; cursor: pointer; transition: all 0.2s; }
+    .quitar-btn:hover { background: #c0392b; transform: scale(1.05); }
     .msg { margin-top: 8px; color: #4caf50; font-size: 0.9em; height: 18px; }
 
     .tabs { display: flex; gap: 5px; margin: 20px 0 10px; }
@@ -34,9 +37,9 @@
     .totales-lista { list-style: none; }
     .totales-lista li { display: flex; justify-content: space-between; padding: 6px 0; border-bottom: 1px solid #3a3a5a; }
     .totales-lista li:last-child { border-bottom: none; }
+    .totales-lista .pos { color: #888; font-size: 0.8em; width: 20px; }
     .totales-lista .tnom { color: #4caf50; font-weight: bold; }
     .totales-lista .tpts { color: #ffd700; font-weight: bold; }
-    .totales-lista .tperiodo { color: #888; font-size: 0.85em; }
 
     .historial { margin-top: 20px; width: 100%; max-width: 500px; }
     .historial h2 { color: #aaa; margin-bottom: 10px; font-size: 1.1em; }
@@ -44,6 +47,7 @@
     .historial-lista li { background: #2a2a4a; padding: 8px 12px; border-radius: 8px; margin-bottom: 4px; display: flex; justify-content: space-between; align-items: center; }
     .historial-lista .nino { color: #4caf50; font-weight: bold; }
     .historial-lista .pts { color: #ffd700; font-weight: bold; }
+    .historial-lista .pts-neg { color: #e74c3c; font-weight: bold; }
     .historial-lista .fecha { color: #888; font-size: 0.8em; }
 
     .reset-btn { margin-top: 20px; padding: 8px 20px; background: #c0392b; color: #fff; border: none; border-radius: 8px; cursor: pointer; font-size: 0.85em; }
@@ -65,7 +69,7 @@
     <button class="nino-btn" onclick="selNino('Iris')">Iris</button>
   </div>
 
-  <div class="puntos-display">+100</div>
+  <div class="puntos-display" id="puntos-display">+100</div>
 
   <div class="puntos-botones">
     <button class="pto-btn" onclick="selPts(100, this)">100</button>
@@ -75,7 +79,10 @@
     <button class="pto-btn" onclick="selPts(500, this)">500</button>
   </div>
 
-  <button class="registrar-btn" onclick="registrar()">✅ Registrar puntos</button>
+  <div class="action-bar">
+    <button class="registrar-btn" onclick="registrar()">✅ Dar puntos</button>
+    <button class="quitar-btn" onclick="quitar()">❌ Quitar puntos</button>
+  </div>
   <div class="msg" id="msg"></div>
 
   <div class="tabs">
@@ -100,7 +107,7 @@
     let nino = 'Luke';
     let puntos = 100;
     let vista = 'diario';
-    const storageKey = 'puntos_kids_v2';
+    const storageKey = 'puntos_kids_v3';
 
     function getToday() {
       return new Date().toISOString().split('T')[0];
@@ -126,7 +133,7 @@
 
     function selPts(p, el) {
       puntos = p;
-      document.querySelector('.puntos-display').textContent = `+${puntos}`;
+      document.getElementById('puntos-display').textContent = `+${puntos}`;
       document.querySelectorAll('.pto-btn').forEach(b => b.style.borderColor = '#444');
       el.style.borderColor = '#4caf50';
     }
@@ -137,34 +144,43 @@
 
     function calcTotales(data, filtro) {
       const kids = ['Luke','Dalia','Iris'];
+      let result;
       if (filtro === 'diario') {
         const hoy = getToday();
-        return kids.map(k => ({ n: k, p: (data.diario[hoy] && data.diario[hoy][k]) || 0 }));
+        result = kids.map(k => ({ n: k, p: (data.diario[hoy] && data.diario[hoy][k]) || 0 }));
       } else if (filtro === 'semanal') {
         const semana = getWeekKey(new Date());
-        return kids.map(k => ({ n: k, p: (data.semanal[semana] && data.semanal[semana][k]) || 0 }));
+        result = kids.map(k => ({ n: k, p: (data.semanal[semana] && data.semanal[semana][k]) || 0 }));
       } else {
-        return kids.map(k => ({ n: k, p: data.totales[k] || 0 }));
+        result = kids.map(k => ({ n: k, p: data.totales[k] || 0 }));
       }
+      return result.sort((a, b) => b.p - a.p);
     }
 
     function verDiario() { vista = 'diario'; document.querySelectorAll('.tab').forEach(t => t.classList.remove('active')); document.getElementById('tab-diario').classList.add('active'); document.getElementById('totales-titulo').textContent = 'Puntos de hoy'; render(getData()); }
     function verSemanal() { vista = 'semanal'; document.querySelectorAll('.tab').forEach(t => t.classList.remove('active')); document.getElementById('tab-semanal').classList.add('active'); document.getElementById('totales-titulo').textContent = 'Puntos de esta semana'; render(getData()); }
     function verTotal() { vista = 'total'; document.querySelectorAll('.tab').forEach(t => t.classList.remove('active')); document.getElementById('tab-total').classList.add('active'); document.getElementById('totales-titulo').textContent = 'Total acumulado'; render(getData()); }
 
+    function fmt(d) {
+      return new Date().toLocaleString('es-MX', { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' });
+    }
+
     function render(data) {
       const tot = document.getElementById('totales');
       tot.innerHTML = '';
-      calcTotales(data, vista).forEach(r => {
+      calcTotales(data, vista).forEach((r, i) => {
         const li = document.createElement('li');
-        li.innerHTML = `<span class="tnom">${r.n}</span><span class="tpts">⭐ ${r.p}</span>`;
+        const pos = i === 0 ? '🥇' : i === 1 ? '🥈' : i === 2 ? '🥉' : `${i+1}º`;
+        li.innerHTML = `<span><span class="pos">${pos}</span> <span class="tnom">${r.n}</span></span><span class="tpts">⭐ ${r.p}</span>`;
         tot.appendChild(li);
       });
       const hist = document.getElementById('historial');
       hist.innerHTML = '';
       [...data.historial].reverse().slice(0, 20).forEach(r => {
         const li = document.createElement('li');
-        li.innerHTML = `<span><span class="nino">${r.n}</span> <span class="pts">+${r.p}</span></span><span class="fecha">${r.f}</span>`;
+        const cls = r.p < 0 ? 'pts-neg' : 'pts';
+        const signo = r.p < 0 ? r.p : `+${r.p}`;
+        li.innerHTML = `<span><span class="nino">${r.n}</span> <span class="${cls}">${signo}</span></span><span class="fecha">${r.f}</span>`;
         hist.appendChild(li);
       });
     }
@@ -173,7 +189,7 @@
       const data = getData();
       const hoy = getToday();
       const semana = getWeekKey(new Date());
-      data.historial.push({ n: nino, p: puntos, f: new Date().toLocaleString('es-MX', { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' }) });
+      data.historial.push({ n: nino, p: puntos, f: fmt() });
       data.totales[nino] = (data.totales[nino] || 0) + puntos;
       if (!data.diario[hoy]) data.diario[hoy] = { Luke: 0, Dalia: 0, Iris: 0 };
       data.diario[hoy][nino] = (data.diario[hoy][nino] || 0) + puntos;
@@ -183,6 +199,22 @@
       render(data);
       const m = document.getElementById('msg');
       m.textContent = `✅ +${puntos} para ${nino}`;
+      setTimeout(() => m.textContent = '', 2000);
+    }
+
+    function quitar() {
+      const data = getData();
+      const hoy = getToday();
+      const semana = getWeekKey(new Date());
+      const quitarPts = Math.min(puntos, data.totales[nino] || 0);
+      data.historial.push({ n: nino, p: -quitarPts, f: fmt() });
+      data.totales[nino] = Math.max(0, (data.totales[nino] || 0) - quitarPts);
+      if (data.diario[hoy]) data.diario[hoy][nino] = Math.max(0, (data.diario[hoy][nino] || 0) - quitarPts);
+      if (data.semanal[semana]) data.semanal[semana][nino] = Math.max(0, (data.semanal[semana][nino] || 0) - quitarPts);
+      localStorage.setItem(storageKey, JSON.stringify(data));
+      render(data);
+      const m = document.getElementById('msg');
+      m.textContent = `❌ -${quitarPts} para ${nino}`;
       setTimeout(() => m.textContent = '', 2000);
     }
 
