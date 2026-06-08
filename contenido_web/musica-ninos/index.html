@@ -152,6 +152,12 @@
     .name-mode-bar { display: flex; justify-content: center; gap: var(--spacing-xs); padding: var(--spacing-sm); background: var(--color-surface); border-radius: var(--radius-md); margin: var(--spacing-sm) 0; flex-wrap: wrap; border: 2px solid var(--color-border); }
     .name-mode-btn { padding: var(--spacing-xs) var(--spacing-sm); border-radius: var(--radius-sm); border: 2px solid transparent; font-size: 0.8em; cursor: pointer; font-weight: 700; font-family: var(--font-body); background: transparent; color: var(--text-secondary); transition: var(--transition-smooth); }
     .name-mode-btn.active { border-color: var(--color-primary); color: var(--color-primary); background: rgba(77, 182, 172, 0.1); }
+    
+    .octave-bar { display: flex; justify-content: center; align-items: center; gap: var(--spacing-xs); padding: var(--spacing-xs) var(--spacing-sm); background: var(--color-surface); border-radius: var(--radius-md); margin: var(--spacing-xs) 0; flex-wrap: wrap; border: 2px solid var(--color-border); }
+    .octave-label { font-size: 0.8em; color: var(--text-secondary); font-family: var(--font-body); font-weight: 600; margin-right: var(--spacing-xs); }
+    .octave-btn { padding: 4px 10px; border-radius: var(--radius-sm); border: 2px solid transparent; font-size: 0.75em; cursor: pointer; font-weight: 700; font-family: var(--font-body); background: transparent; color: var(--text-secondary); transition: var(--transition-smooth); }
+    .octave-btn.active { border-color: var(--color-accent); color: var(--color-accent); background: rgba(244, 143, 177, 0.1); }
+    .octave-btn:hover { color: var(--color-accent); background: rgba(244, 143, 177, 0.05); }
     .name-mode-btn span { font-size: 1.1em; }
     
     .piano-section { background: var(--color-surface); border-radius: var(--radius-lg); padding: var(--spacing-sm); margin: var(--spacing-sm) 0; border: 2px solid var(--color-border); }
@@ -373,6 +379,14 @@
       <button class="name-mode-btn" id="piano-mode-number" onclick="setMode('number');renderPiano()"><span>🔢</span> 1 2 3 4 5 6 7</button>
     </div>
     
+    <div class="octave-bar">
+      <span class="octave-label">🎚️ Octava:</span>
+      <button class="octave-btn" id="oct-3" onclick="setOctave(3)">C3</button>
+      <button class="octave-btn active" id="oct-4" onclick="setOctave(4)">C4</button>
+      <button class="octave-btn" id="oct-5" onclick="setOctave(5)">C5</button>
+      <button class="octave-btn" id="oct-6" onclick="setOctave(6)">C6</button>
+    </div>
+    
     <div class="card">
       <h2>🎹 Piano Libre</h2>
       <p>¡Toca libremente! Las teclas se iluminan al presionarlas</p>
@@ -402,6 +416,7 @@ const NAME_MODES = {
   number: ['1','2','3','4','5','6','7']
 };
 let currentMode = 'do';
+let currentOctave = 4; // Default C4
 
 // Notes - whiteIdx maps to position in the 7 white keys
 const NOTES = [
@@ -454,12 +469,21 @@ function playNote(name) {
     const osc = audioCtx.createOscillator();
     const gain = audioCtx.createGain();
     osc.connect(gain); gain.connect(audioCtx.destination);
-    osc.frequency.value = note.freq;
+    // Apply octave multiplier: 2^(octave-4) where 4 is base octave
+    const octaveMultiplier = Math.pow(2, currentOctave - 4);
+    osc.frequency.value = note.freq * octaveMultiplier;
     osc.type = 'triangle';
     gain.gain.setValueAtTime(0.5, audioCtx.currentTime);
     gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.35);
     osc.start(); osc.stop(audioCtx.currentTime + 0.35);
   } catch(e) {}
+}
+
+function setOctave(octave) {
+  currentOctave = octave;
+  document.querySelectorAll('.octave-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('oct-' + octave).classList.add('active');
+  showFeedback(`🎚️ Octava C${octave}`);
 }
 
 function getName(name) {
