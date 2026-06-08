@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>⭐ Puntos Kids</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Segoe UI', sans-serif; background: #1a1a2e; color: #fff; min-height: 100vh; display: flex; flex-direction: column; align-items: center; padding: 20px; }
+    h1 { color: #ffd700; margin-bottom: 20px; font-size: 2em; }
+    .selector-nino { display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; justify-content: center; }
+    .nino-btn { padding: 10px 20px; border: 2px solid #444; border-radius: 12px; background: #2a2a4a; color: #fff; font-size: 1em; cursor: pointer; transition: all 0.2s; }
+    .nino-btn:hover { border-color: #ffd700; }
+    .nino-btn.active { border-color: #ffd700; background: #3a3a6a; box-shadow: 0 0 10px #ffd70044; }
+    .puntos-display { font-size: 3em; color: #ffd700; margin: 20px 0; font-weight: bold; }
+    .puntos-botones { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; margin-bottom: 20px; max-width: 400px; }
+    .pto-btn { padding: 15px; border: 2px solid #444; border-radius: 10px; background: #2a2a4a; color: #fff; font-size: 1.1em; cursor: pointer; transition: all 0.2s; }
+    .pto-btn:hover { border-color: #4caf50; background: #2a4a2a; }
+    .pto-btn:active { transform: scale(0.95); }
+    .registrar-btn { padding: 15px 40px; background: #ffd700; color: #1a1a2e; border: none; border-radius: 12px; font-size: 1.2em; font-weight: bold; cursor: pointer; transition: all 0.2s; }
+    .registrar-btn:hover { background: #ffed4a; transform: scale(1.05); }
+    .historial { margin-top: 30px; width: 100%; max-width: 500px; }
+    .historial h2 { color: #aaa; margin-bottom: 10px; font-size: 1.2em; }
+    .historial-lista { list-style: none; max-height: 300px; overflow-y: auto; }
+    .historial-lista li { background: #2a2a4a; padding: 10px 15px; border-radius: 8px; margin-bottom: 5px; display: flex; justify-content: space-between; align-items: center; }
+    .historial-lista .nino { color: #4caf50; font-weight: bold; }
+    .historial-lista .pts { color: #ffd700; font-weight: bold; }
+    .historial-lista .fecha { color: #888; font-size: 0.85em; }
+    .totales { margin-top: 20px; background: #2a2a4a; padding: 15px; border-radius: 12px; width: 100%; max-width: 500px; }
+    .totales h2 { color: #aaa; margin-bottom: 10px; font-size: 1.1em; }
+    .totales-lista { list-style: none; }
+    .totales-lista li { display: flex; justify-content: space-between; padding: 5px 0; border-bottom: 1px solid #3a3a5a; }
+    .totales-lista li:last-child { border-bottom: none; }
+    .totales-lista .tnom { color: #4caf50; font-weight: bold; }
+    .totales-lista .tpts { color: #ffd700; font-weight: bold; }
+    .reset-btn { margin-top: 20px; padding: 8px 20px; background: #c0392b; color: #fff; border: none; border-radius: 8px; cursor: pointer; font-size: 0.9em; }
+    .reset-btn:hover { background: #e74c3c; }
+    .msg { margin-top: 10px; color: #4caf50; font-size: 0.9em; height: 20px; }
+  </style>
+</head>
+<body>
+  <h1>⭐ Registro de Puntos</h1>
+  <div class="selector-nino">
+    <button class="nino-btn active" onclick="selNino('Luke')">Luke</button>
+    <button class="nino-btn" onclick="selNino('Dalia')">Dalia</button>
+    <button class="nino-btn" onclick="selNino('Iris')">Iris</button>
+  </div>
+  <div class="puntos-display">+100</div>
+  <div class="puntos-botones">
+    <button class="pto-btn" onclick="selPts(100)">100</button>
+    <button class="pto-btn" onclick="selPts(200)">200</button>
+    <button class="pto-btn" onclick="selPts(300)">300</button>
+    <button class="pto-btn" onclick="selPts(400)">400</button>
+    <button class="pto-btn" onclick="selPts(500)">500</button>
+  </div>
+  <button class="registrar-btn" onclick="registrar()">✅ Registrar puntos</button>
+  <div class="msg" id="msg"></div>
+  <div class="totales">
+    <h2>📊 Totales</h2>
+    <ul class="totales-lista" id="totales"></ul>
+  </div>
+  <div class="historial">
+    <h2>📋 Historial</h2>
+    <ul class="historial-lista" id="historial"></ul>
+  </div>
+  <button class="reset-btn" onclick="resetear()">🗑️ Limpiar todo</button>
+  <script>
+    let nino = 'Luke';
+    let puntos = 100;
+    const storageKey = 'puntos_kids_v1';
+    function selNino(n) { nino = n; document.querySelectorAll('.nino-btn').forEach(b => b.classList.remove('active')); document.querySelector(`.nino-btn[onclick="selNino('${n}')"]`).classList.add('active'); }
+    function selPts(p) { puntos = p; document.querySelector('.puntos-display').textContent = `+${puntos}`; document.querySelectorAll('.pto-btn').forEach(b => b.style.borderColor = '#444'); event.target.style.borderColor = '#4caf50'; }
+    function load() { const data = JSON.parse(localStorage.getItem(storageKey) || '{"historial":[],"totales":{"Luke":0,"Dalia":0,"Iris":0}}'); render(data); }
+    function render(data) { const tot = document.getElementById('totales'); tot.innerHTML = ''; ['Luke','Dalia','Iris'].forEach(n => { const li = document.createElement('li'); li.innerHTML = `<span class="tnom">${n}</span><span class="tpts">⭐ ${data.totales[n]}</span>`; tot.appendChild(li); }); const hist = document.getElementById('historial'); hist.innerHTML = ''; [...data.historial].reverse().forEach(r => { const li = document.createElement('li'); li.innerHTML = `<span><span class="nino">${r.n}</span> <span class="pts">+${r.p}</span></span><span class="fecha">${r.f}</span>`; hist.appendChild(li); }); }
+    function registrar() { const data = JSON.parse(localStorage.getItem(storageKey) || '{"historial":[],"totales":{"Luke":0,"Dalia":0,"Iris":0}}'); data.historial.push({ n: nino, p: puntos, f: new Date().toLocaleString('es-MX') }); data.totales[nino] += puntos; localStorage.setItem(storageKey, JSON.stringify(data)); render(data); const m = document.getElementById('msg'); m.textContent = `✅ ${puntos} puntos para ${nino}`; setTimeout(() => m.textContent = '', 2000); }
+    function resetear() { if (!confirm('¿Limpiar todo?')) return; localStorage.removeItem(storageKey); load(); }
+    load();
+  </script>
+</body>
+</html>
