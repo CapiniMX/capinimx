@@ -45,13 +45,18 @@
       box-shadow: 0 10px 40px rgba(77, 182, 172, 0.2);
     }
 
-    .logo {
-      font-size: 48px;
-      font-weight: 800;
-      letter-spacing: 2px;
-      margin-bottom: 10px;
-      font-family: 'Montserrat', sans-serif;
-      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+    .logo-svg {
+      width: 100px;
+      height: 100px;
+      margin: 0 auto 20px;
+      display: block;
+      filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.2));
+      animation: logoFloat 3s ease-in-out infinite;
+    }
+
+    @keyframes logoFloat {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-10px); }
     }
 
     .tagline {
@@ -377,9 +382,26 @@
 <body>
   <!-- HEADER -->
   <header>
-    <div class="logo">🌟 CAPINI</div>
-    <div class="tagline">Centro de Atención y Prevención de Infancias</div>
-    <div class="header-subtitle">Plataforma de Apps Educativas para el Desarrollo Infantil</div>
+    <svg class="logo-svg" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+      <!-- Brain Icon -->
+      <circle cx="100" cy="100" r="85" fill="none" stroke="white" stroke-width="3"/>
+      <!-- Left hemisphere -->
+      <path d="M 100 30 Q 70 60 70 100 Q 70 130 85 145" fill="none" stroke="white" stroke-width="3" stroke-linecap="round"/>
+      <!-- Right hemisphere -->
+      <path d="M 100 30 Q 130 60 130 100 Q 130 130 115 145" fill="none" stroke="white" stroke-width="3" stroke-linecap="round"/>
+      <!-- Center line -->
+      <line x1="100" y1="30" x2="100" y2="150" stroke="white" stroke-width="2"/>
+      <!-- Gradient glow -->
+      <circle cx="100" cy="100" r="90" fill="none" stroke="url(#grad)" stroke-width="2" opacity="0.6"/>
+      <defs>
+        <linearGradient id="grad" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" style="stop-color:#4DB6AC;stop-opacity:1" />
+          <stop offset="100%" style="stop-color:#F48FB1;stop-opacity:1" />
+        </linearGradient>
+      </defs>
+    </svg>
+    <div class="tagline">CAPINI</div>
+    <div class="header-subtitle">Centro de Atención y Prevención de Infancias</div>
   </header>
 
   <!-- MAIN CONTENT -->
@@ -411,7 +433,7 @@
             <li>Velocidad Visual - Observa y reacciona</li>
           </ul>
           <div class="status-badge status-ready">✓ Listo</div>
-          <a href="./aprendiendo-luk/index.html" class="app-card-button" style="margin-top: auto;">
+          <a href="https://capinimx.github.io/capinimx/contenido_web/aprendiendo-luk/" class="app-card-button" style="margin-top: auto;">
             Jugar Ahora →
           </a>
         </div>
@@ -433,7 +455,7 @@
             <li>Exploración sonora</li>
           </ul>
           <div class="status-badge status-ready">✓ Listo</div>
-          <a href="./musica-ninos/index.html" class="app-card-button" style="margin-top: auto;">
+          <a href="https://capinimx.github.io/capinimx/contenido_web/musica-ninos/" class="app-card-button" style="margin-top: auto;">
             Explorar Música →
           </a>
         </div>
@@ -455,7 +477,7 @@
             <li>Logros y recompensas</li>
           </ul>
           <div class="status-badge status-ready">✓ Listo</div>
-          <a href="./puntos-ninos/registro.html" class="app-card-button" style="margin-top: auto;">
+          <a href="https://capinimx.github.io/capinimx/contenido_web/puntos-ninos/registro.html" class="app-card-button" style="margin-top: auto;">
             Registrarse →
           </a>
         </div>
