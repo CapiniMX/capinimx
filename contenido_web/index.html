@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CAPINI - Centro de Atención y Prevención de Infancias - Apps Educativas</title>
+  <meta name="description" content="Descubre nuestras apps educativas diseñadas para el desarrollo integral de niños y niñas. Música, entrenamiento mental y gamificación.">
+
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      --primary: #1a1a2e;
+      --secondary: #16213e;
+      --tertiary: #0f3460;
+      --accent-teal: #4DB6AC;
+      --accent-pink: #F48FB1;
+      --accent-light: #B2DFDB;
+      --text-primary: #ffffff;
+      --text-secondary: #e0e0e0;
+      --success: #2ecc71;
+      --warning: #f39c12;
+      --danger: #e74c3c;
+    }
+
+    body {
+      font-family: 'Nunito', 'Segoe UI', sans-serif;
+      background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+      color: var(--text-primary);
+      line-height: 1.6;
+      min-height: 100vh;
+    }
+
+    /* HEADER */
+    header {
+      background: linear-gradient(90deg, var(--accent-teal), var(--accent-pink));
+      padding: 40px 20px;
+      text-align: center;
+      box-shadow: 0 10px 40px rgba(77, 182, 172, 0.2);
+    }
+
+    .logo {
+      font-size: 48px;
+      font-weight: 800;
+      letter-spacing: 2px;
+      margin-bottom: 10px;
+      font-family: 'Montserrat', sans-serif;
+      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+    }
+
+    .tagline {
+      font-size: 18px;
+      font-weight: 600;
+      opacity: 0.95;
+    }
+
+    .header-subtitle {
+      font-size: 14px;
+      margin-top: 8px;
+      opacity: 0.85;
+    }
+
+    /* CONTAINER */
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 60px 20px;
+    }
+
+    /* INTRO SECTION */
+    .intro {
+      text-align: center;
+      margin-bottom: 80px;
+    }
+
+    .intro h1 {
+      font-size: 42px;
+      font-weight: 700;
+      margin-bottom: 20px;
+      background: linear-gradient(90deg, var(--accent-teal), var(--accent-pink));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      font-family: 'Montserrat', sans-serif;
+    }
+
+    .intro p {
+      font-size: 18px;
+      color: var(--text-secondary);
+      max-width: 600px;
+      margin: 0 auto;
+      line-height: 1.8;
+    }
+
+    /* APPS GRID */
+    .apps-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 40px;
+      margin-bottom: 80px;
+    }
+
+    /* APP CARD */
+    .app-card {
+      background: linear-gradient(135deg, var(--secondary) 0%, var(--tertiary) 100%);
+      border-radius: 20px;
+      overflow: hidden;
+      border: 2px solid transparent;
+      transition: all 0.3s ease;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    }
+
+    .app-card:hover {
+      border-color: var(--accent-teal);
+      transform: translateY(-10px);
+      box-shadow: 0 20px 50px rgba(77, 182, 172, 0.3);
+    }
+
+    .app-card-icon {
+      background: linear-gradient(135deg, var(--accent-teal), var(--accent-pink));
+      padding: 40px;
+      text-align: center;
+      font-size: 64px;
+      min-height: 180px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .app-card-content {
+      padding: 30px;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .app-card h2 {
+      font-size: 28px;
+      font-weight: 700;
+      margin-bottom: 12px;
+      font-family: 'Montserrat', sans-serif;
+      color: var(--accent-teal);
+    }
+
+    .app-card .subtitle {
+      font-size: 14px;
+      color: var(--accent-light);
+      margin-bottom: 16px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .app-card p {
+      font-size: 16px;
+      color: var(--text-secondary);
+      margin-bottom: 20px;
+      flex: 1;
+      line-height: 1.7;
+    }
+
+    .app-features {
+      background: rgba(0, 0, 0, 0.2);
+      border-radius: 10px;
+      padding: 15px;
+      margin-bottom: 20px;
+      font-size: 14px;
+    }
+
+    .app-features li {
+      list-style: none;
+      padding: 5px 0;
+      display: flex;
+      align-items: center;
+    }
+
+    .app-features li:before {
+      content: "✓";
+      color: var(--accent-teal);
+      font-weight: bold;
+      margin-right: 10px;
+      font-size: 16px;
+    }
+
+    .app-card-button {
+      background: linear-gradient(90deg, var(--accent-teal), var(--accent-pink));
+      color: var(--primary);
+      border: none;
+      padding: 14px 28px;
+      font-size: 16px;
+      font-weight: 700;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      font-family: 'Montserrat', sans-serif;
+      text-decoration: none;
+      display: inline-block;
+      text-align: center;
+    }
+
+    .app-card-button:hover {
+      transform: scale(1.05);
+      box-shadow: 0 10px 25px rgba(77, 182, 172, 0.4);
+    }
+
+    /* STATUS BADGES */
+    .status-badge {
+      display: inline-block;
+      padding: 6px 12px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-top: 8px;
+    }
+
+    .status-ready {
+      background: rgba(46, 204, 113, 0.2);
+      color: var(--success);
+      border: 1px solid var(--success);
+    }
+
+    .status-beta {
+      background: rgba(243, 156, 18, 0.2);
+      color: var(--warning);
+      border: 1px solid var(--warning);
+    }
+
+    /* FEATURES SECTION */
+    .features-section {
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 20px;
+      padding: 50px 40px;
+      margin-bottom: 80px;
+      border: 1px solid rgba(77, 182, 172, 0.2);
+    }
+
+    .features-section h2 {
+      font-size: 36px;
+      font-weight: 700;
+      margin-bottom: 40px;
+      text-align: center;
+      font-family: 'Montserrat', sans-serif;
+      background: linear-gradient(90deg, var(--accent-teal), var(--accent-pink));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .features-list {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 30px;
+    }
+
+    .feature-item {
+      text-align: center;
+      padding: 20px;
+    }
+
+    .feature-icon {
+      font-size: 48px;
+      margin-bottom: 15px;
+    }
+
+    .feature-item h3 {
+      font-size: 20px;
+      font-weight: 700;
+      margin-bottom: 10px;
+      color: var(--accent-teal);
+      font-family: 'Montserrat', sans-serif;
+    }
+
+    .feature-item p {
+      font-size: 15px;
+      color: var(--text-secondary);
+      line-height: 1.6;
+    }
+
+    /* FOOTER */
+    footer {
+      background: var(--tertiary);
+      padding: 40px 20px;
+      text-align: center;
+      border-top: 2px solid rgba(77, 182, 172, 0.2);
+      margin-top: 80px;
+    }
+
+    .footer-content {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .footer-content p {
+      font-size: 14px;
+      color: var(--text-secondary);
+      margin-bottom: 10px;
+    }
+
+    .footer-links {
+      margin-top: 20px;
+    }
+
+    .footer-links a {
+      color: var(--accent-teal);
+      text-decoration: none;
+      margin: 0 15px;
+      font-size: 14px;
+      transition: color 0.3s ease;
+    }
+
+    .footer-links a:hover {
+      color: var(--accent-pink);
+    }
+
+    /* RESPONSIVE */
+    @media (max-width: 768px) {
+      .logo {
+        font-size: 36px;
+      }
+
+      .intro h1 {
+        font-size: 32px;
+      }
+
+      .intro p {
+        font-size: 16px;
+      }
+
+      .app-card h2 {
+        font-size: 24px;
+      }
+
+      .features-section {
+        padding: 30px 20px;
+      }
+
+      .features-section h2 {
+        font-size: 28px;
+      }
+    }
+
+    /* ANIMATIONS */
+    @keyframes slideUp {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .app-card {
+      animation: slideUp 0.6s ease forwards;
+    }
+
+    .app-card:nth-child(2) {
+      animation-delay: 0.1s;
+    }
+
+    .app-card:nth-child(3) {
+      animation-delay: 0.2s;
+    }
+  </style>
+</head>
+<body>
+  <!-- HEADER -->
+  <header>
+    <div class="logo">🌟 CAPINI</div>
+    <div class="tagline">Centro de Atención y Prevención de Infancias</div>
+    <div class="header-subtitle">Plataforma de Apps Educativas para el Desarrollo Infantil</div>
+  </header>
+
+  <!-- MAIN CONTENT -->
+  <div class="container">
+    <!-- INTRO -->
+    <section class="intro">
+      <h1>Creciendo Juntos 🚀</h1>
+      <p>
+        Descubre nuestras aplicaciones diseñadas para potenciar el aprendizaje, la creatividad
+        y el desarrollo cognitivo de niños y niñas. Cada app es una experiencia educativa única.
+      </p>
+    </section>
+
+    <!-- APPS GRID -->
+    <section class="apps-grid">
+      <!-- APP 1: APRENDIENDO LUK -->
+      <article class="app-card">
+        <div class="app-card-icon">🧠</div>
+        <div class="app-card-content">
+          <h2>AprendiendoLuk</h2>
+          <div class="subtitle">Entrenamiento Mental</div>
+          <p>
+            Juego de entrenamiento cerebral con 3 mini-juegos diseñados para mejorar
+            velocidad de cálculo, memoria secuencial y agudeza visual.
+          </p>
+          <ul class="app-features">
+            <li>Suma Rápida - Desafía tu velocidad</li>
+            <li>Memoria Secuencial - Repite patrones</li>
+            <li>Velocidad Visual - Observa y reacciona</li>
+          </ul>
+          <div class="status-badge status-ready">✓ Listo</div>
+          <a href="./aprendiendo-luk/index.html" class="app-card-button" style="margin-top: auto;">
+            Jugar Ahora →
+          </a>
+        </div>
+      </article>
+
+      <!-- APP 2: MUSICA NIÑOS -->
+      <article class="app-card">
+        <div class="app-card-icon">🎵</div>
+        <div class="app-card-content">
+          <h2>Música Niños</h2>
+          <div class="subtitle">Exploración Musical</div>
+          <p>
+            Introduce a los niños al mundo de la música con una interfaz interactiva
+            que permite crear melodías, explorar notas y disfrutar del arte musical.
+          </p>
+          <ul class="app-features">
+            <li>Reproductor visual de notas</li>
+            <li>Grabación de melodías</li>
+            <li>Exploración sonora</li>
+          </ul>
+          <div class="status-badge status-ready">✓ Listo</div>
+          <a href="./musica-ninos/index.html" class="app-card-button" style="margin-top: auto;">
+            Explorar Música →
+          </a>
+        </div>
+      </article>
+
+      <!-- APP 3: PUNTOS NIÑOS -->
+      <article class="app-card">
+        <div class="app-card-icon">🏆</div>
+        <div class="app-card-content">
+          <h2>Puntos Niños</h2>
+          <div class="subtitle">Gamificación & Registro</div>
+          <p>
+            Sistema de registro y gamificación donde los niños pueden registrarse,
+            ganar puntos y desbloquear logros en sus actividades diarias.
+          </p>
+          <ul class="app-features">
+            <li>Registro de usuarios</li>
+            <li>Sistema de puntos</li>
+            <li>Logros y recompensas</li>
+          </ul>
+          <div class="status-badge status-ready">✓ Listo</div>
+          <a href="./puntos-ninos/registro.html" class="app-card-button" style="margin-top: auto;">
+            Registrarse →
+          </a>
+        </div>
+      </article>
+    </section>
+
+    <!-- FEATURES SECTION -->
+    <section class="features-section">
+      <h2>¿Por qué CAPINI?</h2>
+      <div class="features-list">
+        <div class="feature-item">
+          <div class="feature-icon">👨‍👩‍👧‍👦</div>
+          <h3>Diseño Infantil</h3>
+          <p>Interfaces coloridas y amigables diseñadas específicamente para niños</p>
+        </div>
+        <div class="feature-item">
+          <div class="feature-icon">🎓</div>
+          <h3>Educativo</h3>
+          <p>Contenido pedagógico que estimula el aprendizaje integral</p>
+        </div>
+        <div class="feature-item">
+          <div class="feature-icon">📱</div>
+          <h3>Responsive</h3>
+          <p>Funciona perfectamente en cualquier dispositivo: web, móvil o tablet</p>
+        </div>
+        <div class="feature-item">
+          <div class="feature-icon">🔒</div>
+          <h3>Seguro</h3>
+          <p>Entorno seguro y controlado para el desarrollo de los niños</p>
+        </div>
+        <div class="feature-item">
+          <div class="feature-icon">⚡</div>
+          <h3>Rápido</h3>
+          <p>Aplicaciones optimizadas para carga instantánea y fluidez</p>
+        </div>
+        <div class="feature-item">
+          <div class="feature-icon">🌍</div>
+          <h3>Accesible</h3>
+          <p>Contenido inclusivo accesible para todos los niños</p>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="footer-content">
+      <p><strong>CAPINI</strong> - Centro de Atención y Prevención de Infancias</p>
+      <p>Plataforma educativa para el desarrollo integral de niños y niñas</p>
+      <div class="footer-links">
+        <a href="#home">Inicio</a>
+        <a href="#apps">Apps</a>
+        <a href="#contact">Contacto</a>
+        <a href="#privacy">Privacidad</a>
+      </div>
+      <p style="margin-top: 20px; font-size: 12px; color: rgba(255, 255, 255, 0.6);">
+        © 2026 CAPINI. Todos los derechos reservados.
+      </p>
+    </div>
+  </footer>
+</body>
+</html>
