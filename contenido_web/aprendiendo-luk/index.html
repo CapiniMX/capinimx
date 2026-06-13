@@ -773,9 +773,240 @@
       document.body.innerHTML = html + document.body.innerHTML.split('<div class="results-container">')[0];
     }
 
-    // Placeholder para memoria y visual (expandir según necesidad)
-    function playMemoria() { alert('Memoria - Próximamente'); }
-    function playVisual() { alert('Visual - Próximamente'); }
+    // MEMORIA SECUENCIAL
+    function playMemoria() {
+      const config = {
+        facil: { colors: 4, levels: 5, showMs: 800, attempts: 3 },
+        medio: { colors: 5, levels: 6, showMs: 600, attempts: 2 },
+        dificil: { colors: 6, levels: 7, showMs: 400, attempts: 1 }
+      }[STATE.game.difficulty];
+
+      const colorMap = ['#FF6B9D', '#4DB6AC', '#FFD93D', '#3498db', '#2ecc71', '#FF6B35'];
+      STATE.game.memoria = {
+        config,
+        colors: colorMap.slice(0, config.colors),
+        sequence: [],
+        playerInput: [],
+        level: 1,
+        totalScore: 0,
+        attemptsLeft: config.attempts
+      };
+
+      nextMemoriaLevel();
+    }
+
+    function nextMemoriaLevel() {
+      const mem = STATE.game.memoria;
+      if (mem.level > mem.config.levels || mem.attemptsLeft <= 0) {
+        finishGame();
+        return;
+      }
+
+      mem.sequence.push(mem.colors[Math.floor(Math.random() * mem.colors.length)]);
+      mem.playerInput = [];
+      playMemoriaSequence();
+    }
+
+    function playMemoriaSequence() {
+      const mem = STATE.game.memoria;
+      const html = `
+        <div class="game-container">
+          <button class="back-btn" onclick="location.reload()">← Volver</button>
+          <div class="game-header">
+            <div class="game-title-active">🎨 Memoria</div>
+            <div class="game-score">${mem.totalScore}</div>
+          </div>
+          <div class="level-info">Nivel ${mem.level} / ${mem.config.levels}</div>
+          <div class="memoria-grid">
+            ${mem.colors.map((color, i) => `
+              <button class="color-btn" style="background-color: ${color};"
+                onclick="clickMemoriaColor(${i})" id="color-${i}"></button>
+            `).join('')}
+          </div>
+          <p style="text-align: center; color: #aaa; margin-top: 30px;">Repite la secuencia...</p>
+        </div>
+      `;
+      document.body.innerHTML = html + document.body.innerHTML.split('<div class="game-container">')[0];
+
+      playMemoriaSequenceAnimation();
+    }
+
+    function playMemoriaSequenceAnimation() {
+      const mem = STATE.game.memoria;
+      let delay = 500;
+      mem.sequence.forEach((color, idx) => {
+        setTimeout(() => {
+          const btn = document.getElementById(`color-${mem.colors.indexOf(color)}`);
+          if (btn) {
+            btn.classList.add('active');
+            setTimeout(() => btn.classList.remove('active'), mem.config.showMs);
+          }
+        }, delay);
+        delay += mem.config.showMs + 300;
+      });
+    }
+
+    function clickMemoriaColor(idx) {
+      const mem = STATE.game.memoria;
+      const color = mem.colors[idx];
+      mem.playerInput.push(color);
+
+      const btn = document.getElementById(`color-${idx}`);
+      btn.classList.add('active');
+      setTimeout(() => btn.classList.remove('active'), 200);
+
+      if (color !== mem.sequence[mem.playerInput.length - 1]) {
+        mem.attemptsLeft--;
+        if (mem.attemptsLeft <= 0) {
+          setTimeout(() => finishGame(), 1000);
+        } else {
+          mem.playerInput = [];
+          setTimeout(playMemoriaSequence, 1000);
+        }
+        return;
+      }
+
+      if (mem.playerInput.length === mem.sequence.length) {
+        const diffMult = { facil: 1, medio: 1.5, dificil: 2 }[STATE.game.difficulty];
+        const pts = Math.floor((10 + mem.level * 5) * diffMult);
+        mem.totalScore += pts;
+        mem.level++;
+        setTimeout(nextMemoriaLevel, 800);
+      }
+    }
+
+    // VELOCIDAD VISUAL
+    function playVisual() {
+      const config = {
+        facil: { time: 30, spawnMs: 1800, lifeMs: 3000, maxItems: 4 },
+        medio: { time: 30, spawnMs: 1200, lifeMs: 2000, maxItems: 6 },
+        dificil: { time: 30, spawnMs: 800, lifeMs: 1500, maxItems: 8 }
+      }[STATE.game.difficulty];
+
+      STATE.game.visual = {
+        config,
+        items: [],
+        correct: 0,
+        wrong: 0,
+        totalScore: 0,
+        timeLeft: config.time,
+        targets: ['par', 'impar', 'rojo', 'azul'][Math.floor(Math.random() * 2)],
+        itemId: 0
+      };
+
+      renderVisualGame();
+    }
+
+    function renderVisualGame() {
+      const vis = STATE.game.visual;
+      const targetText = vis.targets === 'par' ? 'Toca los NÚMEROS PARES' :
+                        vis.targets === 'impar' ? 'Toca los NÚMEROS IMPARES' :
+                        vis.targets === 'rojo' ? 'Toca los ROJOS' : 'Toca los AZULES';
+
+      const html = `
+        <div class="game-container">
+          <button class="back-btn" onclick="location.reload()">← Volver</button>
+          <div class="game-header">
+            <div class="game-title-active">👁️ Velocidad Visual</div>
+            <div class="game-score">${vis.totalScore}</div>
+          </div>
+          <div class="progress-bar"><div class="progress-fill" style="width: 100%; transition: width 0.5s linear;"></div></div>
+          <div class="visual-target">${targetText}</div>
+          <div class="visual-arena" id="arena">
+            ${vis.items.map(item => `
+              <div class="visual-item" style="left: ${item.x}px; top: ${item.y}px; background: ${item.color};"
+                onclick="clickVisualItem(${item.id})">
+                ${item.text}
+              </div>
+            `).join('')}
+          </div>
+          <div class="visual-stats">
+            <span class="correct">✓ ${vis.correct}</span>
+            <span class="wrong">✗ ${vis.wrong}</span>
+          </div>
+        </div>
+      `;
+      document.body.innerHTML = html + document.body.innerHTML.split('<div class="game-container">')[0];
+
+      spawnVisualItems();
+      startVisualTimer();
+    }
+
+    function spawnVisualItems() {
+      const vis = STATE.game.visual;
+      const spawn = setInterval(() => {
+        if (vis.timeLeft <= 0) {
+          clearInterval(spawn);
+          return;
+        }
+
+        if (vis.items.length >= vis.config.maxItems) return;
+
+        const isCorrect = Math.random() > 0.4;
+        let item;
+
+        if (['par', 'impar'].includes(vis.targets)) {
+          const num = Math.floor(Math.random() * 10);
+          const correct = (vis.targets === 'par' && num % 2 === 0) || (vis.targets === 'impar' && num % 2 === 1);
+          item = {
+            id: vis.itemId++,
+            text: num,
+            color: correct ? '#4DB6AC' : '#FF6B35',
+            x: Math.random() * 250,
+            y: Math.random() * 300,
+            correct
+          };
+        } else {
+          const correct = (vis.targets === 'rojo' && Math.random() > 0.5);
+          item = {
+            id: vis.itemId++,
+            text: '',
+            color: correct ? '#FF6B9D' : '#3498db',
+            x: Math.random() * 250,
+            y: Math.random() * 300,
+            correct
+          };
+        }
+
+        vis.items.push(item);
+        setTimeout(() => {
+          vis.items = vis.items.filter(i => i.id !== item.id);
+          renderVisualGame();
+        }, vis.config.lifeMs);
+
+        renderVisualGame();
+      }, vis.config.spawnMs);
+    }
+
+    function clickVisualItem(id) {
+      const vis = STATE.game.visual;
+      const item = vis.items.find(i => i.id === id);
+      if (!item) return;
+
+      if (item.correct) {
+        vis.correct++;
+        vis.totalScore += 10;
+      } else {
+        vis.wrong++;
+      }
+
+      vis.items = vis.items.filter(i => i.id !== id);
+      renderVisualGame();
+    }
+
+    function startVisualTimer() {
+      const vis = STATE.game.visual;
+      const interval = setInterval(() => {
+        vis.timeLeft -= 0.1;
+        const bar = document.querySelector('.progress-fill');
+        if (bar) bar.style.width = (vis.timeLeft / vis.config.time * 100) + '%';
+
+        if (vis.timeLeft <= 0) {
+          clearInterval(interval);
+          finishGame();
+        }
+      }, 100);
+    }
 
     // Init
     loadStorage();
