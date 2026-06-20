@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>🎹 Acordes y Escalas de Piano — CapiniMX</title>
+    <style>
+      * { box-sizing: border-box; margin: 0; padding: 0; }
+      body { font-family: 'Nunito', 'Segoe UI', sans-serif; background: #1a1a2e; min-height: 100vh; color: #eee; overflow-x: hidden; }
+
+      /* ──── Header ──── */
+      .header { background: linear-gradient(135deg, #e94560, #0f3460); text-align: center; padding: 12px 10px; border-radius: 0 0 20px 20px; }
+      .header h1 { font-size: 1.15em; margin-bottom: 2px; }
+      .header p  { font-size: 0.75em; opacity: 0.85; }
+      .back-btn  { display: inline-block; background: rgba(255,255,255,0.18); color: #fff; border: none; border-radius: 8px; padding: 5px 12px; font-size: 0.78em; cursor: pointer; margin-bottom: 8px; text-decoration: none; }
+
+      /* ──── Piano base ──── */
+      .piano-wrap { overflow-x: auto; margin: 0.8rem 0 0.3rem; }
+      .piano { display: flex; position: relative; height: 110px; width: max-content; margin: 0 auto; user-select: none; }
+      .white-key {
+        width: 34px; height: 110px; background: #f0f0f0; border: 1.5px solid #999;
+        border-radius: 0 0 5px 5px; position: relative; cursor: pointer;
+        transition: background 0.1s; z-index: 1; display: flex; align-items: flex-end;
+        justify-content: center; padding-bottom: 5px; font-size: 9px; color: #666; font-weight: 700;
+      }
+      .white-key.active { background: #ffd6e0; }
+      .black-key {
+        width: 21px; height: 68px; background: #111; border-radius: 0 0 4px 4px;
+        position: absolute; cursor: pointer; transition: background 0.1s; z-index: 2; top: 0;
+      }
+      .black-key.active { background: #e94560; }
+      .bk-1{left:calc(1*34px - 10px);} .bk-2{left:calc(2*34px - 10px);}
+      .bk-4{left:calc(4*34px - 10px);} .bk-5{left:calc(5*34px - 10px);}
+      .bk-6{left:calc(6*34px - 10px);}
+
+      /* ──── Mini piano ──── */
+      .mini-piano { display: flex; position: relative; height: 80px; width: max-content; margin: 0 auto; user-select: none; }
+      .mini-piano .white-key { width: 27px; height: 80px; font-size: 8px; }
+      .mini-piano .black-key { width: 16px; height: 50px; }
+      .mini-piano .bk-1{left:calc(1*27px-8px);} .mini-piano .bk-2{left:calc(2*27px-8px);}
+      .mini-piano .bk-4{left:calc(4*27px-8px);} .mini-piano .bk-5{left:calc(5*27px-8px);}
+      .mini-piano .bk-6{left:calc(6*27px-8px);}
+
+      /* ──── Displays ──── */
+      #chord-display {
+        text-align: center; color: #e94560; font-size: 0.82em;
+        min-height: 1.3rem; margin: 0.3rem 0 0; font-family: monospace; font-weight: 600;
+      }
+      #scale-notes-display {
+        display: none; background: #0f3460; border: 1px solid #e94560;
+        border-radius: 8px; padding: 0.4rem 0.7rem; margin: 0.4rem 0 0;
+        font-size: 0.8em; text-align: center;
+      }
+      #scale-notes-display strong { color: #e94560; }
+
+      /* ──── Viewer dos ventanas ──── */
+      #prog-viewer {
+        display: none; background: #0f3460; border: 2px solid #e94560;
+        border-radius: 14px; padding: 1rem 0.85rem 0.85rem; margin: 0.8rem 0;
+      }
+      #prog-viewer h3 { margin: 0 0 0.12rem; font-size: 0.88em; color: #e94560; }
+      .pv-subtitle { font-size: 0.78em; color: #aaa; margin-bottom: 0.45rem; }
+
+      .key-selector-wrap { margin: 0.25rem 0 0.65rem; }
+      .key-selector-label { text-align: center; font-size: 0.68em; color: #aaa; margin-bottom: 0.2rem; letter-spacing: 0.05em; text-transform: uppercase; }
+      .key-selector { display: flex; flex-wrap: wrap; gap: 0.28rem; justify-content: center; }
+      .key-btn { background: #16213e; color: #e94560; border: 1.5px solid #e94560; border-radius: 6px; padding: 0.18rem 0.6rem; cursor: pointer; font-size: 0.8em; font-weight: 700; transition: background 0.15s; }
+      .key-btn:hover { background: #3a1020; }
+      .key-btn.active { background: #e94560; color: #fff; }
+
+      .prog-nav { display: flex; align-items: center; justify-content: center; gap: 0.9rem; margin-bottom: 0.8rem; }
+      .prog-nav button { background: #e94560; color: #fff; border: none; border-radius: 6px; padding: 0.28rem 0.8rem; cursor: pointer; font-size: 0.85em; font-weight: 700; transition: background 0.15s; }
+      .prog-nav button:hover { background: #c73e54; }
+      .prog-counter { font-family: monospace; font-size: 0.82em; color: #aaa; min-width: 60px; text-align: center; }
+
+      .two-windows { display: grid; grid-template-columns: 1fr 1fr; gap: 0.8rem; }
+      @media (max-width: 480px) { .two-windows { grid-template-columns: 1fr; } }
+      .chord-window { background: #16213e; border: 1.5px solid #333; border-radius: 10px; padding: 0.65rem; text-align: center; }
+      .chord-window.current { border-color: #e94560; }
+      .win-label { font-size: 0.65em; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: #666; margin-bottom: 0.2rem; }
+      .chord-window.current .win-label { color: #e94560; }
+      .win-chord-name { font-size: 1.1rem; font-weight: 700; color: #fff; margin-bottom: 0.3rem; }
+      .win-notes { font-size: 0.72em; font-family: monospace; background: #0f3460; color: #aaa; padding: 0.1rem 0.4rem; border-radius: 4px; display: inline-block; margin-bottom: 0.45rem; }
+      .mini-wrap { overflow-x: auto; }
+
+      /* ──── Tab bar ──── */
+      .tab-bar { display: flex; flex-wrap: wrap; gap: 4px; padding: 10px 8px 0; border-bottom: 2px solid #e94560; }
+      .tab-btn { background: #16213e; color: #aaa; border: 1.5px solid #333; border-bottom: none; border-radius: 8px 8px 0 0; padding: 6px 11px; cursor: pointer; font-size: 0.78em; font-weight: 700; transition: background 0.15s, color 0.15s; }
+      .tab-btn:hover { color: #fff; background: #0f3460; }
+      .tab-btn.active { background: #e94560; color: #fff; border-color: #e94560; }
+      .tab-content { display: none; padding: 10px 8px 80px; }
+      .tab-content.active { display: block; }
+
+      /* ──── Chord cards ──── */
+      .chord-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 8px; margin: 8px 0; }
+      .chord-card { background: #16213e; border: 1.5px solid #333; border-radius: 12px; padding: 10px; cursor: pointer; transition: border-color 0.2s, transform 0.1s; }
+      .chord-card:hover, .chord-card.selected { border-color: #e94560; transform: translateY(-2px); }
+      .chord-card h3 { margin: 0 0 0.2rem; font-size: 0.92em; color: #e94560; }
+      .chord-card .notes { font-size: 0.78em; color: #aaa; font-family: monospace; background: #0f3460; padding: 0.1rem 0.4rem; border-radius: 4px; display: inline-block; margin: 0.12rem 0; }
+      .chord-card .desc { font-size: 0.73em; color: #666; margin-top: 0.25rem; }
+
+      /* ──── Tables ──── */
+      .prog-table { width: 100%; border-collapse: collapse; margin: 6px 0; font-size: 0.82em; }
+      .prog-table th { background: #e94560; color: #fff; padding: 6px 8px; text-align: left; }
+      .prog-table td { padding: 6px 8px; border-bottom: 1px solid #222; vertical-align: middle; color: #ddd; }
+      .prog-table tr:nth-child(even) td { background: #16213e; }
+      .prog-table tbody tr { cursor: pointer; transition: background 0.15s; }
+      .prog-table tbody tr:hover td { background: #1e2a4a !important; }
+      .prog-table tbody tr.selected td { background: #2a0f1a !important; font-weight: 700; }
+      .prog-tag { display: inline-block; background: #0f3460; color: #e94560; border-radius: 4px; padding: 0.1rem 0.4rem; font-family: monospace; font-weight: 700; font-size: 0.88em; }
+      .genre-badge { display: inline-block; background: #16213e; color: #e94560; border-radius: 20px; padding: 0.06rem 0.5rem; font-size: 0.7em; border: 1px solid #e94560; }
+
+      /* ──── Scale cards ──── */
+      .scale-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 8px; margin: 6px 0 14px; }
+      .scale-card { background: #16213e; border: 1.5px solid #333; border-radius: 12px; padding: 10px; cursor: pointer; transition: border-color 0.2s, transform 0.1s; }
+      .scale-card:hover, .scale-card.selected { border-color: #e94560; transform: translateY(-2px); }
+      .scale-card h3 { margin: 0.2rem 0; font-size: 0.9em; color: #fff; }
+      .scale-card .desc { font-size: 0.72em; color: #888; margin-top: 0.2rem; }
+      .scale-badge { display: inline-block; border-radius: 20px; padding: 0.05rem 0.5rem; font-size: 0.65em; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; }
+      .scale-badge.basic { background: #3a0f1a; color: #e94560; border: 1px solid #e94560; }
+      .scale-badge.penta { background: #2a1a00; color: #f0a040; border: 1px solid #f0a040; }
+      .scale-badge.blues { background: #001a3a; color: #4090f0; border: 1px solid #4090f0; }
+      .scale-badge.mode  { background: #1a0a2e; color: #a060e0; border: 1px solid #a060e0; }
+
+      /* ──── Section title ──── */
+      .sec-title { font-size: 0.92em; color: #e94560; margin: 12px 0 5px; font-weight: 700; border-bottom: 1px solid #2a1030; padding-bottom: 4px; }
+      .sec-intro { font-size: 0.78em; color: #888; margin-bottom: 8px; }
+
+      /* ──── Tips ──── */
+      .tip-box { background: #16213e; border-left: 3px solid #e94560; padding: 8px 10px; border-radius: 0 8px 8px 0; margin: 6px 0; font-size: 0.8em; color: #ccc; }
+      .tip-box strong { color: #e94560; }
+    </style>
+  </head>
+  <body>
+
+    <div class="header">
+      <a class="back-btn" href="./">← Música para Niños</a>
+      <h1>🎹 Acordes, Progresiones y Escalas</h1>
+      <p>Referencia visual interactiva — haz clic para iluminar el teclado</p>
+    </div>
+
+    <div style="padding: 8px 8px 0;">
+
+      <!-- ═══ TECLADO SIEMPRE VISIBLE ═══ -->
+      <div class="piano-wrap">
+        <div class="piano" id="piano">
+          <div class="white-key" data-note="C4">C</div><div class="white-key" data-note="D4">D</div>
+          <div class="white-key" data-note="E4">E</div><div class="white-key" data-note="F4">F</div>
+          <div class="white-key" data-note="G4">G</div><div class="white-key" data-note="A4">A</div>
+          <div class="white-key" data-note="B4">B</div><div class="white-key" data-note="C5">C</div>
+          <div class="white-key" data-note="D5">D</div><div class="white-key" data-note="E5">E</div>
+          <div class="white-key" data-note="F5">F</div><div class="white-key" data-note="G5">G</div>
+          <div class="white-key" data-note="A5">A</div><div class="white-key" data-note="B5">B</div>
+          <div class="black-key bk-1" data-note="Db4"></div><div class="black-key bk-2" data-note="Eb4"></div>
+          <div class="black-key bk-4" data-note="Gb4"></div><div class="black-key bk-5" data-note="Ab4"></div>
+          <div class="black-key bk-6" data-note="Bb4"></div>
+          <div class="black-key" style="left:calc(7*34px+1*34px-10px)" data-note="Db5"></div>
+          <div class="black-key" style="left:calc(7*34px+2*34px-10px)" data-note="Eb5"></div>
+          <div class="black-key" style="left:calc(7*34px+4*34px-10px)" data-note="Gb5"></div>
+          <div class="black-key" style="left:calc(7*34px+5*34px-10px)" data-note="Ab5"></div>
+          <div class="black-key" style="left:calc(7*34px+6*34px-10px)" data-note="Bb5"></div>
+        </div>
+      </div>
+      <div id="chord-display"></div>
+      <div id="scale-notes-display"></div>
+
+      <!-- ═══ VISOR DOS VENTANAS ═══ -->
+      <div id="prog-viewer">
+        <h3 id="pv-title"></h3>
+        <div class="pv-subtitle" id="pv-subtitle"></div>
+        <div id="key-selector-row" style="display:none">
+          <div class="key-selector-wrap">
+            <div class="key-selector-label">Transponer a tonalidad</div>
+            <div class="key-selector" id="prog-key-sel">
+              <button class="key-btn active" data-key="C">Do</button>
+              <button class="key-btn" data-key="D">Re</button>
+              <button class="key-btn" data-key="E">Mi</button>
+              <button class="key-btn" data-key="F">Fa</button>
+              <button class="key-btn" data-key="G">Sol</button>
+              <button class="key-btn" data-key="A">La</button>
+              <button class="key-btn" data-key="Bb">Sib</button>
+            </div>
+          </div>
+        </div>
+        <div class="prog-nav">
+          <button id="btn-prev">← Anterior</button>
+          <span class="prog-counter" id="pv-counter">1 / 4</span>
+          <button id="btn-next">Siguiente →</button>
+        </div>
+        <div class="two-windows">
+          <div class="chord-window current">
+            <div class="win-label" id="win-a-label">Acorde actual</div>
+            <div class="win-chord-name" id="win-a-name">—</div>
+            <div class="win-notes" id="win-a-notes">—</div>
+            <div class="mini-wrap"><div class="mini-piano" id="mini-piano-a">
+              <div class="white-key" data-note="C4">C</div><div class="white-key" data-note="D4">D</div>
+              <div class="white-key" data-note="E4">E</div><div class="white-key" data-note="F4">F</div>
+              <div class="white-key" data-note="G4">G</div><div class="white-key" data-note="A4">A</div>
+              <div class="white-key" data-note="B4">B</div><div class="white-key" data-note="C5">C</div>
+              <div class="white-key" data-note="D5">D</div><div class="white-key" data-note="E5">E</div>
+              <div class="white-key" data-note="F5">F</div><div class="white-key" data-note="G5">G</div>
+              <div class="white-key" data-note="A5">A</div><div class="white-key" data-note="B5">B</div>
+              <div class="black-key bk-1" data-note="Db4"></div><div class="black-key bk-2" data-note="Eb4"></div>
+              <div class="black-key bk-4" data-note="Gb4"></div><div class="black-key bk-5" data-note="Ab4"></div>
+              <div class="black-key bk-6" data-note="Bb4"></div>
+              <div class="black-key" style="left:calc(7*27px+1*27px-8px)" data-note="Db5"></div>
+              <div class="black-key" style="left:calc(7*27px+2*27px-8px)" data-note="Eb5"></div>
+              <div class="black-key" style="left:calc(7*27px+4*27px-8px)" data-note="Gb5"></div>
+              <div class="black-key" style="left:calc(7*27px+5*27px-8px)" data-note="Ab5"></div>
+              <div class="black-key" style="left:calc(7*27px+6*27px-8px)" data-note="Bb5"></div>
+            </div></div>
+          </div>
+          <div class="chord-window">
+            <div class="win-label" id="win-b-label">Siguiente acorde</div>
+            <div class="win-chord-name" id="win-b-name">—</div>
+            <div class="win-notes" id="win-b-notes">—</div>
+            <div class="mini-wrap"><div class="mini-piano" id="mini-piano-b">
+              <div class="white-key" data-note="C4">C</div><div class="white-key" data-note="D4">D</div>
+              <div class="white-key" data-note="E4">E</div><div class="white-key" data-note="F4">F</div>
+              <div class="white-key" data-note="G4">G</div><div class="white-key" data-note="A4">A</div>
+              <div class="white-key" data-note="B4">B</div><div class="white-key" data-note="C5">C</div>
+              <div class="white-key" data-note="D5">D</div><div class="white-key" data-note="E5">E</div>
+              <div class="white-key" data-note="F5">F</div><div class="white-key" data-note="G5">G</div>
+              <div class="white-key" data-note="A5">A</div><div class="white-key" data-note="B5">B</div>
+              <div class="black-key bk-1" data-note="Db4"></div><div class="black-key bk-2" data-note="Eb4"></div>
+              <div class="black-key bk-4" data-note="Gb4"></div><div class="black-key bk-5" data-note="Ab4"></div>
+              <div class="black-key bk-6" data-note="Bb4"></div>
+              <div class="black-key" style="left:calc(7*27px+1*27px-8px)" data-note="Db5"></div>
+              <div class="black-key" style="left:calc(7*27px+2*27px-8px)" data-note="Eb5"></div>
+              <div class="black-key" style="left:calc(7*27px+4*27px-8px)" data-note="Gb5"></div>
+              <div class="black-key" style="left:calc(7*27px+5*27px-8px)" data-note="Ab5"></div>
+              <div class="black-key" style="left:calc(7*27px+6*27px-8px)" data-note="Bb5"></div>
+            </div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ═══ TABS ═══ -->
+      <div class="tab-bar">
+        <button class="tab-btn active" data-tab="tab-acordes">🎵 Acordes</button>
+        <button class="tab-btn" data-tab="tab-progresiones">🔁 Progresiones</button>
+        <button class="tab-btn" data-tab="tab-tonalidades">🎯 Tonalidades</button>
+        <button class="tab-btn" data-tab="tab-escalas">📐 Escalas</button>
+        <button class="tab-btn" data-tab="tab-consejos">💡 Tips</button>
+      </div>
+
+      <!-- TAB: ACORDES -->
+      <div class="tab-content active" id="tab-acordes">
+        <p class="sec-intro">Haz clic en una tarjeta para iluminar las notas en el teclado.</p>
+        <div class="chord-grid">
+          <div class="chord-card" data-notes="C4,E4,G4" data-label="Do Mayor (C)"><h3>Do Mayor (C)</h3><span class="notes">C – E – G</span><p class="desc">Alegre, brillante. Base del sistema tonal.</p></div>
+          <div class="chord-card" data-notes="G4,B4,D5" data-label="Sol Mayor (G)"><h3>Sol Mayor (G)</h3><span class="notes">G – B – D</span><p class="desc">Cálido y poderoso. Muy común en pop y folk.</p></div>
+          <div class="chord-card" data-notes="F4,A4,C5" data-label="Fa Mayor (F)"><h3>Fa Mayor (F)</h3><span class="notes">F – A – C</span><p class="desc">Suave y redondo. Cierra la progresión I-IV-V.</p></div>
+          <div class="chord-card" data-notes="D4,Gb4,A4" data-label="Re Mayor (D)"><h3>Re Mayor (D)</h3><span class="notes">D – F# – A</span><p class="desc">Brillante y enérgico.</p></div>
+          <div class="chord-card" data-notes="A4,Db5,E5" data-label="La Mayor (A)"><h3>La Mayor (A)</h3><span class="notes">A – C# – E</span><p class="desc">Claro y directo. Dominante natural del Re.</p></div>
+          <div class="chord-card" data-notes="E4,Ab4,B4" data-label="Mi Mayor (E)"><h3>Mi Mayor (E)</h3><span class="notes">E – G# – B</span><p class="desc">Brillante y tenso. Rock y flamenco.</p></div>
+          <div class="chord-card" data-notes="A4,C5,E5" data-label="La menor (Am)"><h3>La menor (Am)</h3><span class="notes">A – C – E</span><p class="desc">Melancólico. El menor más básico del piano.</p></div>
+          <div class="chord-card" data-notes="E4,G4,B4" data-label="Mi menor (Em)"><h3>Mi menor (Em)</h3><span class="notes">E – G – B</span><p class="desc">Oscuro y profundo.</p></div>
+          <div class="chord-card" data-notes="D4,F4,A4" data-label="Re menor (Dm)"><h3>Re menor (Dm)</h3><span class="notes">D – F – A</span><p class="desc">Triste y dramático. Muy usado en baladas.</p></div>
+          <div class="chord-card" data-notes="G4,B4,D5,F5" data-label="Sol 7 (G7)"><h3>Sol 7 (G7)</h3><span class="notes">G – B – D – F</span><p class="desc">Dominante de Do. Resuelve en C.</p></div>
+          <div class="chord-card" data-notes="C4,E4,G4,B4" data-label="Do Maj7 (Cmaj7)"><h3>Do Maj7 (Cmaj7)</h3><span class="notes">C – E – G – B</span><p class="desc">Suave y jazzy. Bossa nova y soul.</p></div>
+          <div class="chord-card" data-notes="A4,C5,E5,G5" data-label="La m7 (Am7)"><h3>La m7 (Am7)</h3><span class="notes">A – C – E – G</span><p class="desc">Melancólico. Jazz y R&B.</p></div>
+        </div>
+      </div>
+
+      <!-- TAB: PROGRESIONES -->
+      <div class="tab-content" id="tab-progresiones">
+        <p class="sec-intro">Haz clic en una fila. Las que tienen grados (I, IV...) se pueden transponer a cualquier clave.</p>
+        <table class="prog-table" id="prog-table">
+          <thead><tr><th>Progresión</th><th>En Do</th><th>Géneros</th></tr></thead>
+          <tbody>
+            <tr data-prog="I – IV – V" data-chords="C,F,G" data-degrees="0,3,4"><td><span class="prog-tag">I – IV – V</span></td><td>C – F – G</td><td><span class="genre-badge">Rock</span> <span class="genre-badge">Blues</span></td></tr>
+            <tr data-prog="I – V – vi – IV" data-chords="C,G,Am,F" data-degrees="0,4,5,3"><td><span class="prog-tag">I – V – vi – IV</span></td><td>C – G – Am – F</td><td><span class="genre-badge">Pop</span> <span class="genre-badge">Balada</span></td></tr>
+            <tr data-prog="vi – IV – I – V" data-chords="Am,F,C,G" data-degrees="5,3,0,4"><td><span class="prog-tag">vi – IV – I – V</span></td><td>Am – F – C – G</td><td><span class="genre-badge">Pop</span> <span class="genre-badge">Indie</span></td></tr>
+            <tr data-prog="I – vi – IV – V" data-chords="C,Am,F,G" data-degrees="0,5,3,4"><td><span class="prog-tag">I – vi – IV – V</span></td><td>C – Am – F – G</td><td><span class="genre-badge">50s</span> <span class="genre-badge">Pop</span></td></tr>
+            <tr data-prog="ii – V – I" data-chords="Dm,G,C" data-degrees="1,4,0"><td><span class="prog-tag">ii – V – I</span></td><td>Dm – G – C</td><td><span class="genre-badge">Jazz</span> <span class="genre-badge">Bossa</span></td></tr>
+            <tr data-prog="I – IV – vi – V" data-chords="C,F,Am,G" data-degrees="0,3,5,4"><td><span class="prog-tag">I – IV – vi – V</span></td><td>C – F – Am – G</td><td><span class="genre-badge">Pop</span> <span class="genre-badge">Soul</span></td></tr>
+            <tr data-prog="i – VII – VI – VII (menor)" data-chords="Am,G,F,G"><td><span class="prog-tag">i – VII – VI – VII</span></td><td>Am – G – F – G</td><td><span class="genre-badge">Rock</span> <span class="genre-badge">Metal</span></td></tr>
+            <tr data-prog="Canon de Pachelbel" data-chords="C,G,Am,Em,F" data-degrees="0,4,5,2,3"><td><span class="prog-tag">I – V – vi – iii – IV</span></td><td>C – G – Am – Em – F</td><td><span class="genre-badge">Clásico</span></td></tr>
+            <tr data-prog="Blues 12 compases" data-chords="C,C,C,C,F,F,C,C,G,F,C,G" data-degrees="0,0,0,0,3,3,0,0,4,3,0,4"><td><span class="prog-tag">12 compases blues</span></td><td>C C C C / F F C C / G F C G</td><td><span class="genre-badge">Blues</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- TAB: TONALIDADES -->
+      <div class="tab-content" id="tab-tonalidades">
+        <p class="sec-intro">Haz clic en una tonalidad para navegar sus 7 acordes diatónicos en los dos teclados.</p>
+        <table class="prog-table" id="key-table">
+          <thead><tr><th>Tonalidad</th><th>I</th><th>ii</th><th>iii</th><th>IV</th><th>V</th><th>vi</th><th>vii°</th></tr></thead>
+          <tbody>
+            <tr data-key="C"><td><strong>Do (C)</strong></td><td>C</td><td>Dm</td><td>Em</td><td>F</td><td>G</td><td>Am</td><td>Bdim</td></tr>
+            <tr data-key="G"><td><strong>Sol (G)</strong></td><td>G</td><td>Am</td><td>Bm</td><td>C</td><td>D</td><td>Em</td><td>F#dim</td></tr>
+            <tr data-key="D"><td><strong>Re (D)</strong></td><td>D</td><td>Em</td><td>F#m</td><td>G</td><td>A</td><td>Bm</td><td>C#dim</td></tr>
+            <tr data-key="A"><td><strong>La (A)</strong></td><td>A</td><td>Bm</td><td>C#m</td><td>D</td><td>E</td><td>F#m</td><td>G#dim</td></tr>
+            <tr data-key="E"><td><strong>Mi (E)</strong></td><td>E</td><td>F#m</td><td>G#m</td><td>A</td><td>B</td><td>C#m</td><td>D#dim</td></tr>
+            <tr data-key="F"><td><strong>Fa (F)</strong></td><td>F</td><td>Gm</td><td>Am</td><td>Bb</td><td>C</td><td>Dm</td><td>Edim</td></tr>
+            <tr data-key="Bb"><td><strong>Sib (Bb)</strong></td><td>Bb</td><td>Cm</td><td>Dm</td><td>Eb</td><td>F</td><td>Gm</td><td>Adim</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- TAB: ESCALAS -->
+      <div class="tab-content" id="tab-escalas">
+        <p class="sec-intro">Elige tonalidad y haz clic en una escala para verla en el teclado.</p>
+        <div class="key-selector-wrap">
+          <div class="key-selector-label">Tonalidad base</div>
+          <div class="key-selector" id="scale-key-sel">
+            <button class="key-btn active" data-key="C">Do</button>
+            <button class="key-btn" data-key="D">Re</button>
+            <button class="key-btn" data-key="E">Mi</button>
+            <button class="key-btn" data-key="F">Fa</button>
+            <button class="key-btn" data-key="G">Sol</button>
+            <button class="key-btn" data-key="A">La</button>
+            <button class="key-btn" data-key="Bb">Sib</button>
+          </div>
+        </div>
+        <p class="sec-title">Escalas Básicas</p>
+        <div class="scale-grid">
+          <div class="scale-card" data-scale="major"><span class="scale-badge basic">Básica</span><h3>Mayor</h3><p class="desc">Alegre y luminosa. Base del sistema tonal.</p></div>
+          <div class="scale-card" data-scale="natural_minor"><span class="scale-badge basic">Básica</span><h3>menor natural</h3><p class="desc">Melancólica y oscura. Baladas y rock.</p></div>
+          <div class="scale-card" data-scale="harmonic_minor"><span class="scale-badge basic">Básica</span><h3>menor armónica</h3><p class="desc">Tensión exótica. Clásica, flamenco y metal.</p></div>
+          <div class="scale-card" data-scale="melodic_minor"><span class="scale-badge basic">Básica</span><h3>menor melódica</h3><p class="desc">Sube diferente. Jazz y orquesta.</p></div>
+        </div>
+        <p class="sec-title">Pentatónicas y Blues</p>
+        <div class="scale-grid">
+          <div class="scale-card" data-scale="major_pentatonic"><span class="scale-badge penta">Pentatónica</span><h3>Pentatónica Mayor</h3><p class="desc">5 notas sin disonancias. Folk y country.</p></div>
+          <div class="scale-card" data-scale="minor_pentatonic"><span class="scale-badge penta">Pentatónica</span><h3>Pentatónica menor</h3><p class="desc">El sonido del rock moderno.</p></div>
+          <div class="scale-card" data-scale="blues"><span class="scale-badge blues">Blues</span><h3>Blues</h3><p class="desc">Pentatónica menor + blue note (b5).</p></div>
+        </div>
+        <p class="sec-title">Modos Griegos</p>
+        <div class="scale-grid">
+          <div class="scale-card" data-scale="dorian"><span class="scale-badge mode">Modo</span><h3>Dórica</h3><p class="desc">menor con 6º mayor. Jazz, rock, funk.</p></div>
+          <div class="scale-card" data-scale="phrygian"><span class="scale-badge mode">Modo</span><h3>Frigia</h3><p class="desc">Sonido flamenco, metal y español.</p></div>
+          <div class="scale-card" data-scale="lydian"><span class="scale-badge mode">Modo</span><h3>Lidia</h3><p class="desc">Mayor con 4º alto. Mágico, cine, anime.</p></div>
+          <div class="scale-card" data-scale="mixolydian"><span class="scale-badge mode">Modo</span><h3>Mixolidia</h3><p class="desc">Mayor con 7º bajo. Rock y gospel.</p></div>
+        </div>
+      </div>
+
+      <!-- TAB: TIPS -->
+      <div class="tab-content" id="tab-consejos">
+        <div class="tip-box"><strong>I-IV-V:</strong> En cualquier tonalidad estos tres acordes (mayores) bastan para acompañar casi cualquier canción.</div>
+        <div class="tip-box"><strong>Pentatónica menor:</strong> Aprende esta escala primero — sirve para improvisar en casi cualquier canción de rock y pop.</div>
+        <div class="tip-box"><strong>Blues = Pentatónica menor + b5:</strong> Agrega la nota Gb (entre F y G) a la pentatónica menor para el sonido de blues.</div>
+        <div class="tip-box"><strong>Inversiones:</strong> Toca las notas del acorde en diferente orden para sonar más fluido.</div>
+        <div class="tip-box"><strong>Círculo de quintas:</strong> C → G → D → A → E → B → F# → Db → Ab → Eb → Bb → F → C. Los acordes adyacentes combinan muy bien.</div>
+        <div class="tip-box"><strong>Para niños:</strong> Empieza con C, F y G7. Con esos tres acordes puedes tocar decenas de canciones infantiles.</div>
+      </div>
+
+    </div><!-- /padding div -->
+
+    <script>
+    // ── KEYS DATA ──────────────────────────────────────────────────────────
+    const KEYS_DATA = {
+      C:{name:'Do (C)',chords:[{name:'C',label:'I',notes:['C4','E4','G4']},{name:'Dm',label:'ii',notes:['D4','F4','A4']},{name:'Em',label:'iii',notes:['E4','G4','B4']},{name:'F',label:'IV',notes:['F4','A4','C5']},{name:'G',label:'V',notes:['G4','B4','D5']},{name:'Am',label:'vi',notes:['A4','C5','E5']},{name:'Bdim',label:'vii°',notes:['B4','D5','F5']}]},
+      G:{name:'Sol (G)',chords:[{name:'G',label:'I',notes:['G4','B4','D5']},{name:'Am',label:'ii',notes:['A4','C5','E5']},{name:'Bm',label:'iii',notes:['B4','D5','Gb5']},{name:'C',label:'IV',notes:['C4','E4','G4']},{name:'D',label:'V',notes:['D4','Gb4','A4']},{name:'Em',label:'vi',notes:['E4','G4','B4']},{name:'F#dim',label:'vii°',notes:['Gb4','A4','C5']}]},
+      D:{name:'Re (D)',chords:[{name:'D',label:'I',notes:['D4','Gb4','A4']},{name:'Em',label:'ii',notes:['E4','G4','B4']},{name:'F#m',label:'iii',notes:['Gb4','A4','Db5']},{name:'G',label:'IV',notes:['G4','B4','D5']},{name:'A',label:'V',notes:['A4','Db5','E5']},{name:'Bm',label:'vi',notes:['B4','D5','Gb5']},{name:'C#dim',label:'vii°',notes:['Db5','E5','G5']}]},
+      A:{name:'La (A)',chords:[{name:'A',label:'I',notes:['A4','Db5','E5']},{name:'Bm',label:'ii',notes:['B4','D5','Gb5']},{name:'C#m',label:'iii',notes:['Db5','E5','Ab5']},{name:'D',label:'IV',notes:['D4','Gb4','A4']},{name:'E',label:'V',notes:['E4','Ab4','B4']},{name:'F#m',label:'vi',notes:['Gb4','A4','Db5']},{name:'G#dim',label:'vii°',notes:['Ab4','B4','D5']}]},
+      E:{name:'Mi (E)',chords:[{name:'E',label:'I',notes:['E4','Ab4','B4']},{name:'F#m',label:'ii',notes:['Gb4','A4','Db5']},{name:'G#m',label:'iii',notes:['Ab4','B4','Eb5']},{name:'A',label:'IV',notes:['A4','Db5','E5']},{name:'B',label:'V',notes:['B4','Eb5','Gb5']},{name:'C#m',label:'vi',notes:['Db5','E5','Ab5']},{name:'D#dim',label:'vii°',notes:['Eb5','Gb5','A5']}]},
+      F:{name:'Fa (F)',chords:[{name:'F',label:'I',notes:['F4','A4','C5']},{name:'Gm',label:'ii',notes:['G4','Bb4','D5']},{name:'Am',label:'iii',notes:['A4','C5','E5']},{name:'Bb',label:'IV',notes:['Bb4','D5','F5']},{name:'C',label:'V',notes:['C4','E4','G4']},{name:'Dm',label:'vi',notes:['D4','F4','A4']},{name:'Edim',label:'vii°',notes:['E4','G4','Bb4']}]},
+      Bb:{name:'Sib (Bb)',chords:[{name:'Bb',label:'I',notes:['Bb4','D5','F5']},{name:'Cm',label:'ii',notes:['C4','Eb4','G4']},{name:'Dm',label:'iii',notes:['D4','F4','A4']},{name:'Eb',label:'IV',notes:['Eb4','G4','Bb4']},{name:'F',label:'V',notes:['F4','A4','C5']},{name:'Gm',label:'vi',notes:['G4','Bb4','D5']},{name:'Adim',label:'vii°',notes:['A4','C5','Eb5']}]},
+    };
+    const FIXED={C:{notes:['C4','E4','G4']},G:{notes:['G4','B4','D5']},F:{notes:['F4','A4','C5']},Am:{notes:['A4','C5','E5']},Em:{notes:['E4','G4','B4']},Dm:{notes:['D4','F4','A4']},E:{notes:['E4','Ab4','B4']},Fm:{notes:['F4','Ab4','C5']}};
+
+    // ── SCALES DATA ────────────────────────────────────────────────────────
+    const SCALES={major:{name:'Mayor',intervals:[0,2,4,5,7,9,11,12]},natural_minor:{name:'menor natural',intervals:[0,2,3,5,7,8,10,12]},harmonic_minor:{name:'menor armónica',intervals:[0,2,3,5,7,8,11,12]},melodic_minor:{name:'menor melódica',intervals:[0,2,3,5,7,9,11,12]},major_pentatonic:{name:'Pentatónica Mayor',intervals:[0,2,4,7,9,12]},minor_pentatonic:{name:'Pentatónica menor',intervals:[0,3,5,7,10,12]},blues:{name:'Blues',intervals:[0,3,5,6,7,10,12]},dorian:{name:'Dórica',intervals:[0,2,3,5,7,9,10,12]},phrygian:{name:'Frigia',intervals:[0,1,3,5,7,8,10,12]},lydian:{name:'Lidia',intervals:[0,2,4,6,7,9,11,12]},mixolydian:{name:'Mixolidia',intervals:[0,2,4,5,7,9,10,12]}};
+    const NN=['C','Db','D','Eb','E','F','Gb','G','Ab','A','Bb','B'];
+    const ND=['C','C#','D','D#','E','F','F#','G','G#','A','A#','B'];
+    const RO={C:0,D:2,E:4,F:5,G:7,A:9,Bb:10};
+    const KN={C:'Do',D:'Re',E:'Mi',F:'Fa',G:'Sol',A:'La',Bb:'Sib'};
+    const getScaleNotes=(k,id)=>SCALES[id].intervals.map(i=>{const s=RO[k]+i;return NN[s%12]+(s<12?4:5);});
+    const getScaleDisp=(k,id)=>SCALES[id].intervals.map(i=>ND[(RO[k]+i)%12]).join(' – ');
+
+    // ── STATE ──────────────────────────────────────────────────────────────
+    let chordList=[],chordIdx=0,viewerMode='prog',currentProgRow=null,currentProgKey='C',activeScaleKey='C',activeScaleId=null;
+
+    // ── HELPERS ────────────────────────────────────────────────────────────
+    const NM={C:'Do (C)',G:'Sol (G)',F:'Fa (F)',D:'Re (D)',A:'La (A)',E:'Mi (E)',B:'Si (B)',Am:'La m',Em:'Mi m',Dm:'Re m',Fm:'Fa m',Gm:'Sol m',Bm:'Si m','C#m':'Do#m','F#m':'Fa#m','G#m':'Sol#m',Bb:'Sib',Eb:'Mib',Cm:'Do m',G7:'Sol 7',Bdim:'Si°','F#dim':'Fa#°','C#dim':'Do#°','D#dim':'Re#°',Edim:'Mi°','G#dim':'Sol#°',Adim:'La°'};
+    const dn=n=>NM[n]||n;
+    const nd=ns=>ns.map(n=>n.replace(/\d+$/,'')).join(' – ');
+    const hi=(sel,ns)=>{document.querySelectorAll(sel).forEach(k=>k.classList.remove('active'));(ns||[]).forEach(n=>{const k=document.querySelector(`${sel.split(' ')[0]} [data-note="${n}"]`);if(k)k.classList.add('active');});};
+    const hiMain=ns=>{document.querySelectorAll('#piano .white-key,#piano .black-key').forEach(k=>k.classList.remove('active'));(ns||[]).forEach(n=>{const k=document.querySelector(`#piano [data-note="${n}"]`);if(k)k.classList.add('active');});};
+    const hiMini=(id,ns)=>{document.querySelectorAll(`#${id} .white-key,#${id} .black-key`).forEach(k=>k.classList.remove('active'));(ns||[]).forEach(n=>{const k=document.querySelector(`#${id} [data-note="${n}"]`);if(k)k.classList.add('active');});};
+
+    // ── VIEWER ─────────────────────────────────────────────────────────────
+    function renderViewer(){
+      const total=chordList.length;if(!total)return;
+      const cA=chordList[chordIdx],cB=chordList[(chordIdx+1)%total];
+      document.getElementById('pv-counter').textContent=`${chordIdx+1} / ${total}`;
+      document.getElementById('win-a-label').textContent=viewerMode==='scale'?`Grado ${cA.label}`:'Acorde actual';
+      document.getElementById('win-a-name').textContent=dn(cA.name);
+      document.getElementById('win-a-notes').textContent=nd(cA.notes);
+      hiMini('mini-piano-a',cA.notes);
+      document.getElementById('win-b-label').textContent=viewerMode==='scale'?`Grado ${cB.label}`:'Siguiente acorde';
+      document.getElementById('win-b-name').textContent=dn(cB.name);
+      document.getElementById('win-b-notes').textContent=nd(cB.notes);
+      hiMini('mini-piano-b',cB.notes);
+      hiMain(cA.notes);
+      document.getElementById('chord-display').textContent=`${dn(cA.name)}: ${cA.notes.join(' – ')}`;
+      document.getElementById('scale-notes-display').style.display='none';
+    }
+    function openViewer(title,subtitle,list,mode){
+      chordList=list;chordIdx=0;viewerMode=mode;
+      document.getElementById('pv-title').textContent=title;
+      document.getElementById('pv-subtitle').textContent=subtitle;
+      const v=document.getElementById('prog-viewer');v.style.display='block';
+      renderViewer();v.scrollIntoView({behavior:'smooth',block:'nearest'});
+    }
+    document.getElementById('btn-prev').addEventListener('click',()=>{chordIdx=(chordIdx-1+chordList.length)%chordList.length;renderViewer();});
+    document.getElementById('btn-next').addEventListener('click',()=>{chordIdx=(chordIdx+1)%chordList.length;renderViewer();});
+
+    // ── PROGRESSIONS ───────────────────────────────────────────────────────
+    function buildProgList(row,key){
+      if(row.dataset.degrees)return row.dataset.degrees.split(',').map(d=>KEYS_DATA[key].chords[+d]);
+      return row.dataset.chords.split(',').map(name=>({name,label:'',notes:(FIXED[name]||{notes:[]}).notes}));
+    }
+    document.querySelectorAll('#prog-table tbody tr').forEach(row=>{
+      row.addEventListener('click',()=>{
+        document.querySelectorAll('#prog-table tbody tr,#key-table tbody tr').forEach(r=>r.classList.remove('selected'));
+        row.classList.add('selected');currentProgRow=row;
+        const hasT=!!row.dataset.degrees;
+        document.getElementById('key-selector-row').style.display=hasT?'block':'none';
+        document.querySelectorAll('#prog-key-sel .key-btn').forEach(b=>b.classList.remove('active'));
+        document.querySelector('#prog-key-sel .key-btn[data-key="C"]').classList.add('active');
+        currentProgKey='C';
+        const list=buildProgList(row,'C');
+        openViewer(`🔁 ${row.dataset.prog}`,hasT?`En ${KEYS_DATA['C'].name}: ${list.map(c=>c.name).join(' – ')}`:`(fija en Do): ${list.map(c=>c.name).join(' – ')}`,list,'prog');
+      });
+    });
+    document.querySelectorAll('#prog-key-sel .key-btn').forEach(btn=>{
+      btn.addEventListener('click',()=>{
+        if(!currentProgRow||!currentProgRow.dataset.degrees)return;
+        document.querySelectorAll('#prog-key-sel .key-btn').forEach(b=>b.classList.remove('active'));
+        btn.classList.add('active');currentProgKey=btn.dataset.key;
+        const list=buildProgList(currentProgRow,currentProgKey);
+        chordList=list;chordIdx=0;
+        document.getElementById('pv-subtitle').textContent=`En ${KEYS_DATA[currentProgKey].name}: ${list.map(c=>c.name).join(' – ')}`;
+        renderViewer();
+      });
+    });
+
+    // ── TONALITIES ─────────────────────────────────────────────────────────
+    document.querySelectorAll('#key-table tbody tr').forEach(row=>{
+      row.addEventListener('click',()=>{
+        document.querySelectorAll('#prog-table tbody tr,#key-table tbody tr').forEach(r=>r.classList.remove('selected'));
+        row.classList.add('selected');currentProgRow=null;
+        document.getElementById('key-selector-row').style.display='none';
+        const data=KEYS_DATA[row.dataset.key];
+        openViewer(`🎯 Escala de ${data.name}`,data.chords.map(c=>c.name).join(' – '),data.chords,'scale');
+      });
+    });
+
+    // ── CHORD CARDS ────────────────────────────────────────────────────────
+    document.querySelectorAll('.chord-card').forEach(card=>{
+      card.addEventListener('click',()=>{
+        document.querySelectorAll('.chord-card').forEach(c=>c.classList.remove('selected'));
+        card.classList.add('selected');
+        const notes=card.dataset.notes.split(',');
+        hiMain(notes);
+        document.getElementById('chord-display').textContent=`${card.dataset.label}: ${notes.join(' – ')}`;
+        document.getElementById('scale-notes-display').style.display='none';
+        document.querySelector('.piano-wrap').scrollIntoView({behavior:'smooth',block:'nearest'});
+      });
+    });
+
+    // ── SCALES ─────────────────────────────────────────────────────────────
+    document.querySelectorAll('#scale-key-sel .key-btn').forEach(btn=>{
+      btn.addEventListener('click',()=>{
+        document.querySelectorAll('#scale-key-sel .key-btn').forEach(b=>b.classList.remove('active'));
+        btn.classList.add('active');activeScaleKey=btn.dataset.key;
+        if(activeScaleId)showScale(activeScaleId);
+      });
+    });
+    function showScale(id){
+      activeScaleId=id;
+      const notes=getScaleNotes(activeScaleKey,id);
+      hiMain(notes);
+      document.getElementById('chord-display').textContent='';
+      const s=document.getElementById('scale-notes-display');
+      s.style.display='block';
+      s.innerHTML=`<strong>Escala ${SCALES[id].name} de ${KN[activeScaleKey]}:</strong> ${getScaleDisp(activeScaleKey,id)}`;
+      document.querySelector('.piano-wrap').scrollIntoView({behavior:'smooth',block:'nearest'});
+    }
+    document.querySelectorAll('.scale-card').forEach(card=>{
+      card.addEventListener('click',()=>{
+        document.querySelectorAll('.scale-card').forEach(c=>c.classList.remove('selected'));
+        card.classList.add('selected');showScale(card.dataset.scale);
+      });
+    });
+
+    // ── TABS ───────────────────────────────────────────────────────────────
+    document.querySelectorAll('.tab-btn').forEach(btn=>{
+      btn.addEventListener('click',()=>{
+        document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+        document.querySelectorAll('.tab-content').forEach(c=>c.classList.remove('active'));
+        btn.classList.add('active');
+        document.getElementById(btn.dataset.tab).classList.add('active');
+      });
+    });
+
+    // Teclas manuales
+    document.querySelectorAll('#piano .white-key,#piano .black-key').forEach(k=>{
+      k.addEventListener('click',e=>{e.stopPropagation();k.classList.toggle('active');});
+    });
+    </script>
+  </body>
+</html>
