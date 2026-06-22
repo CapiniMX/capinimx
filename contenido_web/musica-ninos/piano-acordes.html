@@ -14,32 +14,30 @@
       .header p  { font-size: 0.75em; opacity: 0.85; }
       .back-btn  { display: inline-block; background: rgba(255,255,255,0.18); color: #fff; border: none; border-radius: 8px; padding: 5px 12px; font-size: 0.78em; cursor: pointer; margin-bottom: 8px; text-decoration: none; }
 
-      /* ──── Piano base ──── */
+      /* ──── Piano base (keys built via JS) ──── */
       .piano-wrap { overflow-x: auto; margin: 0.8rem 0 0.3rem; }
-      .piano { display: flex; position: relative; height: 110px; width: max-content; margin: 0 auto; user-select: none; }
+      .piano      { position: relative; margin: 0 auto; user-select: none; display: block; }
+      .mini-wrap  { overflow-x: auto; }
+      .mini-piano { position: relative; margin: 0 auto; user-select: none; display: block; }
+
       .white-key {
-        width: 34px; height: 110px; background: #f0f0f0; border: 1.5px solid #999;
-        border-radius: 0 0 5px 5px; position: relative; cursor: pointer;
-        transition: background 0.1s; z-index: 1; display: flex; align-items: flex-end;
-        justify-content: center; padding-bottom: 5px; font-size: 9px; color: #666; font-weight: 700;
+        position: absolute; top: 0;
+        background: #f0f0f0; border: 1.5px solid #999;
+        border-radius: 0 0 5px 5px; cursor: pointer;
+        transition: background 0.1s; z-index: 1;
+        display: flex; align-items: flex-end; justify-content: center;
+        padding-bottom: 5px; font-size: 9px; color: #666; font-weight: 700;
+        box-sizing: border-box;
       }
       .white-key.active { background: #ffd6e0; }
+
       .black-key {
-        width: 21px; height: 68px; background: #111; border-radius: 0 0 4px 4px;
-        position: absolute; cursor: pointer; transition: background 0.1s; z-index: 2; top: 0;
+        position: absolute; top: 0;
+        background: #111; border-radius: 0 0 4px 4px;
+        cursor: pointer; transition: background 0.1s; z-index: 2;
+        box-sizing: border-box;
       }
       .black-key.active { background: #e94560; }
-      .bk-1{left:calc(1*34px - 10px);} .bk-2{left:calc(2*34px - 10px);}
-      .bk-4{left:calc(4*34px - 10px);} .bk-5{left:calc(5*34px - 10px);}
-      .bk-6{left:calc(6*34px - 10px);}
-
-      /* ──── Mini piano ──── */
-      .mini-piano { display: flex; position: relative; height: 80px; width: max-content; margin: 0 auto; user-select: none; }
-      .mini-piano .white-key { width: 27px; height: 80px; font-size: 8px; }
-      .mini-piano .black-key { width: 16px; height: 50px; }
-      .mini-piano .bk-1{left:calc(1*27px-8px);} .mini-piano .bk-2{left:calc(2*27px-8px);}
-      .mini-piano .bk-4{left:calc(4*27px-8px);} .mini-piano .bk-5{left:calc(5*27px-8px);}
-      .mini-piano .bk-6{left:calc(6*27px-8px);}
 
       /* ──── Displays ──── */
       #chord-display {
@@ -143,23 +141,7 @@
 
       <!-- ═══ TECLADO SIEMPRE VISIBLE ═══ -->
       <div class="piano-wrap">
-        <div class="piano" id="piano">
-          <div class="white-key" data-note="C4">C</div><div class="white-key" data-note="D4">D</div>
-          <div class="white-key" data-note="E4">E</div><div class="white-key" data-note="F4">F</div>
-          <div class="white-key" data-note="G4">G</div><div class="white-key" data-note="A4">A</div>
-          <div class="white-key" data-note="B4">B</div><div class="white-key" data-note="C5">C</div>
-          <div class="white-key" data-note="D5">D</div><div class="white-key" data-note="E5">E</div>
-          <div class="white-key" data-note="F5">F</div><div class="white-key" data-note="G5">G</div>
-          <div class="white-key" data-note="A5">A</div><div class="white-key" data-note="B5">B</div>
-          <div class="black-key bk-1" data-note="Db4"></div><div class="black-key bk-2" data-note="Eb4"></div>
-          <div class="black-key bk-4" data-note="Gb4"></div><div class="black-key bk-5" data-note="Ab4"></div>
-          <div class="black-key bk-6" data-note="Bb4"></div>
-          <div class="black-key" style="left:calc(7*34px+1*34px-10px)" data-note="Db5"></div>
-          <div class="black-key" style="left:calc(7*34px+2*34px-10px)" data-note="Eb5"></div>
-          <div class="black-key" style="left:calc(7*34px+4*34px-10px)" data-note="Gb5"></div>
-          <div class="black-key" style="left:calc(7*34px+5*34px-10px)" data-note="Ab5"></div>
-          <div class="black-key" style="left:calc(7*34px+6*34px-10px)" data-note="Bb5"></div>
-        </div>
+        <div class="piano" id="piano"></div>
       </div>
       <div id="chord-display"></div>
       <div id="scale-notes-display"></div>
@@ -192,45 +174,13 @@
             <div class="win-label" id="win-a-label">Acorde actual</div>
             <div class="win-chord-name" id="win-a-name">—</div>
             <div class="win-notes" id="win-a-notes">—</div>
-            <div class="mini-wrap"><div class="mini-piano" id="mini-piano-a">
-              <div class="white-key" data-note="C4">C</div><div class="white-key" data-note="D4">D</div>
-              <div class="white-key" data-note="E4">E</div><div class="white-key" data-note="F4">F</div>
-              <div class="white-key" data-note="G4">G</div><div class="white-key" data-note="A4">A</div>
-              <div class="white-key" data-note="B4">B</div><div class="white-key" data-note="C5">C</div>
-              <div class="white-key" data-note="D5">D</div><div class="white-key" data-note="E5">E</div>
-              <div class="white-key" data-note="F5">F</div><div class="white-key" data-note="G5">G</div>
-              <div class="white-key" data-note="A5">A</div><div class="white-key" data-note="B5">B</div>
-              <div class="black-key bk-1" data-note="Db4"></div><div class="black-key bk-2" data-note="Eb4"></div>
-              <div class="black-key bk-4" data-note="Gb4"></div><div class="black-key bk-5" data-note="Ab4"></div>
-              <div class="black-key bk-6" data-note="Bb4"></div>
-              <div class="black-key" style="left:calc(7*27px+1*27px-8px)" data-note="Db5"></div>
-              <div class="black-key" style="left:calc(7*27px+2*27px-8px)" data-note="Eb5"></div>
-              <div class="black-key" style="left:calc(7*27px+4*27px-8px)" data-note="Gb5"></div>
-              <div class="black-key" style="left:calc(7*27px+5*27px-8px)" data-note="Ab5"></div>
-              <div class="black-key" style="left:calc(7*27px+6*27px-8px)" data-note="Bb5"></div>
-            </div></div>
+            <div class="mini-wrap"><div class="mini-piano" id="mini-piano-a"></div></div>
           </div>
           <div class="chord-window">
             <div class="win-label" id="win-b-label">Siguiente acorde</div>
             <div class="win-chord-name" id="win-b-name">—</div>
             <div class="win-notes" id="win-b-notes">—</div>
-            <div class="mini-wrap"><div class="mini-piano" id="mini-piano-b">
-              <div class="white-key" data-note="C4">C</div><div class="white-key" data-note="D4">D</div>
-              <div class="white-key" data-note="E4">E</div><div class="white-key" data-note="F4">F</div>
-              <div class="white-key" data-note="G4">G</div><div class="white-key" data-note="A4">A</div>
-              <div class="white-key" data-note="B4">B</div><div class="white-key" data-note="C5">C</div>
-              <div class="white-key" data-note="D5">D</div><div class="white-key" data-note="E5">E</div>
-              <div class="white-key" data-note="F5">F</div><div class="white-key" data-note="G5">G</div>
-              <div class="white-key" data-note="A5">A</div><div class="white-key" data-note="B5">B</div>
-              <div class="black-key bk-1" data-note="Db4"></div><div class="black-key bk-2" data-note="Eb4"></div>
-              <div class="black-key bk-4" data-note="Gb4"></div><div class="black-key bk-5" data-note="Ab4"></div>
-              <div class="black-key bk-6" data-note="Bb4"></div>
-              <div class="black-key" style="left:calc(7*27px+1*27px-8px)" data-note="Db5"></div>
-              <div class="black-key" style="left:calc(7*27px+2*27px-8px)" data-note="Eb5"></div>
-              <div class="black-key" style="left:calc(7*27px+4*27px-8px)" data-note="Gb5"></div>
-              <div class="black-key" style="left:calc(7*27px+5*27px-8px)" data-note="Ab5"></div>
-              <div class="black-key" style="left:calc(7*27px+6*27px-8px)" data-note="Bb5"></div>
-            </div></div>
+            <div class="mini-wrap"><div class="mini-piano" id="mini-piano-b"></div></div>
           </div>
         </div>
       </div>
@@ -349,6 +299,40 @@
     </div><!-- /padding div -->
 
     <script>
+    // ── PIANO BUILDER ──────────────────────────────────────────────────────
+    const PIANO_WHITE_NOTES = ['C4','D4','E4','F4','G4','A4','B4','C5','D5','E5','F5','G5','A5','B5'];
+    const PIANO_BLACK_NOTES = [
+      ['Db4',1],['Eb4',2],['Gb4',4],['Ab4',5],['Bb4',6],
+      ['Db5',8],['Eb5',9],['Gb5',11],['Ab5',12],['Bb5',13]
+    ];
+    function buildPiano(id, ww, wh, bw, bh) {
+      const container = document.getElementById(id);
+      container.style.width  = (PIANO_WHITE_NOTES.length * ww) + 'px';
+      container.style.height = wh + 'px';
+      PIANO_WHITE_NOTES.forEach((note, i) => {
+        const key = document.createElement('div');
+        key.className = 'white-key';
+        key.dataset.note = note;
+        key.textContent = note.replace(/\d/, '');
+        key.style.left   = (i * ww) + 'px';
+        key.style.width  = ww + 'px';
+        key.style.height = wh + 'px';
+        container.appendChild(key);
+      });
+      PIANO_BLACK_NOTES.forEach(([note, rightIdx]) => {
+        const key = document.createElement('div');
+        key.className = 'black-key';
+        key.dataset.note = note;
+        key.style.left   = (rightIdx * ww - Math.round(bw / 2)) + 'px';
+        key.style.width  = bw + 'px';
+        key.style.height = bh + 'px';
+        container.appendChild(key);
+      });
+    }
+    buildPiano('piano',       36, 120, 22, 72);
+    buildPiano('mini-piano-a', 24,  80, 15, 50);
+    buildPiano('mini-piano-b', 24,  80, 15, 50);
+
     // ── KEYS DATA ──────────────────────────────────────────────────────────
     const KEYS_DATA = {
       C:{name:'Do (C)',chords:[{name:'C',label:'I',notes:['C4','E4','G4']},{name:'Dm',label:'ii',notes:['D4','F4','A4']},{name:'Em',label:'iii',notes:['E4','G4','B4']},{name:'F',label:'IV',notes:['F4','A4','C5']},{name:'G',label:'V',notes:['G4','B4','D5']},{name:'Am',label:'vi',notes:['A4','C5','E5']},{name:'Bdim',label:'vii°',notes:['B4','D5','F5']}]},
@@ -497,9 +481,10 @@
       });
     });
 
-    // Teclas manuales
-    document.querySelectorAll('#piano .white-key,#piano .black-key').forEach(k=>{
-      k.addEventListener('click',e=>{e.stopPropagation();k.classList.toggle('active');});
+    // Teclas manuales (delegado al contenedor para capturar teclas creadas por JS)
+    document.getElementById('piano').addEventListener('click', e => {
+      const k = e.target.closest('.white-key, .black-key');
+      if (k) { e.stopPropagation(); k.classList.toggle('active'); }
     });
     </script>
   </body>
