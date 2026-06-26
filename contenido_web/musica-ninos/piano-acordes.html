@@ -127,6 +127,43 @@
       /* ──── Tips ──── */
       .tip-box { background: #16213e; border-left: 3px solid #e94560; padding: 8px 10px; border-radius: 0 8px 8px 0; margin: 6px 0; font-size: 0.8em; color: #ccc; }
       .tip-box strong { color: #e94560; }
+
+      /* ──── Print Tab ──── */
+      .print-controls { background: #16213e; border-radius: 12px; padding: 14px; margin: 10px 0; }
+      .print-controls label { font-size: 0.78em; color: #aaa; display: block; margin-bottom: 4px; text-transform: uppercase; letter-spacing: 0.05em; }
+      .print-controls select { background: #0f3460; color: #fff; border: 1.5px solid #e94560; border-radius: 8px; padding: 7px 12px; font-size: 0.88em; font-family: inherit; margin-bottom: 12px; width: 100%; cursor: pointer; }
+      .print-btn { display: block; width: 100%; padding: 12px; background: linear-gradient(135deg, #e94560, #c73e54); border: none; border-radius: 12px; color: white; font-size: 0.95em; font-weight: bold; cursor: pointer; margin-top: 8px; }
+      .print-btn:hover { transform: scale(1.02); }
+
+      /* ──── Printable Scale Cards (3 per column, vertical) ──── */
+      .print-scales-area { margin-top: 10px; }
+      .print-scale-card { background: #fff; border: 2px solid #e94560; border-radius: 12px; padding: 12px; margin-bottom: 10px; page-break-inside: avoid; }
+      .print-scale-card .psc-title { font-size: 0.85em; font-weight: 800; color: #e94560; margin-bottom: 3px; text-transform: uppercase; letter-spacing: 0.05em; }
+      .print-scale-card .psc-notes { font-size: 0.72em; color: #333; font-family: monospace; margin-bottom: 6px; }
+      .print-piano { position: relative; height: 60px; margin: 0 auto; }
+      .print-piano .pp-wk { position: absolute; top: 0; background: #f8f8f8; border: 1px solid #bbb; border-radius: 0 0 3px 3px; display: flex; align-items: flex-end; justify-content: center; padding-bottom: 2px; font-size: 5px; color: #666; font-weight: 700; box-sizing: border-box; }
+      .print-piano .pp-bk { position: absolute; top: 0; background: #222; border-radius: 0 0 3px 3px; z-index: 2; box-sizing: border-box; }
+      .print-piano .pp-wk.lit { background: #ffd6e0; }
+      .print-piano .pp-bk.lit { background: #e94560; }
+
+      /* ──── Print Styles ──── */
+      @media print {
+        body { background: white !important; color: black !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+        .header, .piano-wrap, #chord-display, #scale-notes-display, #prog-viewer, .tab-bar,
+        .tab-content:not(#tab-imprimir), .print-controls, .back-btn, .feedback { display: none !important; }
+        .tab-content { display: none !important; }
+        #tab-imprimir { display: block !important; padding: 0 !important; }
+        .print-scales-area { margin: 0 !important; }
+        .print-scale-card { border-color: #e94560 !important; background: white !important; margin-bottom: 8px !important; padding: 8px !important; }
+        .print-scale-card .psc-title { color: #e94560 !important; }
+        .print-scale-card .psc-notes { color: #333 !important; }
+        .print-piano { height: 50px !important; }
+        .print-piano .pp-wk { background: #f8f8f8 !important; border-color: #bbb !important; font-size: 4px !important; }
+        .print-piano .pp-wk.lit { background: #ffd6e0 !important; }
+        .print-piano .pp-bk { background: #222 !important; }
+        .print-piano .pp-bk.lit { background: #e94560 !important; }
+        @page { margin: 0.5cm; size: portrait; }
+      }
     </style>
   </head>
   <body>
@@ -192,6 +229,7 @@
         <button class="tab-btn" data-tab="tab-tonalidades">🎯 Tonalidades</button>
         <button class="tab-btn" data-tab="tab-escalas">📐 Escalas</button>
         <button class="tab-btn" data-tab="tab-consejos">💡 Tips</button>
+        <button class="tab-btn" data-tab="tab-imprimir">🖨️ Imprimir</button>
       </div>
 
       <!-- TAB: ACORDES -->
@@ -283,6 +321,40 @@
           <div class="scale-card" data-scale="phrygian"><span class="scale-badge mode">Modo</span><h3>Frigia</h3><p class="desc">Sonido flamenco, metal y español.</p></div>
           <div class="scale-card" data-scale="lydian"><span class="scale-badge mode">Modo</span><h3>Lidia</h3><p class="desc">Mayor con 4º alto. Mágico, cine, anime.</p></div>
           <div class="scale-card" data-scale="mixolydian"><span class="scale-badge mode">Modo</span><h3>Mixolidia</h3><p class="desc">Mayor con 7º bajo. Rock y gospel.</p></div>
+        </div>
+      </div>
+
+      <!-- TAB: IMPRIMIR -->
+      <div class="tab-content" id="tab-imprimir">
+        <p class="sec-intro">Selecciona una tonalidad y genera las escalas para imprimir. 3 escalas caben por hoja en formato vertical.</p>
+        <div class="print-controls">
+          <label>Tonalidad</label>
+          <select id="print-key-sel">
+            <option value="C">Do (C)</option>
+            <option value="G">Sol (G)</option>
+            <option value="F">Fa (F)</option>
+            <option value="D">Re (D)</option>
+            <option value="A">La (A)</option>
+            <option value="E">Mi (E)</option>
+            <option value="Bb">Sib (Bb)</option>
+          </select>
+          <label>Escalas a incluir</label>
+          <select id="print-scale-sel">
+            <option value="all">Todas (12 escalas)</option>
+            <option value="basic">Básicas (Mayor, menor natural)</option>
+            <option value="penta_blues">Pentatónicas + Blues</option>
+            <option value="modes">Modos (Dórica, Frigia, Lidia, Mixolidia)</option>
+            <option value="major">Mayor</option>
+            <option value="blues">Blues</option>
+            <option value="natural_minor">menor natural</option>
+          </select>
+          <button class="print-btn" onclick="generatePrintScales()">🎹 Generar Escalas</button>
+        </div>
+        <div class="print-scales-area" id="print-scales-area">
+          <p style="font-size:0.8em;color:#666;text-align:center;padding:20px;">
+            Selecciona tonalidad y haz clic en <strong>Generar Escalas</strong> para ver la vista de impresión.<br>
+            Luego usa Ctrl+P (o Cmd+P) para imprimir.
+          </p>
         </div>
       </div>
 
@@ -486,6 +558,81 @@
       const k = e.target.closest('.white-key, .black-key');
       if (k) { e.stopPropagation(); k.classList.toggle('active'); }
     });
-    </script>
+
+    // ── PRINT SCALES ───────────────────────────────────────────────────────
+    const SCALE_GROUPS = {
+      all: ['major', 'natural_minor', 'harmonic_minor', 'melodic_minor', 'major_pentatonic', 'minor_pentatonic', 'blues', 'dorian', 'phrygian', 'lydian', 'mixolydian'],
+      basic: ['major', 'natural_minor'],
+      penta_blues: ['major_pentatonic', 'minor_pentatonic', 'blues'],
+      modes: ['dorian', 'phrygian', 'lydian', 'mixolydian'],
+      major: ['major'],
+      blues: ['blues'],
+      natural_minor: ['natural_minor'],
+    };
+
+    function buildPrintPiano(container, notes, ww, wh, bw, bh) {
+      const whiteNotes = ['C','D','E','F','G','A','B'];
+      const totalWW = 14 * ww;
+      container.style.width = totalWW + 'px';
+      container.style.height = wh + 'px';
+      container.style.position = 'relative';
+
+      whiteNotes.forEach((n, i) => {
+        ['4','5'].forEach((oct, oi) => {
+          const note = n + (oi === 0 ? '4' : '5');
+          const key = document.createElement('div');
+          key.className = 'pp-wk' + (notes.includes(note) ? ' lit' : '');
+          key.style.left = ((i + oi * 7) * ww) + 'px';
+          key.style.width = ww + 'px';
+          key.style.height = wh + 'px';
+          key.textContent = n;
+          container.appendChild(key);
+        });
+      });
+
+      const blackMap = [
+        { note: 'Db', rightIdx: 1 },
+        { note: 'Eb', rightIdx: 2 },
+        { note: 'Gb', rightIdx: 4 },
+        { note: 'Ab', rightIdx: 5 },
+        { note: 'Bb', rightIdx: 6 },
+      ];
+      blackMap.forEach(({ note, rightIdx }) => {
+        ['4','5'].forEach((oct, oi) => {
+          const fullNote = note + (oi === 0 ? '4' : '5');
+          if (!notes.includes(fullNote)) return;
+          const key = document.createElement('div');
+          key.className = 'pp-bk lit';
+          key.style.left = ((rightIdx + oi * 7) * ww - Math.round(bw / 2)) + 'px';
+          key.style.width = bw + 'px';
+          key.style.height = bh + 'px';
+          container.appendChild(key);
+        });
+      });
+    }
+
+    function generatePrintScales() {
+      const key = document.getElementById('print-key-sel').value;
+      const group = document.getElementById('print-scale-sel').value;
+      const scaleIds = SCALE_GROUPS[group] || SCALE_GROUPS.all;
+      const area = document.getElementById('print-scales-area');
+      const KN2 = { C: 'Do', D: 'Re', E: 'Mi', F: 'Fa', G: 'Sol', A: 'La', Bb: 'Sib' };
+
+      area.innerHTML = '';
+      scaleIds.forEach(id => {
+        const notes = getScaleNotes(key, id);
+        const noteNames = notes.map(n => n.replace(/\d+$/, ''));
+        const card = document.createElement('div');
+        card.className = 'print-scale-card';
+        card.innerHTML = `
+          <div class="psc-title">Escala ${SCALES[id].name} de ${KN2[key]}: ${noteNames.join(' – ')}</div>
+          <div class="psc-notes">${notes.join(' – ')}</div>
+          <div class="print-piano" id="pp-${id}"></div>
+        `;
+        area.appendChild(card);
+        buildPrintPiano(card.querySelector('.print-piano'), notes, 18, 60, 11, 36);
+      });
+    }
+  </script>
   </body>
 </html>
