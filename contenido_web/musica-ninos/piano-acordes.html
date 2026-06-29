@@ -1129,7 +1129,8 @@
     function showScale(id){
       activeScaleId=id;
       const notes=getScaleNotes(activeScaleKey,id);
-      hiMain(notes);
+      // Escalas: solo iluminar, NO tocar (suena mal con escalas largas/disonantes)
+      hiMain(notes, {silent: true});
       document.getElementById('chord-display').textContent='';
       const s=document.getElementById('scale-notes-display');
       s.style.display='block';
