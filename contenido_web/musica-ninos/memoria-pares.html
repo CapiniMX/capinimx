@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <link rel="apple-touch-icon" href="favicon.svg">
+  <title>🧩 Memoria de Notas — CapiniMX</title>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&family=Nunito:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --turquesa:      #4DB6AC;
+      --turquesa-osc:  #00897B;
+      --turquesa-cl:   #B2DFDB;
+      --rosa:          #F48FB1;
+      --rosa-osc:      #EC407A;
+      --rosa-cl:       #FCE4EC;
+      --azul-cielo:    #87CEEB;
+      --azul-cielo-cl: #E1F5FE;
+      --texto:         #333333;
+      --texto-suave:   #666666;
+      --fondo:         #FFFFFF;
+      --fondo-alt:     #F5F5F5;
+      --borde:         #E0E0E0;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Nunito', 'Segoe UI', sans-serif;
+      background: linear-gradient(180deg, #FFFFFF 0%, var(--azul-cielo-cl) 100%);
+      background-attachment: fixed;
+      min-height: 100vh;
+      color: var(--texto);
+      overflow-x: hidden;
+    }
+
+    .header {
+      background: linear-gradient(135deg, var(--turquesa) 0%, var(--rosa) 100%);
+      text-align: center;
+      padding: 18px 10px 16px;
+      border-radius: 0 0 24px 24px;
+      box-shadow: 0 4px 14px rgba(77, 182, 172, 0.18);
+      color: #fff;
+    }
+    .header h1 { font-size: 1.4em; margin-bottom: 4px; color: #fff; font-weight: 800; }
+    .header p  { font-size: 0.85em; color: rgba(255,255,255,0.95); }
+    .back-btn {
+      display: inline-block;
+      background: rgba(255,255,255,0.25);
+      color: #fff;
+      border: 1.5px solid rgba(255,255,255,0.45);
+      border-radius: 20px;
+      padding: 6px 14px;
+      font-size: 0.8em;
+      cursor: pointer;
+      margin-bottom: 10px;
+      text-decoration: none;
+      font-weight: 700;
+      transition: background 0.15s;
+    }
+    .back-btn:hover { background: rgba(255,255,255,0.4); }
+
+    .game-wrap {
+      max-width: 520px;
+      margin: 0 auto;
+      padding: 12px 12px 90px;
+    }
+
+    /* Stats bar */
+    .stats-bar {
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      background: #fff;
+      border: 1.5px solid var(--borde);
+      border-radius: 16px;
+      padding: 12px 8px;
+      margin-bottom: 12px;
+      box-shadow: 0 2px 8px rgba(77, 182, 172, 0.08);
+    }
+    .stat { text-align: center; }
+    .stat-label { font-size: 0.72em; color: var(--texto-suave); font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; }
+    .stat-value { font-size: 1.2em; font-weight: 800; color: var(--turquesa-osc); }
+    .stat-value.time { color: var(--rosa-osc); }
+
+    /* Grid */
+    .card-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+      margin: 16px 0;
+    }
+    .card {
+      aspect-ratio: 1;
+      border-radius: 14px;
+      background: linear-gradient(135deg, var(--turquesa) 0%, var(--turquesa-osc) 100%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-weight: 800;
+      color: #fff;
+      user-select: none;
+      -webkit-user-select: none;
+      transition: transform 0.2s, box-shadow 0.2s;
+      box-shadow: 0 4px 10px rgba(77, 182, 172, 0.25);
+      position: relative;
+      overflow: hidden;
+    }
+    .card:not(.flipped):not(.matched):hover {
+      transform: scale(1.06);
+      box-shadow: 0 6px 16px rgba(77, 182, 172, 0.35);
+    }
+    .card.flipped {
+      background: linear-gradient(135deg, var(--rosa) 0%, var(--rosa-osc) 100%);
+      cursor: default;
+    }
+    .card.matched {
+      background: linear-gradient(135deg, #66BB6A, #388E3C);
+      cursor: default;
+    }
+    .card.disabled { pointer-events: none; }
+    .card .card-face {
+      font-size: 1.8em;
+      line-height: 1;
+    }
+    .card .card-note {
+      font-size: 0.65em;
+      opacity: 0.9;
+      margin-top: 2px;
+    }
+    .card .question-mark {
+      font-size: 1.8em;
+    }
+    /* Flip animation */
+    .card .back-face { display: flex; flex-direction: column; align-items: center; justify-content: center; }
+    .card .front-face { display: none; flex-direction: column; align-items: center; justify-content: center; }
+    .card.flipped .back-face { display: none; }
+    .card.flipped .front-face { display: flex; }
+    .card.matched .back-face { display: none; }
+    .card.matched .front-face { display: flex; }
+
+    /* Status */
+    .status-msg {
+      text-align: center;
+      padding: 14px;
+      background: #fff;
+      border: 1.5px solid var(--borde);
+      border-radius: 14px;
+      font-size: 1em;
+      font-weight: 700;
+      color: var(--turquesa-osc);
+      min-height: 52px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 12px;
+      box-shadow: 0 2px 8px rgba(77, 182, 172, 0.08);
+      transition: color 0.2s;
+    }
+    .status-msg.success { color: #2E7D32; }
+    .status-msg.fail { color: #C62828; }
+
+    /* Start button */
+    .start-btn {
+      display: block;
+      width: 100%;
+      padding: 16px;
+      background: linear-gradient(135deg, var(--turquesa), var(--rosa));
+      color: #fff;
+      border: none;
+      border-radius: 16px;
+      font-size: 1.1em;
+      font-weight: 800;
+      cursor: pointer;
+      font-family: inherit;
+      box-shadow: 0 4px 14px rgba(244, 143, 177, 0.35);
+      transition: transform 0.15s, box-shadow 0.15s;
+    }
+    .start-btn:hover { transform: scale(1.03); box-shadow: 0 6px 20px rgba(244, 143, 177, 0.45); }
+    .start-btn:disabled { background: #ccc; cursor: not-allowed; box-shadow: none; transform: none; }
+
+    /* Result card */
+    .result-card {
+      background: #fff;
+      border: 2px solid var(--turquesa);
+      border-radius: 20px;
+      padding: 24px 16px;
+      text-align: center;
+      margin-top: 12px;
+      box-shadow: 0 4px 16px rgba(77, 182, 172, 0.18);
+    }
+    .result-stars { font-size: 2.5em; margin-bottom: 10px; }
+    .result-title { font-size: 1.3em; font-weight: 800; color: var(--turquesa-osc); margin-bottom: 6px; }
+    .result-detail { font-size: 0.9em; color: var(--texto-suave); }
+  </style>
+</head>
+<body>
+
+<div class="header">
+  <a class="back-btn" href="./">← Música para Niños</a>
+  <h1>🧩 Memoria de Notas</h1>
+  <p>Encuentra las parejas de notas musicales</p>
+</div>
+
+<div class="game-wrap">
+  <!-- Stats -->
+  <div class="stats-bar">
+    <div class="stat">
+      <div class="stat-label">Movimientos</div>
+      <div class="stat-value" id="moves">0</div>
+    </div>
+    <div class="stat">
+      <div class="stat-label">Parejas</div>
+      <div class="stat-value" id="pairs">0 / 6</div>
+    </div>
+    <div class="stat">
+      <div class="stat-label">Tiempo</div>
+      <div class="stat-value time" id="timer">0:00</div>
+    </div>
+  </div>
+
+  <!-- Card grid -->
+  <div class="card-grid" id="card-grid"></div>
+
+  <!-- Status -->
+  <div class="status-msg" id="status">Pulsa "¡Jugar!" para comenzar</div>
+
+  <!-- Start -->
+  <button class="start-btn" id="start-btn" onclick="startGame()">🎮 ¡Jugar!</button>
+
+  <!-- Result -->
+  <div id="result-area"></div>
+</div>
+
+<script>
+// ════════════════════════════════════════════════════
+//   SYNTH (copied from piano-acordes.html)
+// ════════════════════════════════════════════════════
+function noteToHz(note) {
+  const NAMES = { 'C':0, 'C#':1, 'Db':1, 'D':2, 'D#':3, 'Eb':3, 'E':4, 'F':5,
+                  'F#':6, 'Gb':6, 'G':7, 'G#':8, 'Ab':8, 'A':9, 'A#':10, 'Bb':10, 'B':11 };
+  const m = note.match(/^([A-G][#b]?)(\d)$/);
+  if (!m) return 440;
+  const semitone = NAMES[m[1]];
+  const octave   = parseInt(m[2], 10);
+  const midi = (octave + 1) * 12 + semitone;
+  return 440 * Math.pow(2, (midi - 69) / 12);
+}
+
+let audioCtx = null;
+const masterGain = { node: null };
+
+function getAudio() {
+  if (!audioCtx) {
+    const Ctor = window.AudioContext || window.webkitAudioContext;
+    if (!Ctor) return null;
+    audioCtx = new Ctor();
+    const g = audioCtx.createGain();
+    g.gain.value = 0.35;
+    g.connect(audioCtx.destination);
+    masterGain.node = g;
+  }
+  if (audioCtx.state === 'suspended') audioCtx.resume();
+  return audioCtx;
+}
+
+function playNote(note, dur = 0.6) {
+  const ctx = getAudio();
+  if (!ctx) return null;
+  const f0 = noteToHz(note);
+  const now = ctx.currentTime;
+  const gain = ctx.createGain();
+  gain.gain.setValueAtTime(0, now);
+  gain.gain.linearRampToValueAtTime(0.9, now + 0.008);
+  gain.gain.exponentialRampToValueAtTime(0.35, now + 0.4);
+  const releaseStart = now + Math.max(0.05, dur);
+  gain.gain.setValueAtTime(0.35, releaseStart);
+  gain.gain.exponentialRampToValueAtTime(0.0001, releaseStart + 0.6);
+  const osc1 = ctx.createOscillator(); osc1.type = 'sine'; osc1.frequency.value = f0;
+  const osc2 = ctx.createOscillator(); osc2.type = 'sine'; osc2.frequency.value = f0 * 2;
+  const osc3 = ctx.createOscillator(); osc3.type = 'triangle'; osc3.frequency.value = f0 * 3;
+  const g2 = ctx.createGain(); g2.gain.value = 0.18;
+  const g3 = ctx.createGain(); g3.gain.value = 0.06;
+  osc1.connect(gain);
+  osc2.connect(g2).connect(gain);
+  osc3.connect(g3).connect(gain);
+  gain.connect(masterGain.node);
+  osc1.start(now); osc1.stop(releaseStart + 0.65);
+  osc2.start(now); osc2.stop(releaseStart + 0.65);
+  osc3.start(now); osc3.stop(releaseStart + 0.65);
+  return {
+    stop: () => {
+      const t = ctx.currentTime;
+      try {
+        gain.gain.cancelScheduledValues(t);
+        gain.gain.setValueAtTime(gain.gain.value, t);
+        gain.gain.exponentialRampToValueAtTime(0.0001, t + 0.15);
+        osc1.stop(t + 0.18); osc2.stop(t + 0.18); osc3.stop(t + 0.18);
+      } catch(e) {}
+    }
+  };
+}
+
+// ════════════════════════════════════════════════════
+//   GAME STATE
+// ════════════════════════════════════════════════════
+// 6 pairs of notes = 12 cards in a 4x3 grid
+const NOTE_PAIRS = [
+  { note: 'C4',  label: 'Do'    },
+  { note: 'D4',  label: 'Re'    },
+  { note: 'E4',  label: 'Mi'    },
+  { note: 'F4',  label: 'Fa'    },
+  { note: 'G4',  label: 'Sol'   },
+  { note: 'A4',  label: 'La'    },
+];
+
+const EMOJIS = ['🎵','🎶','🎼','🎹','🎺','🎸'];
+
+const state = {
+  cards: [],       // {note, label, idx, flipped, matched}
+  flipped: [],     // indices of currently flipped cards (max 2)
+  moves: 0,
+  pairs: 0,
+  timerInterval: null,
+  startTime: null,
+  locked: false,   // true during mismatch delay
+  gameOver: false,
+};
+
+// ════════════════════════════════════════════════════
+//   DOM REFS
+// ════════════════════════════════════════════════════
+const $grid    = document.getElementById('card-grid');
+const $moves   = document.getElementById('moves');
+const $pairs   = document.getElementById('pairs');
+const $timer   = document.getElementById('timer');
+const $status  = document.getElementById('status');
+const $startBtn = document.getElementById('start-btn');
+const $result  = document.getElementById('result-area');
+
+// ════════════════════════════════════════════════════
+//   HELPERS
+// ════════════════════════════════════════════════════
+function setStatus(msg, cls = '') {
+  $status.textContent = msg;
+  $status.className = 'status-msg ' + cls;
+}
+
+function formatTime(secs) {
+  const m = Math.floor(secs / 60);
+  const s = secs % 60;
+  return m + ':' + String(s).padStart(2, '0');
+}
+
+// ════════════════════════════════════════════════════
+//   GAME LOGIC
+// ════════════════════════════════════════════════════
+function shuffle(arr) {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+function buildCards() {
+  // Create pairs: each note appears twice
+  const all = [];
+  NOTE_PAIRS.forEach((pair, pIdx) => {
+    all.push({ ...pair, idx: pIdx * 2 });
+    all.push({ ...pair, idx: pIdx * 2 + 1 });
+  });
+  return shuffle(all);
+}
+
+function renderGrid() {
+  $grid.innerHTML = '';
+  state.cards.forEach((card, i) => {
+    const el = document.createElement('div');
+    el.className = 'card';
+    el.dataset.idx = i;
+
+    const emoji = EMOJIS[NOTE_PAIRS.findIndex(p => p.note === card.note)] || '🎵';
+
+    el.innerHTML = `
+      <div class="back-face">
+        <span class="question-mark">❓</span>
+      </div>
+      <div class="front-face">
+        <span class="card-face">${emoji}</span>
+        <span class="card-note">${card.label}</span>
+      </div>`;
+
+    if (card.flipped || card.matched) {
+      el.classList.add(card.matched ? 'matched' : 'flipped');
+    }
+
+    el.addEventListener('click', () => handleCardClick(i));
+    $grid.appendChild(el);
+  });
+}
+
+function startGame() {
+  clearInterval(state.timerInterval);
+  state.cards = buildCards();
+  state.flipped = [];
+  state.moves = 0;
+  state.pairs = 0;
+  state.locked = false;
+  state.gameOver = false;
+  state.startTime = Date.now();
+
+  $moves.textContent = '0';
+  $pairs.textContent = '0 / 6';
+  $timer.textContent = '0:00';
+  $result.innerHTML = '';
+  $startBtn.disabled = true;
+  $startBtn.textContent = '⏳ Jugando...';
+
+  renderGrid();
+  setStatus('Encuentra todas las parejas 👆', '');
+
+  state.timerInterval = setInterval(() => {
+    const elapsed = Math.floor((Date.now() - state.startTime) / 1000);
+    $timer.textContent = formatTime(elapsed);
+  }, 1000);
+}
+
+function handleCardClick(idx) {
+  if (state.locked || state.gameOver) return;
+  const card = state.cards[idx];
+  if (card.flipped || card.matched) return;
+  if (state.flipped.length >= 2) return;
+
+  // Flip card
+  card.flipped = true;
+  state.flipped.push(idx);
+  playNote(card.note, 0.8);
+
+  const el = $grid.children[idx];
+  el.classList.add('flipped');
+
+  if (state.flipped.length === 2) {
+    state.moves++;
+    $moves.textContent = state.moves;
+    checkMatch();
+  }
+}
+
+function checkMatch() {
+  const [i1, i2] = state.flipped;
+  const c1 = state.cards[i1];
+  const c2 = state.cards[i2];
+
+  if (c1.note === c2.note) {
+    // Match!
+    c1.matched = true;
+    c2.matched = true;
+    $grid.children[i1].classList.add('matched');
+    $grid.children[i2].classList.add('matched');
+    state.flipped = [];
+    state.pairs++;
+    $pairs.textContent = state.pairs + ' / 6';
+    setStatus('🎉 ¡Pareja encontrada!', 'success');
+
+    if (state.pairs === 6) {
+      setTimeout(showResult, 800);
+    }
+  } else {
+    // No match
+    state.locked = true;
+    setStatus('❌ No son iguales...', 'fail');
+    setTimeout(() => {
+      c1.flipped = false;
+      c2.flipped = false;
+      $grid.children[i1].classList.remove('flipped');
+      $grid.children[i2].classList.remove('flipped');
+      state.flipped = [];
+      state.locked = false;
+      setStatus('Sigue buscando 👆', '');
+    }, 1200);
+  }
+}
+
+function showResult() {
+  clearInterval(state.timerInterval);
+  state.gameOver = true;
+  const elapsed = Math.floor((Date.now() - state.startTime) / 1000);
+  const timeStr = formatTime(elapsed);
+  $startBtn.disabled = false;
+  $startBtn.textContent = '🔄 Jugar de nuevo';
+
+  let stars, title;
+  if (state.moves < 10) { stars = '⭐⭐⭐'; title = '¡Perfecto!'; }
+  else if (state.moves <= 14) { stars = '⭐⭐'; title = '¡Muy bien!'; }
+  else { stars = '⭐'; title = '¡Buen intento!'; }
+
+  $result.innerHTML = `
+    <div class="result-card">
+      <div class="result-stars">${stars}</div>
+      <div class="result-title">${title}</div>
+      <div class="result-detail">
+        Movimientos: <strong>${state.moves}</strong> · Tiempo: <strong>${timeStr}</strong><br>
+        ${state.moves < 10 ? '¡Memoria excepcional!' : state.moves <= 14 ? '¡Buena memoria!' : '¡Sigue practicando!'}
+      </div>
+    </div>`;
+}
+</script>
+</body>
+</html>
