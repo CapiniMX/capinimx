@@ -1,0 +1,23 @@
+{
+  "version": 1,
+  "skills": {
+    "ai-music": {
+      "source": "agentspace-so/runcomfy-agent-skills",
+      "sourceType": "github",
+      "skillPath": "ai-music/SKILL.md",
+      "computedHash": "29b2cf42e8945cc9b14ace58d5b7dcf04454c0839d41a30725c331e551f2aa24"
+    },
+    "vanilla-web": {
+      "source": "janjaszczak/cursor",
+      "sourceType": "github",
+      "skillPath": "skills/vanilla-web/SKILL.md",
+      "computedHash": "71d55c038df13f897175218b6040de5d3a7749f15b4117a25ca9598c3cf77233"
+    },
+    "web-design": {
+      "source": "pascalorg/skills",
+      "sourceType": "github",
+      "skillPath": "web-design/SKILL.md",
+      "computedHash": "a1e0efbeb54febcde2ece3f4954017b1a79a6c37c0e691ae0ab64edde0ab6998"
+    }
+  }
+}
