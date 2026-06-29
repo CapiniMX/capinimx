@@ -3,6 +3,8 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
+    <link rel="apple-touch-icon" href="favicon.svg">
     <title>🎹 Acordes y Escalas de Piano — CapiniMX</title>
     <style>
       /* ═══ PALETA CAPINIMX ═══
@@ -70,12 +72,47 @@
       /* ──── Piano base (keys built via JS) ──── */
       .piano-wrap {
         overflow-x: auto;
+        overflow-y: hidden;
         margin: 1rem 0 0.4rem;
         padding: 6px 4px;
         background: var(--fondo);
         border-radius: 16px;
         box-shadow: 0 2px 10px rgba(77, 182, 172, 0.10);
+        /* Momentum scroll nativo iOS + snap suave a teclas */
+        -webkit-overflow-scrolling: touch;
+        scroll-behavior: smooth;
+        scroll-snap-type: x proximity;
+        touch-action: pan-x pan-y; /* permite swipe horizontal pero no zoom */
+        /* Ocultar scrollbar fea en mobile pero mantener funcional */
+        scrollbar-width: thin;
+        scrollbar-color: var(--turquesa-cl) transparent;
       }
+      .piano-wrap::-webkit-scrollbar { height: 6px; }
+      .piano-wrap::-webkit-scrollbar-track { background: transparent; }
+      .piano-wrap::-webkit-scrollbar-thumb {
+        background: var(--turquesa-cl);
+        border-radius: 3px;
+      }
+      .piano-wrap::-webkit-scrollbar-thumb:hover { background: var(--turquesa); }
+
+      /* Hint de swipe (solo mobile) */
+      .piano-swipe-hint {
+        position: sticky;
+        left: 0;
+        bottom: 4px;
+        display: block;
+        text-align: center;
+        font-size: 0.78em;
+        color: var(--turquesa-osc);
+        background: linear-gradient(180deg, transparent, var(--turquesa-cl) 40%);
+        padding: 6px 0 2px;
+        margin-top: 2px;
+        pointer-events: none;
+        font-weight: 700;
+        transition: opacity 0.5s;
+        z-index: 5;
+      }
+      .piano-swipe-hint.fade-out { opacity: 0; }
       .piano      { position: relative; margin: 0 auto; user-select: none; display: block; }
       .mini-wrap  { overflow-x: auto; }
       .mini-piano { position: relative; margin: 0 auto; user-select: none; display: block; }
@@ -837,23 +874,107 @@
       activeVoices.clear();
     }
 
-    // Mouse / touch en cualquier piano
+    // ═══ Touch / mouse: TAP toca nota, SWIPE hace scroll ═══
+    //   - Si el dedo se mueve < 8px antes de levantar → es TAP → toca nota
+    //   - Si se mueve >= 8px → es SWIPE → deja que el browser haga scroll
+    //   - En desktop (mouse) → click normal = TAP
+    //   - Soporta múltiples dedos: cada dedo tiene su propio "tap" tracker
+
+    const TAP_THRESHOLD_PX = 8;
+    const tapTrackers = new Map(); // touchId -> { startX, startY, target, moved }
+
+    function getKeyFromPoint(x, y) {
+      const el = document.elementFromPoint(x, y);
+      return el ? el.closest('.white-key, .black-key') : null;
+    }
+
     document.querySelectorAll('.piano, .mini-piano').forEach(piano => {
+      // ── Mouse (desktop) ──
       piano.addEventListener('mousedown', e => {
         const key = e.target.closest('.white-key, .black-key');
         if (!key) return;
         pressKey(key);
         e.preventDefault();
       });
+
+      // ── Touch (mobile) ──
       piano.addEventListener('touchstart', e => {
-        const touch = e.touches[0];
-        if (!touch) return;
-        const el = document.elementFromPoint(touch.clientX, touch.clientY);
-        const key = el && el.closest('.white-key, .black-key');
-        if (key) pressKey(key);
-        e.preventDefault();
-      }, { passive: false });
+        for (const touch of e.changedTouches) {
+          tapTrackers.set(touch.identifier, {
+            startX: touch.clientX,
+            startY: touch.clientY,
+            currentX: touch.clientX,
+            currentY: touch.clientY,
+            target: getKeyFromPoint(touch.clientX, touch.clientY),
+            moved: false,
+          });
+        }
+        // NO preventDefault → dejamos que el browser pueda iniciar scroll
+      }, { passive: true });
+
+      piano.addEventListener('touchmove', e => {
+        for (const touch of e.changedTouches) {
+          const tr = tapTrackers.get(touch.identifier);
+          if (!tr) continue;
+          tr.currentX = touch.clientX;
+          tr.currentY = touch.clientY;
+          const dx = touch.clientX - tr.startX;
+          const dy = touch.clientY - tr.startY;
+          if (Math.abs(dx) > TAP_THRESHOLD_PX || Math.abs(dy) > TAP_THRESHOLD_PX) {
+            tr.moved = true;
+          }
+        }
+      }, { passive: true });
+
+      piano.addEventListener('touchend', e => {
+        for (const touch of e.changedTouches) {
+          const tr = tapTrackers.get(touch.identifier);
+          if (!tr) { continue; }
+          // Solo tocar nota si NO se movió (es tap real)
+          if (!tr.moved && tr.target) {
+            pressKey(tr.target);
+          }
+          tapTrackers.delete(touch.identifier);
+        }
+      });
+
+      piano.addEventListener('touchcancel', e => {
+        for (const touch of e.changedTouches) {
+          tapTrackers.delete(touch.identifier);
+        }
+      });
     });
+
+    // ═══ Hint visual: muestra "← desliza →" en touch, se desvanece tras primer swipe ═══
+    function isTouchDevice() {
+      return ('ontouchstart' in window) || (navigator.maxTouchPoints > 0);
+    }
+
+    if (isTouchDevice()) {
+      const wrap = document.querySelector('.piano-wrap');
+      if (wrap) {
+        const hint = document.createElement('div');
+        hint.className = 'piano-swipe-hint';
+        hint.innerHTML = '👆 Toca una tecla · ← desliza para ver más →';
+        wrap.appendChild(hint);
+
+        // Quitar hint después del primer swipe o tras 5s
+        let hintHidden = false;
+        const hideHint = () => {
+          if (hintHidden) return;
+          hintHidden = true;
+          hint.classList.add('fade-out');
+          setTimeout(() => hint.remove(), 600);
+        };
+        wrap.addEventListener('scroll', () => {
+          if (wrap.scrollLeft > 5) hideHint();
+        }, { passive: true, once: true });
+        wrap.addEventListener('touchstart', () => {
+          setTimeout(hideHint, 800);
+        }, { passive: true, once: true });
+        setTimeout(hideHint, 6000);
+      }
+    }
 
     // Reconstruir piano principal al cambiar tamaño de ventana
     let resizeTimer;
