@@ -728,7 +728,7 @@
      * @param {number} dur   - duración en segundos (default 1.2)
      * @returns {object}     - { stop: ()=>void } para cortar la nota manualmente
      */
-    function playNote(note, dur = 1.2) {
+    function playNote(note, dur = 0.6) {
       const ctx = getAudio();
       if (!ctx) return null;
 
@@ -790,7 +790,7 @@
     }
 
     /** Toca varias notas a la vez (acorde). Maneja re-trigger para clics rápidos. */
-    function playChord(notes, dur = 1.4) {
+    function playChord(notes, dur = 0.7) {
       return notes.map(n => playNote(n, dur));
     }
 
@@ -1030,7 +1030,7 @@
       });
       // Tocar el acorde si no estamos suprimiendo (resize)
       if (!__suppressPlay && !opts.silent && ns && ns.length) {
-        playChord(ns, 1.8);
+        playChord(ns, 0.9);
       }
     };
     // Alias para resize
@@ -1144,12 +1144,32 @@
     });
 
     // ── TABS ───────────────────────────────────────────────────────────────
+    // Al cambiar de tab: oculta el viewer de progresiones, limpia selección de
+    // acorde activo, y silencia cualquier nota sonando.
+    function cleanupTabView() {
+      const v = document.getElementById('prog-viewer');
+      if (v) v.style.display = 'none';
+      // Limpiar selección de acorde: quitar .selected de cards y .active de teclas
+      document.querySelectorAll('.chord-card.selected').forEach(c => c.classList.remove('selected'));
+      document.querySelectorAll('#piano .white-key.active, #piano .black-key.active').forEach(k => k.classList.remove('active'));
+      window.__currentChordNotes = [];
+      // Silenciar sonidos en curso
+      releaseAll();
+      // Limpiar display del nombre del acorde
+      const cd = document.getElementById('chord-display');
+      if (cd) cd.textContent = '';
+      const sd = document.getElementById('scale-notes-display');
+      if (sd) { sd.style.display = 'none'; sd.textContent = ''; }
+    }
+
     document.querySelectorAll('.tab-btn').forEach(btn=>{
       btn.addEventListener('click',()=>{
         document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
         document.querySelectorAll('.tab-content').forEach(c=>c.classList.remove('active'));
         btn.classList.add('active');
         document.getElementById(btn.dataset.tab).classList.add('active');
+        // Limpiar viewer persistente al cambiar de tab
+        cleanupTabView();
       });
     });
 
