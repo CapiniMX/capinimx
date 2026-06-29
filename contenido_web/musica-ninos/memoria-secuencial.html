@@ -1,0 +1,542 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <link rel="apple-touch-icon" href="favicon.svg">
+  <title>🧠 Simón Dice — CapiniMX</title>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&family=Nunito:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --turquesa:      #4DB6AC;
+      --turquesa-osc:  #00897B;
+      --turquesa-cl:   #B2DFDB;
+      --rosa:          #F48FB1;
+      --rosa-osc:      #EC407A;
+      --rosa-cl:       #FCE4EC;
+      --azul-cielo:    #87CEEB;
+      --azul-cielo-cl: #E1F5FE;
+      --texto:         #333333;
+      --texto-suave:   #666666;
+      --fondo:         #FFFFFF;
+      --fondo-alt:     #F5F5F5;
+      --borde:         #E0E0E0;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Nunito', 'Segoe UI', sans-serif;
+      background: linear-gradient(180deg, #FFFFFF 0%, var(--azul-cielo-cl) 100%);
+      background-attachment: fixed;
+      min-height: 100vh;
+      color: var(--texto);
+      overflow-x: hidden;
+    }
+
+    .header {
+      background: linear-gradient(135deg, var(--turquesa) 0%, var(--rosa) 100%);
+      text-align: center;
+      padding: 18px 10px 16px;
+      border-radius: 0 0 24px 24px;
+      box-shadow: 0 4px 14px rgba(77, 182, 172, 0.18);
+      color: #fff;
+    }
+    .header h1 { font-size: 1.4em; margin-bottom: 4px; color: #fff; font-weight: 800; }
+    .header p  { font-size: 0.85em; color: rgba(255,255,255,0.95); }
+    .back-btn {
+      display: inline-block;
+      background: rgba(255,255,255,0.25);
+      color: #fff;
+      border: 1.5px solid rgba(255,255,255,0.45);
+      border-radius: 20px;
+      padding: 6px 14px;
+      font-size: 0.8em;
+      cursor: pointer;
+      margin-bottom: 10px;
+      text-decoration: none;
+      font-weight: 700;
+      transition: background 0.15s;
+    }
+    .back-btn:hover { background: rgba(255,255,255,0.4); }
+
+    .game-wrap {
+      max-width: 480px;
+      margin: 0 auto;
+      padding: 12px 12px 90px;
+    }
+
+    /* Stats bar */
+    .stats-bar {
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      background: #fff;
+      border: 1.5px solid var(--borde);
+      border-radius: 16px;
+      padding: 12px 8px;
+      margin-bottom: 12px;
+      box-shadow: 0 2px 8px rgba(77, 182, 172, 0.08);
+    }
+    .stat { text-align: center; }
+    .stat-label { font-size: 0.72em; color: var(--texto-suave); font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; }
+    .stat-value { font-size: 1.3em; font-weight: 800; color: var(--turquesa-osc); }
+    .stat-value.lives { color: var(--rosa-osc); font-size: 1.1em; letter-spacing: 2px; }
+
+    /* Simon pads */
+    .pads-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+      margin: 16px 0;
+    }
+    .pad {
+      aspect-ratio: 1;
+      border-radius: 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-weight: 800;
+      font-size: 1em;
+      color: #fff;
+      user-select: none;
+      -webkit-user-select: none;
+      transition: transform 0.1s, filter 0.1s, box-shadow 0.1s;
+      box-shadow: 0 6px 0 rgba(0,0,0,0.18), 0 4px 14px rgba(0,0,0,0.12);
+      position: relative;
+      overflow: hidden;
+    }
+    .pad:active { transform: translateY(3px); box-shadow: 0 3px 0 rgba(0,0,0,0.18); }
+    .pad.lit {
+      filter: brightness(1.4);
+      transform: scale(1.06);
+      box-shadow: 0 0 30px rgba(255,255,255,0.6), 0 6px 0 rgba(0,0,0,0.18);
+    }
+    .pad.disabled { opacity: 0.5; cursor: not-allowed; pointer-events: none; }
+
+    .pad-c { background: linear-gradient(145deg, #E53935, #B71C1C); }
+    .pad-e { background: linear-gradient(145deg, #FDD835, #F9A825); }
+    .pad-g { background: linear-gradient(145deg, #43A047, #1B5E20); }
+    .pad-c5 { background: linear-gradient(145deg, #1E88E5, #0D47A1); }
+    .pad .note { font-size: 1.5em; }
+    .pad .label { font-size: 0.75em; opacity: 0.85; }
+
+    /* Status message */
+    .status-msg {
+      text-align: center;
+      padding: 14px;
+      background: #fff;
+      border: 1.5px solid var(--borde);
+      border-radius: 14px;
+      font-size: 1em;
+      font-weight: 700;
+      color: var(--turquesa-osc);
+      min-height: 52px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 12px;
+      box-shadow: 0 2px 8px rgba(77, 182, 172, 0.08);
+    }
+    .status-msg.watching { color: var(--rosa-osc); }
+    .status-msg.your-turn { color: var(--turquesa-osc); }
+    .status-msg.success { color: #2E7D32; }
+    .status-msg.fail { color: #C62828; }
+
+    /* Start / retry button */
+    .start-btn {
+      display: block;
+      width: 100%;
+      padding: 16px;
+      background: linear-gradient(135deg, var(--turquesa), var(--rosa));
+      color: #fff;
+      border: none;
+      border-radius: 16px;
+      font-size: 1.1em;
+      font-weight: 800;
+      cursor: pointer;
+      font-family: inherit;
+      box-shadow: 0 4px 14px rgba(244, 143, 177, 0.35);
+      transition: transform 0.15s, box-shadow 0.15s;
+    }
+    .start-btn:hover { transform: scale(1.03); box-shadow: 0 6px 20px rgba(244, 143, 177, 0.45); }
+    .start-btn:disabled { background: #ccc; cursor: not-allowed; box-shadow: none; transform: none; }
+
+    /* Stars result */
+    .result-card {
+      background: #fff;
+      border: 2px solid var(--turquesa);
+      border-radius: 20px;
+      padding: 24px 16px;
+      text-align: center;
+      margin-top: 12px;
+      box-shadow: 0 4px 16px rgba(77, 182, 172, 0.18);
+    }
+    .result-stars { font-size: 2.5em; margin-bottom: 10px; }
+    .result-title { font-size: 1.3em; font-weight: 800; color: var(--turquesa-osc); margin-bottom: 6px; }
+    .result-detail { font-size: 0.9em; color: var(--texto-suave); }
+
+    /* Sequence display */
+    .seq-display {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin: 8px 0 14px;
+    }
+    .seq-note {
+      padding: 5px 10px;
+      border-radius: 10px;
+      background: var(--turquesa-cl);
+      color: var(--turquesa-osc);
+      font-size: 0.8em;
+      font-weight: 700;
+    }
+    .seq-note.current {
+      background: var(--rosa);
+      color: #fff;
+    }
+  </style>
+</head>
+<body>
+
+<div class="header">
+  <a class="back-btn" href="./">← Música para Niños</a>
+  <h1>🎮 Simón Dice Musical</h1>
+  <p>Repite la secuencia de notas</p>
+</div>
+
+<div class="game-wrap">
+  <!-- Stats -->
+  <div class="stats-bar">
+    <div class="stat">
+      <div class="stat-label">Ronda</div>
+      <div class="stat-value" id="round">—</div>
+    </div>
+    <div class="stat">
+      <div class="stat-label">Puntuación</div>
+      <div class="stat-value" id="score">0</div>
+    </div>
+    <div class="stat">
+      <div class="stat-label">Vidas</div>
+      <div class="stat-value lives" id="lives">❤️❤️❤️</div>
+    </div>
+  </div>
+
+  <!-- Sequence display -->
+  <div class="seq-display" id="seq-display"></div>
+
+  <!-- Pads -->
+  <div class="pads-grid">
+    <div class="pad pad-c" data-note="C4" id="pad-c">
+      <span class="note">🎵</span>
+      <span class="label">Do</span>
+    </div>
+    <div class="pad pad-e" data-note="E4" id="pad-e">
+      <span class="note">🎶</span>
+      <span class="label">Mi</span>
+    </div>
+    <div class="pad pad-g" data-note="G4" id="pad-g">
+      <span class="note">🎼</span>
+      <span class="label">Sol</span>
+    </div>
+    <div class="pad pad-c5" data-note="C5" id="pad-c5">
+      <span class="note">🎹</span>
+      <span class="label">Do alto</span>
+    </div>
+  </div>
+
+  <!-- Status message -->
+  <div class="status-msg" id="status">Pulsa "¡Jugar!" para comenzar</div>
+
+  <!-- Start button -->
+  <button class="start-btn" id="start-btn" onclick="startGame()">🎮 ¡Jugar!</button>
+
+  <!-- Result (hidden initially) -->
+  <div id="result-area"></div>
+</div>
+
+<script>
+// ════════════════════════════════════════════════════
+//   SYNTH (copied from piano-acordes.html)
+// ════════════════════════════════════════════════════
+function noteToHz(note) {
+  const NAMES = { 'C':0, 'C#':1, 'Db':1, 'D':2, 'D#':3, 'Eb':3, 'E':4, 'F':5,
+                  'F#':6, 'Gb':6, 'G':7, 'G#':8, 'Ab':8, 'A':9, 'A#':10, 'Bb':10, 'B':11 };
+  const m = note.match(/^([A-G][#b]?)(\d)$/);
+  if (!m) return 440;
+  const semitone = NAMES[m[1]];
+  const octave   = parseInt(m[2], 10);
+  const midi = (octave + 1) * 12 + semitone;
+  return 440 * Math.pow(2, (midi - 69) / 12);
+}
+
+let audioCtx = null;
+const masterGain = { node: null };
+
+function getAudio() {
+  if (!audioCtx) {
+    const Ctor = window.AudioContext || window.webkitAudioContext;
+    if (!Ctor) return null;
+    audioCtx = new Ctor();
+    const g = audioCtx.createGain();
+    g.gain.value = 0.35;
+    g.connect(audioCtx.destination);
+    masterGain.node = g;
+  }
+  if (audioCtx.state === 'suspended') audioCtx.resume();
+  return audioCtx;
+}
+
+function playNote(note, dur = 0.6) {
+  const ctx = getAudio();
+  if (!ctx) return null;
+  const f0 = noteToHz(note);
+  const now = ctx.currentTime;
+  const gain = ctx.createGain();
+  gain.gain.setValueAtTime(0, now);
+  gain.gain.linearRampToValueAtTime(0.9, now + 0.008);
+  gain.gain.exponentialRampToValueAtTime(0.35, now + 0.4);
+  const releaseStart = now + Math.max(0.05, dur);
+  gain.gain.setValueAtTime(0.35, releaseStart);
+  gain.gain.exponentialRampToValueAtTime(0.0001, releaseStart + 0.6);
+
+  const osc1 = ctx.createOscillator(); osc1.type = 'sine'; osc1.frequency.value = f0;
+  const osc2 = ctx.createOscillator(); osc2.type = 'sine'; osc2.frequency.value = f0 * 2;
+  const osc3 = ctx.createOscillator(); osc3.type = 'triangle'; osc3.frequency.value = f0 * 3;
+  const g2 = ctx.createGain(); g2.gain.value = 0.18;
+  const g3 = ctx.createGain(); g3.gain.value = 0.06;
+  osc1.connect(gain);
+  osc2.connect(g2).connect(gain);
+  osc3.connect(g3).connect(gain);
+  gain.connect(masterGain.node);
+  osc1.start(now); osc1.stop(releaseStart + 0.65);
+  osc2.start(now); osc2.stop(releaseStart + 0.65);
+  osc3.start(now); osc3.stop(releaseStart + 0.65);
+  return {
+    stop: () => {
+      const t = ctx.currentTime;
+      try {
+        gain.gain.cancelScheduledValues(t);
+        gain.gain.setValueAtTime(gain.gain.value, t);
+        gain.gain.exponentialRampToValueAtTime(0.0001, t + 0.15);
+        osc1.stop(t + 0.18); osc2.stop(t + 0.18); osc3.stop(t + 0.18);
+      } catch(e) {}
+    }
+  };
+}
+
+// ════════════════════════════════════════════════════
+//   GAME STATE
+// ════════════════════════════════════════════════════
+const PADS = ['C4', 'E4', 'G4', 'C5'];
+const NOTE_NAMES = { C4: 'Do', E4: 'Mi', G4: 'Sol', C5: 'Do alto' };
+
+const state = {
+  sequence: [],
+  userIndex: 0,
+  round: 0,
+  lives: 3,
+  score: 0,
+  playing: false,
+  gameOver: false,
+  inputActive: false,
+  speed: 600,  // ms between notes
+};
+
+// ════════════════════════════════════════════════════
+//   DOM REFS
+// ════════════════════════════════════════════════════
+const $round    = document.getElementById('round');
+const $score    = document.getElementById('score');
+const $lives    = document.getElementById('lives');
+const $status   = document.getElementById('status');
+const $startBtn = document.getElementById('start-btn');
+const $seqDisp  = document.getElementById('seq-display');
+const $result   = document.getElementById('result-area');
+const pads      = document.querySelectorAll('.pad');
+
+// ════════════════════════════════════════════════════
+//   HELPERS
+// ════════════════════════════════════════════════════
+function hearts(n) {
+  return '❤️'.repeat(n) + '🖤'.repeat(3 - n);
+}
+
+function setStatus(msg, cls = '') {
+  $status.textContent = msg;
+  $status.className = 'status-msg ' + cls;
+}
+
+function updateUI() {
+  $round.textContent = state.round || '—';
+  $score.textContent = state.score;
+  $lives.textContent = hearts(state.lives);
+}
+
+function renderSeqDisplay(highlightIdx = -1) {
+  $seqDisp.innerHTML = '';
+  state.sequence.forEach((note, i) => {
+    const span = document.createElement('span');
+    span.className = 'seq-note' + (i === highlightIdx ? ' current' : '');
+    span.textContent = NOTE_NAMES[note] || note;
+    $seqDisp.appendChild(span);
+  });
+}
+
+function padLit(note, ms) {
+  const el = document.querySelector('.pad[data-note="' + note + '"]');
+  if (!el) return;
+  el.classList.add('lit');
+  setTimeout(() => el.classList.remove('lit'), ms - 50);
+}
+
+// ════════════════════════════════════════════════════
+//   GAME LOGIC
+// ════════════════════════════════════════════════════
+function startGame() {
+  state.sequence = [];
+  state.userIndex = 0;
+  state.round = 0;
+  state.lives = 3;
+  state.score = 0;
+  state.gameOver = false;
+  state.inputActive = false;
+  state.speed = 600;
+  $result.innerHTML = '';
+  $startBtn.disabled = true;
+  $startBtn.textContent = '⏳ Jugando...';
+  updateUI();
+  nextRound();
+}
+
+function nextRound() {
+  state.round++;
+  state.userIndex = 0;
+  state.inputActive = false;
+  updateUI();
+  // Add a new random note
+  state.sequence.push(PADS[Math.floor(Math.random() * PADS.length)]);
+  renderSeqDisplay();
+  setStatus('🎧 Observa la secuencia...', 'watching');
+  disablePads(true);
+
+  // Play sequence after a short delay
+  setTimeout(() => playSequence(), 800);
+}
+
+function playSequence() {
+  let i = 0;
+  const interval = setInterval(() => {
+    if (i >= state.sequence.length) {
+      clearInterval(interval);
+      setTimeout(() => {
+        setStatus('✋ ¡Tu turno! Repite la secuencia', 'your-turn');
+        state.inputActive = true;
+        disablePads(false);
+      }, 300);
+      return;
+    }
+    const note = state.sequence[i];
+    playNote(note, 0.5);
+    padLit(note, state.speed);
+    // Highlight in display
+    renderSeqDisplay(i);
+    i++;
+  }, state.speed);
+}
+
+function handlePadClick(note) {
+  if (!state.inputActive || state.gameOver) return;
+
+  playNote(note, 0.5);
+
+  const expected = state.sequence[state.userIndex];
+
+  if (note === expected) {
+    // Correct!
+    state.userIndex++;
+    state.score += 10 * state.round;
+    updateUI();
+
+    if (state.userIndex >= state.sequence.length) {
+      // Round complete
+      state.inputActive = false;
+      state.speed = Math.max(200, state.speed - 50); // speed up
+      setStatus('🎉 ¡Correcto! Siguiente ronda...', 'success');
+      disablePads(true);
+      setTimeout(nextRound, 1200);
+    }
+  } else {
+    // Wrong!
+    state.lives--;
+    updateUI();
+    state.inputActive = false;
+    disablePads(true);
+    padLit(note, 600);
+    setTimeout(padLit(expected, 600), 300);
+
+    if (state.lives <= 0) {
+      setStatus('💔 ¡Se acabaron las vidas!', 'fail');
+      setTimeout(showResult, 1200);
+    } else {
+      setStatus('❌ ¡Incorrecto! Repite la secuencia', 'fail');
+      // Replay sequence after short pause
+      setTimeout(() => {
+        state.userIndex = 0;
+        setStatus('🎧 Observa de nuevo...', 'watching');
+        disablePads(true);
+        setTimeout(playSequence, 500);
+      }, 1500);
+    }
+  }
+}
+
+function showResult() {
+  state.gameOver = true;
+  state.inputActive = false;
+  disablePads(true);
+  $startBtn.disabled = false;
+  $startBtn.textContent = '🔄 Jugar de nuevo';
+
+  const maxSeq = state.sequence.length;
+  let stars, title;
+  if (maxSeq >= 8) { stars = '⭐⭐⭐'; title = '¡Increíble!'; }
+  else if (maxSeq >= 5) { stars = '⭐⭐'; title = '¡Muy bien!'; }
+  else { stars = '⭐'; title = '¡Buen intento!'; }
+
+  $result.innerHTML = `
+    <div class="result-card">
+      <div class="result-stars">${stars}</div>
+      <div class="result-title">${title}</div>
+      <div class="result-detail">
+        Llegaste a ronda <strong>${state.round}</strong> · Secuencia de <strong>${maxSeq}</strong> notas<br>
+        Puntuación final: <strong>${state.score}</strong> puntos
+      </div>
+    </div>`;
+}
+
+function disablePads(val) {
+  pads.forEach(p => {
+    if (val) p.classList.add('disabled');
+    else p.classList.remove('disabled');
+  });
+}
+
+// ════════════════════════════════════════════════════
+//   PAD EVENTS
+// ════════════════════════════════════════════════════
+pads.forEach(pad => {
+  pad.addEventListener('mousedown', e => {
+    e.preventDefault();
+    handlePadClick(pad.dataset.note);
+  });
+  pad.addEventListener('touchstart', e => {
+    e.preventDefault();
+    handlePadClick(pad.dataset.note);
+  }, { passive: false });
+});
+</script>
+</body>
+</html>
