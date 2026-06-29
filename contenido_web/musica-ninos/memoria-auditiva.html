@@ -523,8 +523,7 @@ window.addEventListener('resize', rebuildPiano);
 
 // Active voices
 let activeVoices = new Map();
-function pressKey(keyEl) {
-  const note = keyEl.dataset.note;
+function pressKey(keyEl) { const note = keyEl.dataset.note; console.log('[pressKey]', note);
   if (!note) return;
   if (activeVoices.has(note)) {
     try { activeVoices.get(note).stop(); } catch(e){}
@@ -626,7 +625,7 @@ function renderUserInput() {
   });
 }
 
-function disablePiano(val) {
+function disablePiano(val) { console.log('[disablePiano]', val, 'keys disabled:', document.querySelectorAll('.piano .white-key.disabled').length);
   document.querySelectorAll('.piano .white-key, .piano .black-key').forEach(k => {
     if (val) k.classList.add('disabled');
     else k.classList.remove('disabled');
@@ -677,7 +676,7 @@ function playMelody() {
       clearInterval(interval);
       state.listening = false;
       state.inputActive = true;
-      disablePiano(false);
+      disablePiano(false); console.log('[playMelody] DONE - piano enabled, inputActive=true');
       $replayBtn.disabled = false;
       setStatus('✋ ¡Tu turno! Repite la melodía', 'your-turn');
       return;
@@ -689,8 +688,8 @@ function playMelody() {
   }, 550);
 }
 
-function handleUserInput(note) {
-  if (!state.inputActive || state.gameOver || state.listening) return;
+function handleUserInput(note) { console.log('[handleUserInput]', note, 'inputActive=', state.inputActive, 'listening=', state.listening, 'gameOver=', state.gameOver);
+  if (!state.inputActive) || state.gameOver || state.listening) return;
 
   state.userInput.push(note);
   renderUserInput();
