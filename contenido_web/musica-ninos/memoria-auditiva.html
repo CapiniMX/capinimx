@@ -252,11 +252,13 @@
     .piano {
       display: flex;
       position: relative;
-      min-width: 2100px;
+      width: 480px;
       height: 150px;
+      overflow-x: auto;
     }
 
     .white-key {
+      position: absolute;
       width: 48px;
       height: 150px;
       background: linear-gradient(180deg, #FFFFFF 0%, #FAFAFA 100%);
@@ -270,8 +272,6 @@
       padding-bottom: 8px;
       transition: background 0.12s, transform 0.08s;
       cursor: pointer;
-      margin-left: 2px;
-      flex-shrink: 0;
       color: var(--turquesa-osc);
       font-weight: 700;
       box-shadow: inset 0 -3px 0 rgba(0,0,0,0.04);
