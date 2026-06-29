@@ -5,146 +5,420 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>🎹 Acordes y Escalas de Piano — CapiniMX</title>
     <style>
+      /* ═══ PALETA CAPINIMX ═══
+         Turquesa principal: #4DB6AC
+         Rosa principal:     #F48FB1
+         Turquesa claro:     #B2DFDB
+         Rosa piel:          #FDDCCC
+         Azul cielo:         #87CEEB
+         Texto principal:    #333333
+         Fondo claro:        #FFFFFF
+         Fondo alternativo:  #F5F5F5
+      */
+      :root {
+        --turquesa:      #4DB6AC;
+        --turquesa-osc:  #00897B;
+        --turquesa-cl:   #B2DFDB;
+        --rosa:          #F48FB1;
+        --rosa-osc:      #EC407A;
+        --rosa-cl:       #FCE4EC;
+        --azul-cielo:    #87CEEB;
+        --azul-cielo-cl: #E1F5FE;
+        --texto:         #333333;
+        --texto-suave:   #666666;
+        --fondo:         #FFFFFF;
+        --fondo-alt:     #F5F5F5;
+        --borde:         #E0E0E0;
+      }
+
       * { box-sizing: border-box; margin: 0; padding: 0; }
-      body { font-family: 'Nunito', 'Segoe UI', sans-serif; background: #1a1a2e; min-height: 100vh; color: #eee; overflow-x: hidden; }
+      body {
+        font-family: 'Nunito', 'Segoe UI', sans-serif;
+        background: linear-gradient(180deg, #FFFFFF 0%, var(--azul-cielo-cl) 100%);
+        background-attachment: fixed;
+        min-height: 100vh;
+        color: var(--texto);
+        overflow-x: hidden;
+      }
 
       /* ──── Header ──── */
-      .header { background: linear-gradient(135deg, #e94560, #0f3460); text-align: center; padding: 12px 10px; border-radius: 0 0 20px 20px; }
-      .header h1 { font-size: 1.15em; margin-bottom: 2px; }
-      .header p  { font-size: 0.75em; opacity: 0.85; }
-      .back-btn  { display: inline-block; background: rgba(255,255,255,0.18); color: #fff; border: none; border-radius: 8px; padding: 5px 12px; font-size: 0.78em; cursor: pointer; margin-bottom: 8px; text-decoration: none; }
+      .header {
+        background: linear-gradient(135deg, var(--turquesa) 0%, var(--rosa) 100%);
+        text-align: center;
+        padding: 18px 10px 16px;
+        border-radius: 0 0 24px 24px;
+        box-shadow: 0 4px 14px rgba(77, 182, 172, 0.18);
+      }
+      .header h1 { font-size: 1.4em; margin-bottom: 4px; color: #fff; font-weight: 800; }
+      .header p  { font-size: 0.85em; color: rgba(255,255,255,0.95); }
+      .back-btn  {
+        display: inline-block;
+        background: rgba(255,255,255,0.25);
+        color: #fff;
+        border: 1.5px solid rgba(255,255,255,0.45);
+        border-radius: 20px;
+        padding: 6px 14px;
+        font-size: 0.8em;
+        cursor: pointer;
+        margin-bottom: 10px;
+        text-decoration: none;
+        font-weight: 700;
+        transition: background 0.15s;
+      }
+      .back-btn:hover { background: rgba(255,255,255,0.4); }
 
       /* ──── Piano base (keys built via JS) ──── */
-      .piano-wrap { overflow-x: auto; margin: 0.8rem 0 0.3rem; }
+      .piano-wrap {
+        overflow-x: auto;
+        margin: 1rem 0 0.4rem;
+        padding: 6px 4px;
+        background: var(--fondo);
+        border-radius: 16px;
+        box-shadow: 0 2px 10px rgba(77, 182, 172, 0.10);
+      }
       .piano      { position: relative; margin: 0 auto; user-select: none; display: block; }
       .mini-wrap  { overflow-x: auto; }
       .mini-piano { position: relative; margin: 0 auto; user-select: none; display: block; }
 
       .white-key {
         position: absolute; top: 0;
-        background: #f0f0f0; border: 1.5px solid #999;
-        border-radius: 0 0 5px 5px; cursor: pointer;
-        transition: background 0.1s; z-index: 1;
+        background: linear-gradient(180deg, #FFFFFF 0%, #FAFAFA 100%);
+        border: 1.5px solid #D0D0D0;
+        border-top: none;
+        border-radius: 0 0 6px 6px;
+        cursor: pointer;
+        transition: background 0.12s, transform 0.08s, box-shadow 0.12s;
+        z-index: 1;
         display: flex; align-items: flex-end; justify-content: center;
-        padding-bottom: 5px; font-size: 9px; color: #666; font-weight: 700;
+        padding-bottom: 6px;
+        font-size: 10px; color: var(--turquesa-osc); font-weight: 700;
         box-sizing: border-box;
+        box-shadow: inset 0 -3px 0 rgba(0,0,0,0.04);
       }
-      .white-key.active { background: #ffd6e0; }
+      .white-key:hover {
+        background: linear-gradient(180deg, var(--turquesa-cl) 0%, #E0F2F1 100%);
+      }
+      .white-key.active {
+        background: linear-gradient(180deg, var(--rosa) 0%, var(--rosa-osc) 100%);
+        color: #fff;
+        box-shadow: 0 3px 10px rgba(244, 143, 177, 0.45);
+        transform: translateY(2px);
+      }
 
       .black-key {
         position: absolute; top: 0;
-        background: #111; border-radius: 0 0 4px 4px;
-        cursor: pointer; transition: background 0.1s; z-index: 2;
+        background: linear-gradient(180deg, #455A64 0%, #263238 100%);
+        border-radius: 0 0 4px 4px;
+        cursor: pointer;
+        transition: background 0.12s, transform 0.08s;
+        z-index: 2;
         box-sizing: border-box;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.25), inset 0 -2px 0 rgba(255,255,255,0.08);
       }
-      .black-key.active { background: #e94560; }
+      .black-key:hover {
+        background: linear-gradient(180deg, var(--turquesa-osc) 0%, #00695C 100%);
+      }
+      .black-key.active {
+        background: linear-gradient(180deg, var(--rosa-osc) 0%, #C2185B 100%);
+        box-shadow: 0 3px 8px rgba(236, 64, 122, 0.5);
+        transform: translateY(2px);
+      }
+      /* Estado "playing" — toque directo del usuario (transitorio) */
+      .white-key.playing {
+        background: linear-gradient(180deg, var(--turquesa-cl) 0%, #80CBC4 100%);
+        box-shadow: 0 2px 6px rgba(77, 182, 172, 0.4);
+      }
+      .black-key.playing {
+        background: linear-gradient(180deg, var(--turquesa-osc) 0%, #00695C 100%);
+        box-shadow: 0 2px 5px rgba(0, 137, 123, 0.5);
+      }
 
       /* ──── Displays ──── */
       #chord-display {
-        text-align: center; color: #e94560; font-size: 0.82em;
-        min-height: 1.3rem; margin: 0.3rem 0 0; font-family: monospace; font-weight: 600;
+        text-align: center;
+        color: var(--turquesa-osc);
+        font-size: 0.92em;
+        min-height: 1.5rem;
+        margin: 0.4rem 0 0;
+        font-family: monospace;
+        font-weight: 700;
       }
       #scale-notes-display {
-        display: none; background: #0f3460; border: 1px solid #e94560;
-        border-radius: 8px; padding: 0.4rem 0.7rem; margin: 0.4rem 0 0;
-        font-size: 0.8em; text-align: center;
+        display: none;
+        background: var(--azul-cielo-cl);
+        border: 1.5px solid var(--turquesa);
+        border-radius: 10px;
+        padding: 0.5rem 0.8rem;
+        margin: 0.5rem 0 0;
+        font-size: 0.85em;
+        text-align: center;
+        color: var(--texto);
       }
-      #scale-notes-display strong { color: #e94560; }
+      #scale-notes-display strong { color: var(--turquesa-osc); }
 
       /* ──── Viewer dos ventanas ──── */
       #prog-viewer {
-        display: none; background: #0f3460; border: 2px solid #e94560;
-        border-radius: 14px; padding: 1rem 0.85rem 0.85rem; margin: 0.8rem 0;
+        display: none;
+        background: var(--fondo);
+        border: 2px solid var(--turquesa);
+        border-radius: 16px;
+        padding: 1rem 0.85rem 0.85rem;
+        margin: 0.8rem 0;
+        box-shadow: 0 2px 10px rgba(77, 182, 172, 0.10);
       }
-      #prog-viewer h3 { margin: 0 0 0.12rem; font-size: 0.88em; color: #e94560; }
-      .pv-subtitle { font-size: 0.78em; color: #aaa; margin-bottom: 0.45rem; }
+      #prog-viewer h3 { margin: 0 0 0.12rem; font-size: 0.95em; color: var(--turquesa-osc); }
+      .pv-subtitle { font-size: 0.78em; color: var(--texto-suave); margin-bottom: 0.45rem; }
 
       .key-selector-wrap { margin: 0.25rem 0 0.65rem; }
-      .key-selector-label { text-align: center; font-size: 0.68em; color: #aaa; margin-bottom: 0.2rem; letter-spacing: 0.05em; text-transform: uppercase; }
-      .key-selector { display: flex; flex-wrap: wrap; gap: 0.28rem; justify-content: center; }
-      .key-btn { background: #16213e; color: #e94560; border: 1.5px solid #e94560; border-radius: 6px; padding: 0.18rem 0.6rem; cursor: pointer; font-size: 0.8em; font-weight: 700; transition: background 0.15s; }
-      .key-btn:hover { background: #3a1020; }
-      .key-btn.active { background: #e94560; color: #fff; }
+      .key-selector-label {
+        text-align: center;
+        font-size: 0.7em;
+        color: var(--texto-suave);
+        margin-bottom: 0.25rem;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+        font-weight: 700;
+      }
+      .key-selector { display: flex; flex-wrap: wrap; gap: 0.3rem; justify-content: center; }
+      .key-btn {
+        background: #fff;
+        color: var(--turquesa-osc);
+        border: 1.5px solid var(--turquesa);
+        border-radius: 20px;
+        padding: 0.22rem 0.7rem;
+        cursor: pointer;
+        font-size: 0.85em;
+        font-weight: 700;
+        transition: background 0.15s, color 0.15s;
+      }
+      .key-btn:hover { background: var(--turquesa-cl); }
+      .key-btn.active { background: var(--turquesa); color: #fff; border-color: var(--turquesa-osc); }
 
       .prog-nav { display: flex; align-items: center; justify-content: center; gap: 0.9rem; margin-bottom: 0.8rem; }
-      .prog-nav button { background: #e94560; color: #fff; border: none; border-radius: 6px; padding: 0.28rem 0.8rem; cursor: pointer; font-size: 0.85em; font-weight: 700; transition: background 0.15s; }
-      .prog-nav button:hover { background: #c73e54; }
-      .prog-counter { font-family: monospace; font-size: 0.82em; color: #aaa; min-width: 60px; text-align: center; }
+      .prog-nav button {
+        background: var(--rosa);
+        color: #fff;
+        border: none;
+        border-radius: 20px;
+        padding: 0.32rem 0.95rem;
+        cursor: pointer;
+        font-size: 0.88em;
+        font-weight: 700;
+        transition: background 0.15s, transform 0.08s;
+      }
+      .prog-nav button:hover { background: var(--rosa-osc); }
+      .prog-nav button:active { transform: scale(0.97); }
+      .prog-counter { font-family: monospace; font-size: 0.85em; color: var(--texto-suave); min-width: 60px; text-align: center; font-weight: 700; }
 
       .two-windows { display: grid; grid-template-columns: 1fr 1fr; gap: 0.8rem; }
       @media (max-width: 480px) { .two-windows { grid-template-columns: 1fr; } }
-      .chord-window { background: #16213e; border: 1.5px solid #333; border-radius: 10px; padding: 0.65rem; text-align: center; }
-      .chord-window.current { border-color: #e94560; }
-      .win-label { font-size: 0.65em; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: #666; margin-bottom: 0.2rem; }
-      .chord-window.current .win-label { color: #e94560; }
-      .win-chord-name { font-size: 1.1rem; font-weight: 700; color: #fff; margin-bottom: 0.3rem; }
-      .win-notes { font-size: 0.72em; font-family: monospace; background: #0f3460; color: #aaa; padding: 0.1rem 0.4rem; border-radius: 4px; display: inline-block; margin-bottom: 0.45rem; }
+
+      .chord-window {
+        background: var(--fondo-alt);
+        border: 1.5px solid var(--borde);
+        border-radius: 12px;
+        padding: 0.65rem;
+        text-align: center;
+        transition: border-color 0.15s;
+      }
+      .chord-window.current {
+        border-color: var(--rosa);
+        background: var(--rosa-cl);
+        box-shadow: 0 2px 8px rgba(244, 143, 177, 0.25);
+      }
+      .win-label {
+        font-size: 0.65em;
+        font-weight: 700;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+        color: var(--texto-suave);
+        margin-bottom: 0.2rem;
+      }
+      .chord-window.current .win-label { color: var(--rosa-osc); }
+      .win-chord-name { font-size: 1.15rem; font-weight: 800; color: var(--turquesa-osc); margin-bottom: 0.3rem; }
+      .win-notes {
+        font-size: 0.75em;
+        font-family: monospace;
+        background: #fff;
+        color: var(--texto-suave);
+        padding: 0.15rem 0.5rem;
+        border-radius: 6px;
+        display: inline-block;
+        margin-bottom: 0.45rem;
+        border: 1px solid var(--borde);
+      }
       .mini-wrap { overflow-x: auto; }
 
       /* ──── Tab bar ──── */
-      .tab-bar { display: flex; flex-wrap: wrap; gap: 4px; padding: 10px 8px 0; border-bottom: 2px solid #e94560; }
-      .tab-btn { background: #16213e; color: #aaa; border: 1.5px solid #333; border-bottom: none; border-radius: 8px 8px 0 0; padding: 6px 11px; cursor: pointer; font-size: 0.78em; font-weight: 700; transition: background 0.15s, color 0.15s; }
-      .tab-btn:hover { color: #fff; background: #0f3460; }
-      .tab-btn.active { background: #e94560; color: #fff; border-color: #e94560; }
-      .tab-content { display: none; padding: 10px 8px 80px; }
+      .tab-bar {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 5px;
+        padding: 12px 8px 0;
+        border-bottom: 2.5px solid var(--turquesa);
+      }
+      .tab-btn {
+        background: #fff;
+        color: var(--turquesa-osc);
+        border: 1.5px solid var(--borde);
+        border-bottom: none;
+        border-radius: 12px 12px 0 0;
+        padding: 7px 13px;
+        cursor: pointer;
+        font-size: 0.82em;
+        font-weight: 700;
+        transition: background 0.15s, color 0.15s, border-color 0.15s;
+      }
+      .tab-btn:hover { color: var(--rosa-osc); border-color: var(--rosa); background: var(--rosa-cl); }
+      .tab-btn.active {
+        background: var(--turquesa);
+        color: #fff;
+        border-color: var(--turquesa-osc);
+      }
+      .tab-content { display: none; padding: 12px 8px 80px; }
       .tab-content.active { display: block; }
 
       /* ──── Chord cards ──── */
-      .chord-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 8px; margin: 8px 0; }
-      .chord-card { background: #16213e; border: 1.5px solid #333; border-radius: 12px; padding: 10px; cursor: pointer; transition: border-color 0.2s, transform 0.1s; }
-      .chord-card:hover, .chord-card.selected { border-color: #e94560; transform: translateY(-2px); }
-      .chord-card h3 { margin: 0 0 0.2rem; font-size: 0.92em; color: #e94560; }
-      .chord-card .notes { font-size: 0.78em; color: #aaa; font-family: monospace; background: #0f3460; padding: 0.1rem 0.4rem; border-radius: 4px; display: inline-block; margin: 0.12rem 0; }
-      .chord-card .desc { font-size: 0.73em; color: #666; margin-top: 0.25rem; }
+      .chord-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 10px; margin: 8px 0; }
+      .chord-card {
+        background: #fff;
+        border: 1.5px solid var(--borde);
+        border-radius: 14px;
+        padding: 11px;
+        cursor: pointer;
+        transition: border-color 0.2s, transform 0.1s, box-shadow 0.2s;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+      }
+      .chord-card:hover {
+        border-color: var(--turquesa);
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(77, 182, 172, 0.18);
+      }
+      .chord-card.selected {
+        border-color: var(--rosa);
+        background: var(--rosa-cl);
+        box-shadow: 0 4px 12px rgba(244, 143, 177, 0.25);
+      }
+      .chord-card h3 { margin: 0 0 0.2rem; font-size: 0.95em; color: var(--turquesa-osc); font-weight: 800; }
+      .chord-card .notes {
+        font-size: 0.78em;
+        color: var(--rosa-osc);
+        font-family: monospace;
+        background: var(--azul-cielo-cl);
+        padding: 0.15rem 0.5rem;
+        border-radius: 6px;
+        display: inline-block;
+        margin: 0.12rem 0;
+        font-weight: 700;
+      }
+      .chord-card .desc { font-size: 0.75em; color: var(--texto-suave); margin-top: 0.3rem; line-height: 1.4; }
 
       /* ──── Tables ──── */
-      .prog-table { width: 100%; border-collapse: collapse; margin: 6px 0; font-size: 0.82em; }
-      .prog-table th { background: #e94560; color: #fff; padding: 6px 8px; text-align: left; }
-      .prog-table td { padding: 6px 8px; border-bottom: 1px solid #222; vertical-align: middle; color: #ddd; }
-      .prog-table tr:nth-child(even) td { background: #16213e; }
+      .prog-table { width: 100%; border-collapse: collapse; margin: 6px 0; font-size: 0.85em; background: #fff; border-radius: 12px; overflow: hidden; box-shadow: 0 1px 3px rgba(0,0,0,0.04); }
+      .prog-table th { background: var(--turquesa); color: #fff; padding: 9px 10px; text-align: left; font-weight: 700; }
+      .prog-table td { padding: 8px 10px; border-bottom: 1px solid var(--borde); vertical-align: middle; color: var(--texto); }
+      .prog-table tr:nth-child(even) td { background: var(--fondo-alt); }
       .prog-table tbody tr { cursor: pointer; transition: background 0.15s; }
-      .prog-table tbody tr:hover td { background: #1e2a4a !important; }
-      .prog-table tbody tr.selected td { background: #2a0f1a !important; font-weight: 700; }
-      .prog-tag { display: inline-block; background: #0f3460; color: #e94560; border-radius: 4px; padding: 0.1rem 0.4rem; font-family: monospace; font-weight: 700; font-size: 0.88em; }
-      .genre-badge { display: inline-block; background: #16213e; color: #e94560; border-radius: 20px; padding: 0.06rem 0.5rem; font-size: 0.7em; border: 1px solid #e94560; }
+      .prog-table tbody tr:hover td { background: var(--azul-cielo-cl) !important; }
+      .prog-table tbody tr.selected td { background: var(--rosa-cl) !important; font-weight: 700; }
+      .prog-tag {
+        display: inline-block;
+        background: var(--azul-cielo-cl);
+        color: var(--turquesa-osc);
+        border-radius: 6px;
+        padding: 0.15rem 0.5rem;
+        font-family: monospace;
+        font-weight: 700;
+        font-size: 0.9em;
+      }
+      .genre-badge {
+        display: inline-block;
+        background: var(--rosa-cl);
+        color: var(--rosa-osc);
+        border-radius: 20px;
+        padding: 0.08rem 0.6rem;
+        font-size: 0.75em;
+        border: 1px solid var(--rosa);
+        font-weight: 700;
+      }
 
       /* ──── Scale cards ──── */
-      .scale-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 8px; margin: 6px 0 14px; }
-      .scale-card { background: #16213e; border: 1.5px solid #333; border-radius: 12px; padding: 10px; cursor: pointer; transition: border-color 0.2s, transform 0.1s; }
-      .scale-card:hover, .scale-card.selected { border-color: #e94560; transform: translateY(-2px); }
-      .scale-card h3 { margin: 0.2rem 0; font-size: 0.9em; color: #fff; }
-      .scale-card .desc { font-size: 0.72em; color: #888; margin-top: 0.2rem; }
-      .scale-badge { display: inline-block; border-radius: 20px; padding: 0.05rem 0.5rem; font-size: 0.65em; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; }
-      .scale-badge.basic { background: #3a0f1a; color: #e94560; border: 1px solid #e94560; }
-      .scale-badge.penta { background: #2a1a00; color: #f0a040; border: 1px solid #f0a040; }
-      .scale-badge.blues { background: #001a3a; color: #4090f0; border: 1px solid #4090f0; }
-      .scale-badge.mode  { background: #1a0a2e; color: #a060e0; border: 1px solid #a060e0; }
+      .scale-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 10px; margin: 6px 0 14px; }
+      .scale-card {
+        background: #fff;
+        border: 1.5px solid var(--borde);
+        border-radius: 14px;
+        padding: 11px;
+        cursor: pointer;
+        transition: border-color 0.2s, transform 0.1s, box-shadow 0.2s;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+      }
+      .scale-card:hover {
+        border-color: var(--rosa);
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(244, 143, 177, 0.25);
+      }
+      .scale-card.selected {
+        border-color: var(--turquesa);
+        background: var(--turquesa-cl);
+      }
+      .scale-card h3 { margin: 0.2rem 0; font-size: 0.92em; color: var(--turquesa-osc); font-weight: 800; }
+      .scale-card .desc { font-size: 0.74em; color: var(--texto-suave); margin-top: 0.25rem; line-height: 1.4; }
+      .scale-badge {
+        display: inline-block;
+        border-radius: 20px;
+        padding: 0.08rem 0.6rem;
+        font-size: 0.68em;
+        font-weight: 700;
+        letter-spacing: 0.05em;
+        text-transform: uppercase;
+      }
+      .scale-badge.basic { background: var(--turquesa-cl); color: var(--turquesa-osc); border: 1px solid var(--turquesa); }
+      .scale-badge.penta { background: #FFF3E0; color: #E65100; border: 1px solid #FFB74D; }
+      .scale-badge.blues { background: var(--azul-cielo-cl); color: #0277BD; border: 1px solid var(--azul-cielo); }
+      .scale-badge.mode  { background: #F3E5F5; color: #6A1B9A; border: 1px solid #CE93D8; }
 
       /* ──── Section title ──── */
-      .sec-title { font-size: 0.92em; color: #e94560; margin: 12px 0 5px; font-weight: 700; border-bottom: 1px solid #2a1030; padding-bottom: 4px; }
-      .sec-intro { font-size: 0.78em; color: #888; margin-bottom: 8px; }
+      .sec-title {
+        font-size: 0.95em;
+        color: var(--turquesa-osc);
+        margin: 14px 0 6px;
+        font-weight: 800;
+        border-bottom: 2px solid var(--turquesa-cl);
+        padding-bottom: 5px;
+      }
+      .sec-intro { font-size: 0.82em; color: var(--texto-suave); margin-bottom: 10px; line-height: 1.5; }
 
       /* ──── Tips ──── */
-      .tip-box { background: #16213e; border-left: 3px solid #e94560; padding: 8px 10px; border-radius: 0 8px 8px 0; margin: 6px 0; font-size: 0.8em; color: #ccc; }
-      .tip-box strong { color: #e94560; }
+      .tip-box {
+        background: var(--azul-cielo-cl);
+        border-left: 4px solid var(--turquesa);
+        padding: 10px 12px;
+        border-radius: 0 12px 12px 0;
+        margin: 8px 0;
+        font-size: 0.84em;
+        color: var(--texto);
+        line-height: 1.5;
+      }
+      .tip-box strong { color: var(--turquesa-osc); }
 
       /* ──── Print Tab ──── */
-      .print-controls { background: #16213e; border-radius: 12px; padding: 14px; margin: 10px 0; }
-      .print-controls label { font-size: 0.78em; color: #aaa; display: block; margin-bottom: 4px; text-transform: uppercase; letter-spacing: 0.05em; }
-      .print-controls select { background: #0f3460; color: #fff; border: 1.5px solid #e94560; border-radius: 8px; padding: 7px 12px; font-size: 0.88em; font-family: inherit; margin-bottom: 12px; width: 100%; cursor: pointer; }
-      .print-btn { display: block; width: 100%; padding: 12px; background: linear-gradient(135deg, #e94560, #c73e54); border: none; border-radius: 12px; color: white; font-size: 0.95em; font-weight: bold; cursor: pointer; margin-top: 8px; }
+      .print-controls { background: #fff; border: 1.5px solid var(--turquesa); border-radius: 14px; padding: 14px; margin: 10px 0; box-shadow: 0 2px 8px rgba(77, 182, 172, 0.10); }
+      .print-controls label { font-size: 0.78em; color: var(--texto-suave); display: block; margin-bottom: 4px; text-transform: uppercase; letter-spacing: 0.05em; font-weight: 700; }
+      .print-controls select { background: var(--azul-cielo-cl); color: var(--turquesa-osc); border: 1.5px solid var(--turquesa); border-radius: 10px; padding: 8px 12px; font-size: 0.88em; font-family: inherit; margin-bottom: 12px; width: 100%; cursor: pointer; font-weight: 700; }
+      .print-btn { display: block; width: 100%; padding: 12px; background: linear-gradient(135deg, var(--turquesa), var(--rosa)); border: none; border-radius: 12px; color: white; font-size: 0.95em; font-weight: 800; cursor: pointer; margin-top: 8px; transition: transform 0.1s; }
       .print-btn:hover { transform: scale(1.02); }
 
       /* ──── Printable Scale Cards (3 per column, vertical) ──── */
       .print-scales-area { margin-top: 10px; }
-      .print-scale-card { background: #fff; border: 2px solid #e94560; border-radius: 12px; padding: 12px; margin-bottom: 10px; page-break-inside: avoid; }
-      .print-scale-card .psc-title { font-size: 0.85em; font-weight: 800; color: #e94560; margin-bottom: 3px; text-transform: uppercase; letter-spacing: 0.05em; }
-      .print-scale-card .psc-notes { font-size: 0.72em; color: #333; font-family: monospace; margin-bottom: 6px; }
+      .print-scale-card { background: #fff; border: 2px solid var(--turquesa); border-radius: 12px; padding: 12px; margin-bottom: 10px; page-break-inside: avoid; box-shadow: 0 1px 4px rgba(77, 182, 172, 0.12); }
+      .print-scale-card .psc-title { font-size: 0.85em; font-weight: 800; color: var(--turquesa-osc); margin-bottom: 3px; text-transform: uppercase; letter-spacing: 0.05em; }
+      .print-scale-card .psc-notes { font-size: 0.72em; color: var(--rosa-osc); font-family: monospace; margin-bottom: 6px; background: var(--azul-cielo-cl); padding: 2px 6px; border-radius: 4px; display: inline-block; }
       .print-piano { position: relative; height: 60px; margin: 0 auto; }
       .print-piano .pp-wk { position: absolute; top: 0; background: #f8f8f8; border: 1px solid #bbb; border-radius: 0 0 3px 3px; display: flex; align-items: flex-end; justify-content: center; padding-bottom: 2px; font-size: 5px; color: #666; font-weight: 700; box-sizing: border-box; }
       .print-piano .pp-bk { position: absolute; top: 0; background: #222; border-radius: 0 0 3px 3px; z-index: 2; box-sizing: border-box; }
-      .print-piano .pp-wk.lit { background: #ffd6e0; }
-      .print-piano .pp-bk.lit { background: #e94560; }
+      .print-piano .pp-wk.lit { background: var(--rosa-cl); }
+      .print-piano .pp-bk.lit { background: var(--rosa-osc); }
 
       /* ──── Print Styles ──── */
       @media print {
@@ -154,16 +428,17 @@
         .tab-content { display: none !important; }
         #tab-imprimir { display: block !important; padding: 0 !important; }
         .print-scales-area { margin: 0 !important; }
-        .print-scale-card { border-color: #e94560 !important; background: white !important; margin-bottom: 8px !important; padding: 8px !important; }
-        .print-scale-card .psc-title { color: #e94560 !important; }
-        .print-scale-card .psc-notes { color: #333 !important; }
+        .print-scale-card { border-color: var(--turquesa) !important; background: white !important; margin-bottom: 8px !important; padding: 8px !important; }
+        .print-scale-card .psc-title { color: var(--turquesa-osc) !important; }
+        .print-scale-card .psc-notes { color: var(--rosa-osc) !important; }
         .print-piano { height: 50px !important; }
         .print-piano .pp-wk { background: #f8f8f8 !important; border-color: #bbb !important; font-size: 4px !important; }
-        .print-piano .pp-wk.lit { background: #ffd6e0 !important; }
+        .print-piano .pp-wk.lit { background: var(--rosa-cl) !important; }
         .print-piano .pp-bk { background: #222 !important; }
-        .print-piano .pp-bk.lit { background: #e94560 !important; }
+        .print-piano .pp-bk.lit { background: var(--rosa-osc) !important; }
         @page { margin: 0.5cm; size: portrait; }
       }
+>>>>>>> 8529090 (feat(piano): redesign UI + add audio synth + responsive sizing)
     </style>
   </head>
   <body>
@@ -371,6 +646,117 @@
     </div><!-- /padding div -->
 
     <script>
+    // ════════════════════════════════════════════════════════════════════════
+    //   SINTETIZADOR DE PIANO (Web Audio API) — sin plugins, todo nativo
+    // ════════════════════════════════════════════════════════════════════════
+    //   Toca notas con osciladores + envelope ADSR + armónicos suaves.
+    //   Suena a piano eléctrico / Rhodes. Sin samples externos.
+    // ════════════════════════════════════════════════════════════════════════
+
+    // Convierte "C4", "Db5", "F#3" → frecuencia en Hz
+    function noteToHz(note) {
+      const NAMES = { 'C':0, 'C#':1, 'Db':1, 'D':2, 'D#':3, 'Eb':3, 'E':4, 'F':5,
+                      'F#':6, 'Gb':6, 'G':7, 'G#':8, 'Ab':8, 'A':9, 'A#':10, 'Bb':10, 'B':11 };
+      const m = note.match(/^([A-G][#b]?)(\d)$/);
+      if (!m) return 440;
+      const semitone = NAMES[m[1]];
+      const octave   = parseInt(m[2], 10);
+      // A4 (midi 69) = 440 Hz. midi = (octave+1)*12 + semitone
+      const midi = (octave + 1) * 12 + semitone;
+      return 440 * Math.pow(2, (midi - 69) / 12);
+    }
+
+    // Estado del sintetizador
+    let audioCtx = null;
+    const masterGain = { node: null };
+
+    function getAudio() {
+      if (!audioCtx) {
+        const Ctor = window.AudioContext || window.webkitAudioContext;
+        if (!Ctor) return null;
+        audioCtx = new Ctor();
+        const g = audioCtx.createGain();
+        g.gain.value = 0.35;
+        g.connect(audioCtx.destination);
+        masterGain.node = g;
+      }
+      // Algunos navegadores suspenden el contexto hasta que el usuario interactúa
+      if (audioCtx.state === 'suspended') audioCtx.resume();
+      return audioCtx;
+    }
+
+    /**
+     * Toca una nota con envelope tipo piano (ataque rápido, decay, sustain, release).
+     * @param {string} note  - "C4", "Eb5", etc.
+     * @param {number} dur   - duración en segundos (default 1.2)
+     * @returns {object}     - { stop: ()=>void } para cortar la nota manualmente
+     */
+    function playNote(note, dur = 1.2) {
+      const ctx = getAudio();
+      if (!ctx) return null;
+
+      const f0 = noteToHz(note);
+      const now = ctx.currentTime;
+
+      // Envelope ADSR (Attack-Decay-Sustain-Release) tipo piano
+      const gain = ctx.createGain();
+      gain.gain.setValueAtTime(0, now);
+      // Attack 8ms
+      gain.gain.linearRampToValueAtTime(0.9, now + 0.008);
+      // Decay 0.4s → sustain 0.35
+      gain.gain.exponentialRampToValueAtTime(0.35, now + 0.4);
+      // Sustain hasta release
+      const releaseStart = now + Math.max(0.05, dur);
+      // Release 0.6s
+      gain.gain.setValueAtTime(0.35, releaseStart);
+      gain.gain.exponentialRampToValueAtTime(0.0001, releaseStart + 0.6);
+
+      // Mezcla de armónicos (suena menos a "beep" y más a instrumento)
+      // Fundamental + 2do armónico + 3er armónico (suave)
+      const osc1 = ctx.createOscillator();
+      osc1.type = 'sine';
+      osc1.frequency.value = f0;
+
+      const osc2 = ctx.createOscillator();
+      osc2.type = 'sine';
+      osc2.frequency.value = f0 * 2;
+
+      const osc3 = ctx.createOscillator();
+      osc3.type = 'triangle';
+      osc3.frequency.value = f0 * 3;
+
+      const g2 = ctx.createGain(); g2.gain.value = 0.18;
+      const g3 = ctx.createGain(); g3.gain.value = 0.06;
+
+      osc1.connect(gain);
+      osc2.connect(g2).connect(gain);
+      osc3.connect(g3).connect(gain);
+      gain.connect(masterGain.node);
+
+      osc1.start(now);  osc1.stop(releaseStart + 0.65);
+      osc2.start(now);  osc2.stop(releaseStart + 0.65);
+      osc3.start(now);  osc3.stop(releaseStart + 0.65);
+
+      return {
+        stop: () => {
+          const t = ctx.currentTime;
+          try {
+            gain.gain.cancelScheduledValues(t);
+            gain.gain.setValueAtTime(gain.gain.value, t);
+            gain.gain.exponentialRampToValueAtTime(0.0001, t + 0.15);
+            osc1.stop(t + 0.18);
+            osc2.stop(t + 0.18);
+            osc3.stop(t + 0.18);
+          } catch (e) { /* ya terminó */ }
+        }
+      };
+    }
+
+    /** Toca varias notas a la vez (acorde). Maneja re-trigger para clics rápidos. */
+    function playChord(notes, dur = 1.4) {
+      return notes.map(n => playNote(n, dur));
+    }
+
     // ── PIANO BUILDER ──────────────────────────────────────────────────────
     const PIANO_WHITE_NOTES = ['C4','D4','E4','F4','G4','A4','B4','C5','D5','E5','F5','G5','A5','B5'];
     const PIANO_BLACK_NOTES = [
@@ -401,9 +787,88 @@
         container.appendChild(key);
       });
     }
-    buildPiano('piano',       36, 120, 22, 72);
-    buildPiano('mini-piano-a', 24,  80, 15, 50);
-    buildPiano('mini-piano-b', 24,  80, 15, 50);
+    // ═══ Piano principal: tamaño responsive según viewport ═══
+    function getMainPianoSize() {
+      const wrap = document.querySelector('.piano-wrap');
+      const available = (wrap ? wrap.clientWidth : window.innerWidth) - 16; // padding
+      // 14 teclas blancas; ww escala con el viewport
+      // Móvil: 32px mínimo (no rompe en pantallas chicas)
+      // Desktop: hasta 100px por tecla para que se vea grande y cómodo
+      const ww = Math.max(32, Math.min(100, Math.floor(available / 14)));
+      const wh = Math.round(ww * 3.3);
+      const bw = Math.round(ww * 0.6);
+      const bh = Math.round(wh * 0.6);
+      return { ww, wh, bw, bh };
+    }
+    function rebuildMainPiano() {
+      const main = document.getElementById('piano');
+      main.innerHTML = '';
+      const { ww, wh, bw, bh } = getMainPianoSize();
+      buildPiano('piano', ww, wh, bw, bh);
+    }
+    rebuildMainPiano();
+    buildPiano('mini-piano-a', 22, 75, 14, 46);
+    buildPiano('mini-piano-b', 22, 75, 14, 46);
+
+    // ═══ HANDLER: tocar sonido al hacer clic en cualquier tecla ═══
+    // (event delegation para los 3 pianos: #piano, #mini-piano-a, #mini-piano-b)
+    let activeVoices = new Map(); // note -> {stop fn}
+
+    function pressKey(keyEl, opts = {}) {
+      const note = keyEl.dataset.note;
+      if (!note) return;
+      // Si ya hay una nota sonando en esta tecla, cortarla (re-trigger limpio)
+      if (activeVoices.has(note)) {
+        try { activeVoices.get(note).stop(); } catch(e){}
+        activeVoices.delete(note);
+      }
+      const dur = opts.dur || 1.2;
+      const v = playNote(note, dur);
+      if (v) activeVoices.set(note, v);
+      // Highlight visual breve (sin alterar el acorde activo del usuario)
+      if (!opts.persistent) {
+        keyEl.classList.add('playing');
+        setTimeout(() => keyEl.classList.remove('playing'), Math.min(450, dur * 1000));
+      }
+    }
+
+    function releaseAll() {
+      activeVoices.forEach(v => { try { v.stop(); } catch(e){} });
+      activeVoices.clear();
+    }
+
+    // Mouse / touch en cualquier piano
+    document.querySelectorAll('.piano, .mini-piano').forEach(piano => {
+      piano.addEventListener('mousedown', e => {
+        const key = e.target.closest('.white-key, .black-key');
+        if (!key) return;
+        pressKey(key);
+        e.preventDefault();
+      });
+      piano.addEventListener('touchstart', e => {
+        const touch = e.touches[0];
+        if (!touch) return;
+        const el = document.elementFromPoint(touch.clientX, touch.clientY);
+        const key = el && el.closest('.white-key, .black-key');
+        if (key) pressKey(key);
+        e.preventDefault();
+      }, { passive: false });
+    });
+
+    // Reconstruir piano principal al cambiar tamaño de ventana
+    let resizeTimer;
+    window.addEventListener('resize', () => {
+      clearTimeout(resizeTimer);
+      resizeTimer = setTimeout(() => {
+        rebuildMainPiano();
+        // Re-aplicar la selección actual si existe (sin volver a sonar)
+        if (window.__currentChordNotes && window.__currentChordNotes.length) {
+          __suppressPlay = true;
+          hiMain(window.__currentChordNotes, {silent: true});
+          __suppressPlay = false;
+        }
+      }, 150);
+    });
 
     // ── KEYS DATA ──────────────────────────────────────────────────────────
     const KEYS_DATA = {
@@ -434,7 +899,21 @@
     const dn=n=>NM[n]||n;
     const nd=ns=>ns.map(n=>n.replace(/\d+$/,'')).join(' – ');
     const hi=(sel,ns)=>{document.querySelectorAll(sel).forEach(k=>k.classList.remove('active'));(ns||[]).forEach(n=>{const k=document.querySelector(`${sel.split(' ')[0]} [data-note="${n}"]`);if(k)k.classList.add('active');});};
-    const hiMain=ns=>{document.querySelectorAll('#piano .white-key,#piano .black-key').forEach(k=>k.classList.remove('active'));(ns||[]).forEach(n=>{const k=document.querySelector(`#piano [data-note="${n}"]`);if(k)k.classList.add('active');});};
+    let __suppressPlay = false; // para que el resize no vuelva a tocar el acorde
+    const hiMain=(ns, opts={})=>{
+      window.__currentChordNotes = ns || [];
+      document.querySelectorAll('#piano .white-key,#piano .black-key').forEach(k=>k.classList.remove('active'));
+      (ns||[]).forEach(n=>{
+        const k=document.querySelector(`#piano [data-note="${n}"]`);
+        if(k)k.classList.add('active');
+      });
+      // Tocar el acorde si no estamos suprimiendo (resize)
+      if (!__suppressPlay && !opts.silent && ns && ns.length) {
+        playChord(ns, 1.8);
+      }
+    };
+    // Alias para resize
+    const highlightMain = hiMain;
     const hiMini=(id,ns)=>{document.querySelectorAll(`#${id} .white-key,#${id} .black-key`).forEach(k=>k.classList.remove('active'));(ns||[]).forEach(n=>{const k=document.querySelector(`#${id} [data-note="${n}"]`);if(k)k.classList.add('active');});};
 
     // ── VIEWER ─────────────────────────────────────────────────────────────
