@@ -1,0 +1,41 @@
+[
+  {
+    "id": "taller-vacacional-musica-2026",
+    "titulo": "🎹 Taller Vacacional de Música para Niños — Julio 2026",
+    "fecha": "2026-07-07",
+    "categoria": "Taller",
+    "etiquetas": ["taller", "vacaciones", "música", "niños", "julio"],
+    "resumen": "4 semanas de aprendizaje musical intensivo para niños. Begins July 7 — ¡Inscríbete ya!",
+    "contenido": "placeholder",
+    "semanas": [
+      {
+        "semana": 1,
+        "fechas": "7-12 julio",
+        "temas": ["Introducción a ritmo y melodía", "Conociendo el piano", "Mi primera canción"]
+      },
+      {
+        "semana": 2,
+        "fechas": "14-19 julio",
+        "temas": ["Notas musicales y escalas básicas", "Practica con钢琴 digital", "Ejercicios de memoria auditiva"]
+      },
+      {
+        "semana": 3,
+        "fechas": "21-26 julio",
+        "temas": ["Acompañamiento rítmico", "Canciones con acordes básicos", "Composición libre"]
+      },
+      {
+        "semana": 4,
+        "fechas": "28 julio - 2 agosto",
+        "temas": ["Ensayo y presentación final", "Grabación del rendimiento", "Entrega de constancia"]
+      }
+    ],
+    "info": {
+      "duracion": "4 semanas",
+      "inicio": "7 julio 2026",
+      "edad": "5-12 años",
+      "horario": "Por confirmar",
+      "lugar": "Por confirmar",
+      "costo": "Por confirmar"
+    }
+  }
+]
