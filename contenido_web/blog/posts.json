@@ -4,38 +4,104 @@
     "titulo": "🎹 Taller Vacacional de Música para Niños — Julio 2026",
     "fecha": "2026-07-07",
     "categoria": "Taller",
-    "etiquetas": ["taller", "vacaciones", "música", "niños", "julio"],
-    "resumen": "4 semanas de aprendizaje musical intensivo para niños. Begins July 7 — ¡Inscríbete ya!",
+    "etiquetas": ["taller", "vacaciones", "mús\u00edca", "niños", "julio"],
+    "resumen": "4 semanas de aprendizaje musical intensivo para niños. \u00a1Inscr\u00edbete ya!",
     "contenido": "placeholder",
     "semanas": [
       {
         "semana": 1,
         "fechas": "7-12 julio",
-        "temas": ["Introducción a ritmo y melodía", "Conociendo el piano", "Mi primera canción"]
+        "temas": ["Introducci\u00f3n a ritmo y melod\u00eda", "Conociendo el piano", "Mi primera canci\u00f3n"]
       },
       {
         "semana": 2,
         "fechas": "14-19 julio",
-        "temas": ["Notas musicales y escalas básicas", "Practica con钢琴 digital", "Ejercicios de memoria auditiva"]
+        "temas": ["Notas musicales y escalas b\u00e1sicas", "Pr\u00e1ctica con piano digital", "Ejercicios de memoria auditiva"]
       },
       {
         "semana": 3,
         "fechas": "21-26 julio",
-        "temas": ["Acompañamiento rítmico", "Canciones con acordes básicos", "Composición libre"]
+        "temas": ["Acompan\u0303amiento r\u00edtmico", "Canciones con acordes b\u00e1sicos", "Composici\u00f3n libre"]
       },
       {
         "semana": 4,
         "fechas": "28 julio - 2 agosto",
-        "temas": ["Ensayo y presentación final", "Grabación del rendimiento", "Entrega de constancia"]
+        "temas": ["Ensayo y presentaci\u00f3n final", "Grabaci\u00f3n del rendimiento", "Entrega de constancia"]
       }
     ],
     "info": {
       "duracion": "4 semanas",
       "inicio": "7 julio 2026",
-      "edad": "5-12 años",
+      "edad": "5-12 an\u00b4os",
       "horario": "Por confirmar",
       "lugar": "Por confirmar",
       "costo": "Por confirmar"
+    },
+    "articulo": {
+      "semana1": {
+        "titulo": "Semana 1: \u00a1Empezamos a hacer m\u00fasica!",
+        "subtitulo": "D\u00eda 1-2: Ritmo y melod\u00eda con el cuerpo",
+        "secciones": [
+          {
+            "tipo": "actividad",
+            "titulo": "\ud83c\udfb6 \u00aba3, 2, 1... \u00a1Ritmo!\u00bb",
+            "descripcion": "El ritmo es la base de toda m\u00fasica. Los ni\u00f1os天然的，所以他们学得最快。Antes de tocar un instrumento, vamos a sentir el ritmo con el cuerpo.",
+            "pasos": [
+              "Sientense juntos en el piso o en cojines",
+              "Pon una msica infantil que tengan a mano (o canten ustedes)",
+              "Practica PALMAS al ritmo: 4 palmadas, pausa, 4 palmadas",
+              "Ahora agrega PIES: pisa en el地板 durante las pausas",
+              "Subieron el nivel: slo palmadas en los tiempos 1 y 3",
+              "\u00a1El clsico ESPEJO: t\u00fa das un patr\u00f3n, el ni\u00f1o lo repite!"
+            ],
+            "tip": "Segn la OEI (Organizacin de Estados Iberoamericanos), el ritmo es el elemento bsico e imprescindible para llegar a la melod\u00eda. Fuente: oei.int/modulo-vi-musica.pdf"
+          },
+          {
+            "tipo": "info",
+            "titulo": "\ud83c\udfb9 \u00bfPor qu\u00e9 el piano?",
+            "descripcion": "El piano es el instrumento ideal para comenzar porque permite ver las notas de forma visual. Segn liceudemusicamislata.com, seleccionar un instrumento acorde a la edad facilita enormemente el aprendizaje. El piano permite que el ni\u00f1o entienda que cada tecla tiene una nota fija \u2014 no como cantar, donde uno mismo controla la altura.",
+            "referencias": [
+              "https://liceudemusicamislata.com/blog/como-iniciar-a-los-ninos-en-la-educacion-musical-correctamente/"
+            ]
+          },
+          {
+            "tipo": "actividad",
+            "titulo": "\ud83c\udfb9 Conociendo el piano: \u00a1Toca conmigo!",
+            "descripcion": "Hoy slo vamos a explorar el piano sin presin. Bsqueda una aplicacin de piano en el tel\u00e9fono o si tienen un piano/tegrindekeyboard, mejor.",
+            "pasos": [
+              "Encuentra las teclas blancas: slo 7 notas que se repiten (DO RE MI FA SOL LA SI)",
+              "Presiona cualquier tecla: \u00bfa qu\u00e9 suena? \u00bfTe gusta ese sonido?",
+              "Presiona 2 teclas al mismo tiempo: \u00bfes ms grave o ms agudo?",
+              "Encuentra DO en el medio del piano (clave: hay 2 teclas negras juntas, el DO est\u00e1 a la izquierda)",
+              "Toca slo teclas blancas de izquierda a derecha: \u00a1es una escala!",
+              "Toca slo las teclas negras: \u00bfsuena a msica china o r\u00e1pida?"
+            ],
+            "tip": "Segn Cozmo Brand (cozmobrand.com), la clave para introducir a los ni\u00f1os en msica es hacer todo ldico e interactivo: cantar, bailar y explorar instrumentos sin presin."
+          },
+          {
+            "tipo": "cancion",
+            "titulo": "\u2b50 Estrellita: Mi primera canci\u00f3n",
+            "notas": "DO DO SOL SOL | LA LA SOL | FA FA MI MI | RE RE DO",
+            "descripcion": "Esta es LA cancin para empezar. Slo usa 5 notas (DO RE MI FA SOL) y todos la conocen. La melod\u00eda completa es:",
+            "notasExtendidas": "DO DO SOL SOL LA LA SOL | FA FA MI MI RE RE DO | SOL SOL FA FA MI MI RE | SOL SOL FA FA MI MI RE | DO DO SOL SOL | LA LA SOL | FA FA MI MI RE RE DO",
+            "tip": "En YouTube y TikTok hay tutoriales especficos para nios. Busca 'Estrellita piano f\u00e1cil nios' y encontrars videos de 2-3 minutos perfectos para ver juntos.",
+            "referencias": [
+              "https://www.enchufalaguitarra.com/2016/09/estrellita-donde-estas-piano-melodias-faciles-principiantes.html",
+              "https://acordes.lacuerda.net/canciones_infantiles/estrellita"
+            ]
+          },
+          {
+            "tipo": "retos",
+            "titulo": "\ud83c\udfc6 Retos del da para ganar puntos!",
+            "retos": [
+              {"emoji": "\u267b\ufe0f", "texto": "Haz 10 palmadas al ritmo de tu cancin favorita sin perder el ritmo"},
+              {"emoji": "\ud83c\udfb9", "texto": "Encuentra 3 notas en el piano y presionlas al mismo tiempo \u2014 \u00bfcmo suena?"},
+              {"emoji": "\u2b50", "texto": "Canta Estrellita y slo tocas las notas cuando es tu turno"},
+              {"emoji": "\ud83d\udc64", "texto": "Ensea a alguien ms en tu casa cmo hacer el juego de ritmo eco"}
+            ]
+          }
+        ]
+      }
     }
   }
 ]
