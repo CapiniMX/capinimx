@@ -35,18 +35,18 @@
   }
   .eyebrow {
     display: inline-flex; align-items: center; gap: 14px;
-    font-family: 'Mulish', sans-serif; font-weight: 800; font-size: 32px;
+    font-family: 'Mulish', sans-serif; font-weight: 800; font-size: 48px;
     letter-spacing: 3px; text-transform: uppercase;
     color: var(--turq-deep);
     align-self: flex-start;
   }
   .eyebrow::before {
-    content: ''; width: 64px; height: 3px; background: var(--turq); border-radius: 2px;
+    content: ''; width: 80px; height: 4px; background: var(--turq); border-radius: 2px;
   }
-  .eyebrow .dot { width: 10px; height: 10px; border-radius: 50%; background: var(--pink); }
+  .eyebrow .dot { width: 14px; height: 14px; border-radius: 50%; background: var(--pink); }
   .headline {
     font-family: 'Montserrat', sans-serif; font-weight: 900;
-    font-size: 240px; line-height: 0.95; letter-spacing: -7px;
+    font-size: 220px; line-height: 0.95; letter-spacing: -6px;
     color: var(--turq-deep);
     margin-top: 40px;
   }
@@ -55,19 +55,19 @@
     font-size: 50px; line-height: 1.18; color: var(--turq-ink);
     max-width: 950px; margin-top: 26px;
   }
-  .chips { display: flex; flex-direction: column; gap: 16px; margin-top: 30px; align-items: flex-start; }
+  .chips { display: flex; flex-direction: column; gap: 18px; margin-top: 30px; align-items: flex-start; }
   .chip {
-    display: inline-flex; align-items: center; gap: 14px;
-    font-family: 'Mulish', sans-serif; font-weight: 700; font-size: 32px;
+    display: inline-flex; align-items: center; gap: 16px;
+    font-family: 'Mulish', sans-serif; font-weight: 700; font-size: 46px;
     color: var(--ink);
     background: #fff;
     border: 3px solid rgba(77,182,172,.55);
     border-radius: 999px;
-    padding: 16px 28px;
+    padding: 18px 36px;
     box-shadow: 0 4px 14px rgba(31,107,99,.06);
     line-height: 1;
   }
-  .chip .pulse { width: 14px; height: 14px; border-radius: 50%; background: var(--turq); flex: none; }
+  .chip .pulse { width: 16px; height: 16px; border-radius: 50%; background: var(--turq); flex: none; }
 
   /* Bloque de contacto GRANDE (única lona con teléfono) */
   .contact-block {
@@ -128,15 +128,24 @@
 
   /* Footer */
   .footer {
-    margin-top: auto;
-    padding: 36px 0 50px;
-    display: flex; flex-direction: column; align-items: center; gap: 14px;
+    margin-top: 30px;
+    padding: 30px 0 50px;
+    display: flex; flex-direction: column; align-items: center; gap: 12px;
+    border-top: 1.5px solid rgba(31,107,99,.18);
   }
   .footer img { height: 110px; width: auto; display: block; }
-  .footer .tag {
-    font-family: 'Mulish', sans-serif; font-weight: 800; font-size: 26px;
-    letter-spacing: 3px; text-transform: uppercase; color: var(--turq-deep);
-    opacity: 0.85;
+  .footer .psic {
+    font-family: 'Mulish', sans-serif; font-weight: 800; font-size: 42px;
+    color: var(--turq-ink);
+    margin-top: 8px; text-align: center;
+  }
+  .footer .agenda {
+    font-family: 'Mulish', sans-serif; font-weight: 800; font-size: 42px;
+    color: var(--pink-deep); text-align: center;
+  }
+  .footer .small {
+    font-family: 'Mulish', sans-serif; font-weight: 700; font-size: 26px;
+    color: var(--ink); opacity: 0.7; text-align: center; letter-spacing: 1px;
   }
 
   @page { size: 600mm 1000mm; margin: 0; }
@@ -184,7 +193,7 @@
 
         <!-- Bloque de contacto GRANDE -->
         <div class="contact-block">
-          <div class="contact-eyebrow">📲 Agenda tu primera sesión</div>
+          <div class="contact-eyebrow">📲 WhatsApp directo</div>
           <div class="wa-row">
             <span class="wa-icon">
               <svg viewBox="0 0 32 32" fill="#fff" aria-hidden="true">
@@ -194,15 +203,15 @@
             <div class="wa-num">341 136 5236</div>
           </div>
           <div class="creds">
-            <b>Psic. Ana María Vargas Hernández</b><br/>
-            Céd. Prof. 13246850 · Tamazula de Gordiano, Jal.<br/>
             <span style="color:#ffd58a;font-weight:800;letter-spacing:2px;">@CAPINImx · FB · IG · TikTok</span>
           </div>
         </div>
 
         <div class="footer">
           <img src="../../logo/capini-logo-transparent.png" alt="CAPINI — Creciendo Juntos" />
-          <div class="tag">Creciendo Juntos</div>
+          <div class="psic">Psic. Ana María Vargas Hernández</div>
+          <div class="agenda">Agenda tu primera sesión</div>
+          <div class="small">Céd. Prof. 13246850 · Tamazula de Gordiano, Jal. · @CAPINImx</div>
         </div>
       </div>
     </div>
