@@ -19,7 +19,7 @@
   }
   * { margin: 0; padding: 0; box-sizing: border-box; }
   html, body { width: 100%; height: 100%; background: #0c1413; overflow: hidden; font-family: 'Mulish', sans-serif; }
-  #stage { position: fixed; inset: 0; display: flex; align-items: center; justify-content: center; }
+  #stage { position: relative; width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; overflow: hidden; }
   #banner {
     position: relative;
     width: 1200px; height: 2000px;
@@ -261,7 +261,10 @@
   <script>
     function fit() {
       var b = document.getElementById('banner');
-      var s = Math.min(window.innerWidth / 1200, window.innerHeight / 2000);
+      // Usar el tamaño del wrapper padre (más confiable que window en iframes)
+      var w = window.innerWidth || document.documentElement.clientWidth;
+      var h = window.innerHeight || document.documentElement.clientHeight;
+      var s = Math.min(w / 1200, h / 2000);
       b.style.transform = 'scale(' + s + ')';
     }
     window.addEventListener('resize', fit);
