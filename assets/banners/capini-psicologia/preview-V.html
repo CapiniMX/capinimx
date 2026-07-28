@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Capini Psicología · Lonas Verticales 60×100cm — Preview</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&family=Mulish:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --turq: #4DB6AC;
+    --turq-deep: #2f8e85;
+    --turq-ink: #1f6b63;
+    --pink: #F48FB1;
+    --pink-deep: #e06a92;
+    --ink: #161918;
+    --bg: #F5F7FA;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body {
+    font-family: 'Mulish', sans-serif;
+    background: var(--bg);
+    color: var(--ink);
+    line-height: 1.5;
+  }
+  header {
+    background: linear-gradient(135deg, var(--turq) 0%, var(--pink) 100%);
+    padding: 32px 32px 28px;
+    color: #fff;
+    box-shadow: 0 8px 24px rgba(77,182,172,.2);
+  }
+  .header-inner {
+    max-width: 1400px; margin: 0 auto;
+    display: flex; align-items: center; gap: 24px; flex-wrap: wrap;
+  }
+  .header-logo {
+    height: 56px; width: 56px; background: #fff;
+    border-radius: 12px; padding: 4px;
+    box-shadow: 0 4px 12px rgba(0,0,0,.15);
+  }
+  .header-text h1 {
+    font-family: 'Montserrat', sans-serif; font-weight: 800;
+    font-size: 26px; line-height: 1.1;
+  }
+  .header-text p {
+    font-size: 14px; opacity: .95; margin-top: 4px; font-weight: 600;
+  }
+  .header-actions { margin-left: auto; display: flex; gap: 10px; flex-wrap: wrap; }
+  .btn {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: rgba(255,255,255,.18);
+    color: #fff;
+    border: 1.5px solid rgba(255,255,255,.5);
+    padding: 9px 16px; border-radius: 8px;
+    font-family: 'Mulish', sans-serif; font-weight: 700; font-size: 14px;
+    text-decoration: none; cursor: pointer;
+    transition: all .15s ease;
+  }
+  .btn:hover { background: rgba(255,255,255,.32); transform: translateY(-1px); }
+  .btn.primary { background: #fff; color: var(--turq-deep); border-color: #fff; }
+  .btn.primary:hover { background: var(--turq-cl); }
+
+  main { max-width: 1400px; margin: 0 auto; padding: 32px 24px 60px; }
+
+  .intro {
+    background: #fff; border-radius: 16px; padding: 22px 26px;
+    margin-bottom: 28px;
+    border: 1px solid #e5e7eb;
+    box-shadow: 0 2px 8px rgba(0,0,0,.03);
+  }
+  .intro h2 {
+    font-family: 'Montserrat', sans-serif; font-weight: 700;
+    font-size: 20px; color: var(--turq-deep); margin-bottom: 6px;
+  }
+  .intro p { font-size: 14px; color: #4b5563; max-width: 900px; }
+  .intro .meta {
+    display: flex; gap: 16px; flex-wrap: wrap; margin-top: 12px;
+    font-size: 13px; color: #6b7280;
+  }
+  .intro .meta span b { color: var(--turq-deep); font-weight: 700; }
+
+  /* Grid responsive: en pantallas grandes van 4 en fila */
+  .lonas-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 22px;
+  }
+  @media (max-width: 1200px) { .lonas-grid { grid-template-columns: repeat(2, 1fr); } }
+  @media (max-width: 600px)  { .lonas-grid { grid-template-columns: 1fr; } }
+
+  .lona-card {
+    background: #fff; border-radius: 14px; overflow: hidden;
+    border: 1px solid #e5e7eb;
+    box-shadow: 0 4px 14px rgba(0,0,0,.04);
+    transition: transform .2s ease, box-shadow .2s ease;
+  }
+  .lona-card:hover { transform: translateY(-3px); box-shadow: 0 10px 24px rgba(0,0,0,.1); }
+  .lona-header {
+    display: flex; align-items: center; gap: 12px;
+    padding: 14px 16px;
+    border-bottom: 1px solid #f0f0f0;
+  }
+  .lona-num {
+    width: 30px; height: 30px; border-radius: 50%;
+    background: linear-gradient(135deg, var(--turq) 0%, var(--pink) 100%);
+    color: #fff; font-family: 'Montserrat', sans-serif; font-weight: 800;
+    font-size: 14px;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .lona-title { flex: 1; }
+  .lona-title h3 {
+    font-family: 'Montserrat', sans-serif; font-weight: 700;
+    font-size: 16px; color: var(--ink);
+  }
+  .lona-title .sub { font-size: 12px; color: #6b7280; margin-top: 2px; }
+  .icon-btn {
+    width: 30px; height: 30px; border-radius: 6px;
+    background: #f3f4f6; color: #4b5563;
+    display: flex; align-items: center; justify-content: center;
+    text-decoration: none; cursor: pointer; border: none;
+    transition: all .15s ease;
+  }
+  .icon-btn:hover { background: var(--turq-cl); color: var(--turq-deep); }
+  .icon-btn svg { width: 14px; height: 14px; }
+
+  /* Wrapper vertical: aspect ratio 3:5 */
+  .lona-frame-wrap {
+    width: 100%;
+    aspect-ratio: 3 / 5;
+    background: #f9fafb;
+    overflow: hidden;
+    position: relative;
+  }
+  .lona-frame {
+    position: absolute; inset: 0;
+    width: 100%; height: 100%;
+    border: none; display: block;
+  }
+
+  footer {
+    background: var(--ink); color: #cbd5e1;
+    padding: 24px 32px; text-align: center; margin-top: 40px;
+  }
+  footer p { font-size: 13px; }
+  footer b { color: var(--turq-cl); }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-inner">
+    <img class="header-logo" src="../logo/capini-logo-transparent.png" alt="CAPINI" />
+    <div class="header-text">
+      <h1>Lonas Verticales · 60 × 100 cm — Capini Psicología</h1>
+      <p>4 diseños · portrait 3:5 · lona vinílica exteriores · Tamazula de Gordiano, Jal.</p>
+    </div>
+    <div class="header-actions">
+      <a class="btn" href="preview.html">↔ Ver horizontales</a>
+      <a class="btn primary" href="#lona-4">Llámanos</a>
+    </div>
+  </div>
+</header>
+
+<main>
+
+  <div class="intro">
+    <h2>Versión vertical (portrait 60×100 cm)</h2>
+    <p>Misma serie narrativa <b>Capini Psicología</b> pero en formato vertical para espacios altos: bardas, postes, columnas, o murales en muros. Layout reorganizado para portrait: eyebrow arriba → headline → subhead → chips → ilustración → logo footer. La lona "Llámanos" lleva el bloque de contacto (WhatsApp + WhatsApp 341 136 5236 + cédula) en un card turquesa prominente.</p>
+    <div class="meta">
+      <span><b>Formato:</b> 60cm × 100cm portrait</span>
+      <span><b>Ratio:</b> 3:5 (0.6)</span>
+      <span><b>Resolución:</b> 1200 × 2000 px @ ~150 DPI (escalable)</span>
+      <span><b>Tipografía:</b> Montserrat + Mulish</span>
+    </div>
+  </div>
+
+  <div class="lonas-grid">
+
+    <article class="lona-card" id="lona-1">
+      <div class="lona-header">
+        <div class="lona-num">1</div>
+        <div class="lona-title"><h3>Respira</h3><div class="sub">Regulación · ansiedad · mindfulness</div></div>
+        <a class="icon-btn" href="Respira-V.html" target="_blank" title="Abrir fullscreen">
+          <svg viewBox="0 0 24 24" fill="none"><path d="M14 4h6v6M10 20H4v-6M20 4l-7 7M4 20l7-7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </a>
+      </div>
+      <div class="lona-frame-wrap">
+        <iframe class="lona-frame" src="Respira-V.html" loading="lazy" title="Respira V"></iframe>
+      </div>
+    </article>
+
+    <article class="lona-card" id="lona-2">
+      <div class="lona-header">
+        <div class="lona-num">2</div>
+        <div class="lona-title"><h3>Siente</h3><div class="sub">Atención plena · corporal · interna</div></div>
+        <a class="icon-btn" href="Siente-V.html" target="_blank" title="Abrir fullscreen">
+          <svg viewBox="0 0 24 24" fill="none"><path d="M14 4h6v6M10 20H4v-6M20 4l-7 7M4 20l7-7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </a>
+      </div>
+      <div class="lona-frame-wrap">
+        <iframe class="lona-frame" src="Siente-V.html" loading="lazy" title="Siente V"></iframe>
+      </div>
+    </article>
+
+    <article class="lona-card" id="lona-3">
+      <div class="lona-header">
+        <div class="lona-num">3</div>
+        <div class="lona-title"><h3>Disfruta</h3><div class="sub">Bienestar · positiva · plenitud</div></div>
+        <a class="icon-btn" href="Disfruta-V.html" target="_blank" title="Abrir fullscreen">
+          <svg viewBox="0 0 24 24" fill="none"><path d="M14 4h6v6M10 20H4v-6M20 4l-7 7M4 20l7-7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </a>
+      </div>
+      <div class="lona-frame-wrap">
+        <iframe class="lona-frame" src="Disfruta-V.html" loading="lazy" title="Disfruta V"></iframe>
+      </div>
+    </article>
+
+    <article class="lona-card" id="lona-4">
+      <div class="lona-header">
+        <div class="lona-num" style="background: linear-gradient(135deg, var(--pink) 0%, var(--pink-deep) 100%);">4</div>
+        <div class="lona-title">
+          <h3>Llámanos <span style="font-size:11px;color:#e06a92;font-weight:800;background:#fce4ec;padding:2px 6px;border-radius:4px;margin-left:4px;">CONTACTO</span></h3>
+          <div class="sub">WhatsApp directo · 341 136 5236</div>
+        </div>
+        <a class="icon-btn" href="Llamanos-V.html" target="_blank" title="Abrir fullscreen">
+          <svg viewBox="0 0 24 24" fill="none"><path d="M14 4h6v6M10 20H4v-6M20 4l-7 7M4 20l7-7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </a>
+      </div>
+      <div class="lona-frame-wrap">
+        <iframe class="lona-frame" src="Llamanos-V.html" loading="lazy" title="Llámanos V"></iframe>
+      </div>
+    </article>
+
+  </div>
+
+</main>
+
+<footer>
+  <p>© 2026 <b>CAPINI</b> — Creciendo Juntos · Psic. Ana María Vargas Hernández · Céd. Prof. 13246850</p>
+  <p style="margin-top: 4px; opacity: 0.6;">Serie de lonas verticales — v1 preview</p>
+</footer>
+
+</body>
+</html>

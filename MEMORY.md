@@ -1,5 +1,35 @@
 # MEMORY.md — Conocimiento CAPINI
 
+## 🏥 Marca CAPINI — datos clave (NO confundir con Cris)
+
+**Cris NO es la fundadora.** Él es el socio tecnológico / TKO. La fundadora y dueña del centro es:
+
+| Campo | Valor |
+|-------|-------|
+| **Fundadora** | **Psic. Ana María Vargas Hernández** |
+| **Especialidad** | Neuropsicología Infantil, Estimulación Temprana, Evaluación & Diagnóstico Oportuno |
+| **Cédula Prof.** | 13246850 |
+| **WhatsApp** | 3411365236 (link: bit.ly/capinimx) |
+| **Email** | capinimx@gmail.com |
+| **Redes** | @CAPINImx (Facebook, Instagram, TikTok) |
+| **Dirección** | Ricardo Flores Magón #7, Tamazula de Gordiano, Jalisco |
+| **Maps** | maps.app.goo.gl/jX1iuJZHAZBomeNq6 |
+| **Horario** | 9:00 AM – 6:00 PM |
+| **Sitio actual** | capinimx.bitrix24.site |
+| **Sitio en desarrollo** | capinimx.com |
+| **Logo** | Dos manos abiertas sosteniendo cerebro rosa + "CAPINI Creciendo Juntos" |
+| **Tagline** | Creciendo Juntos |
+| **Significado** | **C**entro de **A**tención **P**sicológica **I**ntegral y **N**eurodesarrollo **I**nfantil |
+
+**Catálogo de evaluaciones de Ana (estándar mundial):**
+- TDAH, Autismo (TEA), Ansiedad, Depresión
+- Coeficiente Intelectual: **WPPSI-IV** (2-7 años) · **WISC-V** (6-16) · **WAIS-IV** (adultos)
+- Neuropsicológica Infantil: **ENI-P** (preescolares) · **ENI-2** (5-16)
+
+Servicios generales: Terapia infantil/adolescentes, Terapia adultos, Estimulación temprana, Talleres, Circuitos sensoriales.
+
+**Inversión pendiente:** ~$20,000 MXN en equipo (mesitas para talleres, etc.). El servicio más lucrativo para recuperar es **Evaluación IQ** (escalas Wechsler).
+
 ## Cuentas y accesos
 
 | Recurso | Credencial / URL |
@@ -37,10 +67,22 @@ capinimx/
 
 ## Productos y nombres
 
-- **CAPINI** = marca general (Centro de Atención y Prevención de Infancias)
+- **CAPINI** = marca del centro psicológico de Ana (Centro de Atención **Psicológica** Integral y Neurodesarrollo Infantil)
 - **AprendiendoLuk** = mini-juegos entrenamiento mental
 - **La Aventura Musical de Alexander** = piano + chords + ear trainer
 - **Puntos Niños** = registro con estrellas
+
+## 📜 Campaña de lonas (4 diseños 3m×1m)
+
+| # | Lona | Objetivo | Estado |
+|---|------|----------|--------|
+| 1 | Evaluaciones para adultos | Romper percepción "solo niños" | Brief listo |
+| 2 | **IQ (WISC/WAIS/WPPSI)** | Servicio estrella, ROI alto | Brief + prompt Claude Design listos |
+| 3 | Talleres vacaciones verano 2026 | Llenar talleres julio 2026 | Pendiente: temas, precios, edades |
+| 4 | Directorio de servicios (pared) | Menú permanente de servicios | Brief + prompt listos |
+
+**Specs comunes:** 3m × 1m, horizontal, lona vinílica exteriores, ≥150 DPI real, legible a 5-10m.
+**Docs completos:** `docs/BRIEF_LONAS.md` · `docs/BRAND_CAPINIMX.md` · `docs/PROMPTS_CLAUDE_DESIGN.md`
 
 ## Audiencias
 

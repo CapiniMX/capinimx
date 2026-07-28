@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Disfruta — CAPINI · Psicología (vertical)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&family=Mulish:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --turq: #4DB6AC;
+    --turq-deep: #2f8e85;
+    --turq-ink: #1f6b63;
+    --pink: #F48FB1;
+    --pink-deep: #e06a92;
+    --pink-soft: #FCE4EC;
+    --ink: #161918;
+    --sun: #FFD58A;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { width: 100%; height: 100%; background: #0c1413; overflow: hidden; font-family: 'Mulish', sans-serif; }
+  #stage { position: fixed; inset: 0; display: flex; align-items: center; justify-content: center; }
+  #banner {
+    position: relative;
+    width: 1200px; height: 2000px;
+    background: radial-gradient(140% 100% at 50% 0%, #ffffff 0%, #fdf8ee 40%, #fce4ec 100%);
+    overflow: hidden;
+    transform-origin: center center;
+    box-shadow: 0 40px 120px rgba(0,0,0,.5);
+  }
+  #bg-deco { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 0; pointer-events: none; }
+  #content {
+    position: relative; z-index: 2; height: 100%;
+    display: flex; flex-direction: column;
+    padding: 90px 90px 0;
+  }
+  .eyebrow {
+    display: inline-flex; align-items: center; gap: 14px;
+    font-family: 'Mulish', sans-serif; font-weight: 800; font-size: 32px;
+    letter-spacing: 3px; text-transform: uppercase;
+    color: var(--turq-deep);
+    align-self: flex-start;
+  }
+  .eyebrow::before {
+    content: ''; width: 64px; height: 3px; background: var(--turq); border-radius: 2px;
+  }
+  .eyebrow .dot { width: 10px; height: 10px; border-radius: 50%; background: var(--pink); }
+  .headline {
+    font-family: 'Montserrat', sans-serif; font-weight: 900;
+    font-size: 280px; line-height: 0.95; letter-spacing: -8px;
+    background: linear-gradient(95deg, var(--turq-deep) 0%, #4f9c95 35%, #c47ba1 70%, var(--pink-deep) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-top: 40px;
+  }
+  .subhead {
+    font-family: 'Mulish', sans-serif; font-weight: 700;
+    font-size: 56px; line-height: 1.18; color: #5e3a4d;
+    max-width: 950px; margin-top: 30px;
+  }
+  .chips { display: flex; flex-direction: column; gap: 18px; margin-top: 36px; align-items: flex-start; }
+  .chip {
+    display: inline-flex; align-items: center; gap: 16px;
+    font-family: 'Mulish', sans-serif; font-weight: 700; font-size: 36px;
+    color: var(--ink);
+    background: #fff;
+    border: 3px solid rgba(255,213,138,.7);
+    border-radius: 999px;
+    padding: 18px 32px;
+    box-shadow: 0 4px 14px rgba(214,158,46,.08);
+    line-height: 1;
+  }
+  .chip .pulse {
+    width: 14px; height: 14px; border-radius: 50%;
+    background: linear-gradient(135deg, var(--turq) 0%, var(--pink) 100%);
+    flex: none;
+  }
+  .allegory {
+    flex: 1;
+    display: flex; align-items: center; justify-content: center;
+    margin-top: 30px;
+  }
+  .allegory svg { width: 80%; max-width: 800px; height: auto; }
+  .footer {
+    padding: 40px 0 50px;
+    display: flex; flex-direction: column; align-items: center; gap: 14px;
+    border-top: 1.5px solid rgba(214,158,46,.18);
+    margin-top: 30px;
+  }
+  .footer img { height: 130px; width: auto; display: block; }
+  .footer .tag {
+    font-family: 'Mulish', sans-serif; font-weight: 800; font-size: 28px;
+    letter-spacing: 3px; text-transform: uppercase; color: var(--turq-deep);
+    opacity: 0.85;
+  }
+  @page { size: 600mm 1000mm; margin: 0; }
+  * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+  @media print {
+    html, body { background: #fff; }
+    #stage { position: static; display: block; }
+    #banner { transform: scale(0.47244) !important; transform-origin: top left; box-shadow: none; }
+  }
+</style>
+</head>
+<body>
+  <div id="stage">
+    <div id="banner">
+      <svg id="bg-deco" viewBox="0 0 1200 2000" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+        <g stroke="#FFD58A" fill="none" opacity="0.30">
+          <path d="M -100 300 Q 600 270 1300 300" stroke-width="3"/>
+          <path d="M -100 1700 Q 600 1730 1300 1700" stroke-width="3"/>
+          <path d="M -100 200 Q 600 180 1300 200" stroke-width="2"/>
+          <path d="M -100 1800 Q 600 1820 1300 1800" stroke-width="2"/>
+        </g>
+        <g fill="#FFD58A" opacity="0.40">
+          <circle cx="200" cy="280" r="7"/>
+          <circle cx="900" cy="260" r="6"/>
+          <circle cx="200" cy="1720" r="7"/>
+          <circle cx="1000" cy="1760" r="6"/>
+        </g>
+        <g fill="#4DB6AC" opacity="0.22">
+          <circle cx="100" cy="900" r="10"/>
+          <circle cx="1100" cy="950" r="8"/>
+        </g>
+      </svg>
+
+      <div id="content">
+        <div class="eyebrow">
+          <span>CAPINI</span><span class="dot"></span><span>PSICOLOGÍA</span>
+        </div>
+        <h1 class="headline">Disfruta.</h1>
+        <p class="subhead">La vida también se celebra<br/>en lo pequeño.</p>
+        <div class="chips">
+          <span class="chip"><span class="pulse"></span>Bienestar</span>
+          <span class="chip"><span class="pulse"></span>Terapia positiva</span>
+          <span class="chip"><span class="pulse"></span>Plenitud</span>
+        </div>
+
+        <div class="allegory">
+          <svg viewBox="0 0 800 700" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
+            <!-- SOL RADIANTE -->
+            <g transform="translate(500 350)">
+              <g stroke="#FFD58A" stroke-width="7" stroke-linecap="round" opacity="0.7">
+                <line x1="0" y1="-280" x2="0" y2="-220"/>
+                <line x1="198" y1="-198" x2="156" y2="-156"/>
+                <line x1="280" y1="0" x2="220" y2="0"/>
+                <line x1="198" y1="198" x2="156" y2="156"/>
+                <line x1="0" y1="280" x2="0" y2="220"/>
+                <line x1="-198" y1="198" x2="-156" y2="156"/>
+                <line x1="-280" y1="0" x2="-220" y2="0"/>
+                <line x1="-198" y1="-198" x2="-156" y2="-156"/>
+              </g>
+              <circle cx="0" cy="0" r="195" fill="#FFD58A" opacity="0.35"/>
+              <circle cx="0" cy="0" r="160" fill="#FFD58A" opacity="0.55"/>
+            </g>
+
+            <!-- Silueta humana con brazos abiertos (celebrar) -->
+            <g fill="#FCE4EC" opacity="0.95">
+              <ellipse cx="500" cy="160" rx="88" ry="104"/>
+              <path d="M 458 252 L 458 305 Q 458 320 472 322 L 528 322 Q 542 320 542 305 L 542 252 Z"/>
+              <path d="M 500 320
+                       Q 416 322 360 344
+                       Q 314 364 298 404
+                       Q 292 432 304 460
+                       L 318 580
+                       Q 320 612 342 618
+                       L 658 634
+                       Q 684 634 688 608
+                       L 684 512
+                       Q 672 442 640 400
+                       Q 600 366 552 354
+                       Q 532 324 500 320 Z"/>
+              <!-- Brazo izquierdo extendido arriba-izq -->
+              <path d="M 358 350
+                       Q 305 322 255 280
+                       Q 220 240 200 210
+                       Q 195 195 207 190
+                       Q 224 190 254 218
+                       Q 300 252 340 300
+                       Q 362 326 372 348 Z"/>
+              <!-- Brazo derecho extendido arriba-der -->
+              <path d="M 642 350
+                       Q 695 322 745 280
+                       Q 780 240 800 210
+                       Q 805 195 793 190
+                       Q 776 190 746 218
+                       Q 700 252 660 300
+                       Q 638 326 628 348 Z"/>
+            </g>
+
+            <!-- Sonrisa sutil -->
+            <path d="M 470 190 Q 500 207 530 190" stroke="#d24579" stroke-width="3.5" fill="none" opacity="0.7" stroke-linecap="round"/>
+          </svg>
+        </div>
+
+        <div class="footer">
+          <img src="../../logo/capini-logo-transparent.png" alt="CAPINI — Creciendo Juntos" />
+          <div class="tag">Creciendo Juntos</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script>
+    function fit() {
+      var b = document.getElementById('banner');
+      var s = Math.min(window.innerWidth / 1200, window.innerHeight / 2000);
+      b.style.transform = 'scale(' + s + ')';
+    }
+    window.addEventListener('resize', fit);
+    window.addEventListener('load', fit);
+    fit();
+  </script>
+</body>
+</html>

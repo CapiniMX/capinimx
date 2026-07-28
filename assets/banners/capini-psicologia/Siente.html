@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Siente — CAPINI · Psicología</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&family=Mulish:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --turq: #4DB6AC;
+    --turq-deep: #2f8e85;
+    --turq-ink: #1f6b63;
+    --pink: #F48FB1;
+    --pink-deep: #e06a92;
+    --pink-soft: #FCE4EC;
+    --ink: #161918;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body {
+    width: 100%; height: 100%; background: #0c1413; overflow: hidden;
+    font-family: 'Mulish', sans-serif;
+  }
+  #stage {
+    position: fixed; inset: 0; display: flex; align-items: center; justify-content: center;
+  }
+  #banner {
+    position: relative;
+    width: 2400px; height: 800px;
+    /* Fondo con acento rosa más marcado */
+    background: radial-gradient(120% 140% at 96% 50%, #ffffff 0%, #fef5f9 48%, #fce4ec 100%);
+    overflow: hidden;
+    transform-origin: center center;
+    box-shadow: 0 40px 120px rgba(0,0,0,.5);
+  }
+
+  #bg-deco {
+    position: absolute; inset: 0; width: 100%; height: 100%;
+    z-index: 0; pointer-events: none;
+  }
+
+  /* Invertimos: contenido en la derecha, alegoría en la izquierda para variar visualmente */
+  #content {
+    position: relative; z-index: 2; height: 100%;
+    display: grid;
+    grid-template-columns: 1fr 1.5fr;
+  }
+
+  /* LEFT: alegoría */
+  .allegory {
+    position: relative; height: 100%;
+    display: flex; align-items: center; justify-content: center;
+    padding: 60px 30px 130px 80px;
+  }
+  .allegory svg { width: 88%; height: 88%; }
+
+  /* RIGHT: mensaje */
+  .message {
+    height: 100%;
+    display: flex; flex-direction: column; justify-content: flex-start;
+    padding: 78px 130px 130px 50px;
+    gap: 22px;
+  }
+  .series-tag {
+    display: inline-flex; align-items: center; gap: 14px;
+    font-family: 'Mulish', sans-serif; font-weight: 800; font-size: 28px;
+    letter-spacing: 2.5px; text-transform: uppercase;
+    color: var(--pink-deep);
+  }
+  .series-tag::before {
+    content: ''; width: 56px; height: 3px; background: var(--pink); border-radius: 2px;
+  }
+  .series-tag .dot {
+    width: 8px; height: 8px; border-radius: 50%; background: var(--turq);
+  }
+
+  .headline {
+    font-family: 'Montserrat', sans-serif; font-weight: 900;
+    font-size: 240px; line-height: 0.95; letter-spacing: -7px;
+    color: #d24579;
+    margin-right: 60px;
+  }
+
+  .subhead {
+    font-family: 'Mulish', sans-serif; font-weight: 700;
+    font-size: 46px; line-height: 1.2; color: #6b3a4d;
+    max-width: 1100px;
+    margin-top: 4px;
+  }
+
+  .chips { display: flex; flex-wrap: wrap; gap: 14px; margin-top: 28px; }
+  .chip {
+    display: inline-flex; align-items: center; gap: 12px;
+    font-family: 'Mulish', sans-serif; font-weight: 700; font-size: 28px;
+    color: var(--ink);
+    background: #fff;
+    border: 2.5px solid rgba(244,143,177,.55);
+    border-radius: 999px;
+    padding: 14px 26px;
+    box-shadow: 0 4px 14px rgba(224,106,146,.06);
+    line-height: 1;
+  }
+  .chip .pulse {
+    width: 12px; height: 12px; border-radius: 50%; background: var(--pink);
+    box-shadow: 0 0 0 0 rgba(244,143,177,.6);
+    animation: heartbeat 1.2s ease-in-out infinite;
+    flex: none;
+  }
+  @keyframes heartbeat {
+    0%, 100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(244,143,177,.6); }
+    25%      { transform: scale(1.3); box-shadow: 0 0 0 8px rgba(244,143,177,0); }
+    50%      { transform: scale(1); box-shadow: 0 0 0 0 rgba(244,143,177,0); }
+  }
+
+  .footer {
+    position: absolute; left: 0; right: 0; bottom: 38px;
+    display: flex; flex-direction: column; align-items: center; gap: 8px;
+    z-index: 3;
+  }
+  .footer img {
+    height: 86px; width: auto; display: block;
+  }
+  .footer .tag {
+    font-family: 'Mulish', sans-serif; font-weight: 800; font-size: 20px;
+    letter-spacing: 2px; text-transform: uppercase; color: var(--pink-deep);
+    opacity: 0.85;
+  }
+
+  @page { size: 300mm 100mm; margin: 0; }
+  * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+  @media print {
+    html, body { background: #fff; }
+    #stage { position: static; display: block; }
+    #banner { transform: scale(0.47244) !important; transform-origin: top left; box-shadow: none; }
+  }
+</style>
+</head>
+<body>
+  <div id="stage">
+    <div id="banner">
+
+      <!-- Background: ondas SOLO en esquinas, fuera de la zona de la silueta -->
+      <svg id="bg-deco" viewBox="0 0 2400 800" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+        <g stroke="#F48FB1" fill="none" opacity="0.18">
+          <path d="M -100 100 Q 400 60 800 100" stroke-width="2.4"/>
+          <path d="M -100 170 Q 400 140 800 170" stroke-width="1.8"/>
+          <path d="M 1620 80 Q 2000 60 2500 100" stroke-width="2.4"/>
+          <path d="M 1620 150 Q 2000 130 2500 170" stroke-width="1.8"/>
+        </g>
+        <g stroke="#F48FB1" fill="none" opacity="0.18">
+          <path d="M -100 720 Q 400 750 800 720" stroke-width="2.4"/>
+          <path d="M -100 650 Q 400 680 800 650" stroke-width="1.8"/>
+          <path d="M 1620 700 Q 2000 720 2500 720" stroke-width="2.4"/>
+          <path d="M 1620 640 Q 2000 660 2500 640" stroke-width="1.8"/>
+        </g>
+        <g fill="#F48FB1" opacity="0.25">
+          <circle cx="120" cy="90" r="5"/><circle cx="380" cy="60" r="3"/>
+          <circle cx="640" cy="80" r="4"/><circle cx="1820" cy="70" r="5"/>
+          <circle cx="2100" cy="110" r="3"/><circle cx="2280" cy="80" r="4"/>
+          <circle cx="120" cy="710" r="5"/><circle cx="440" cy="740" r="3"/>
+          <circle cx="1980" cy="730" r="4"/>
+        </g>
+        <g fill="#4DB6AC" opacity="0.25">
+          <circle cx="80" cy="450" r="6"/><circle cx="1700" cy="50" r="4"/>
+        </g>
+      </svg>
+
+      <div id="content">
+
+        <!-- LEFT: silueta con corazón latiendo -->
+        <div class="allegory">
+          <svg viewBox="0 0 600 700" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
+            <!-- Ondas pequeñas de sensación alrededor del pecho -->
+            <g fill="none" stroke="#F48FB1" stroke-linecap="round" opacity="0.5">
+              <path d="M 90 380 Q 180 370 280 385" stroke-width="3"/>
+              <path d="M 80 440 Q 180 430 290 445" stroke-width="3"/>
+              <path d="M 90 500 Q 190 490 300 505" stroke-width="3"/>
+            </g>
+            <!-- Puntos de sensación -->
+            <g fill="#F48FB1" opacity="0.55">
+              <circle cx="60" cy="380" r="5"/>
+              <circle cx="50" cy="440" r="6"/>
+              <circle cx="60" cy="500" r="5"/>
+            </g>
+
+            <!-- Silueta humana vista de frente -->
+            <g fill="#FCE4EC" opacity="0.95">
+              <!-- Cabeza (frontal) -->
+              <ellipse cx="395" cy="170" rx="82" ry="96"/>
+              <!-- Cuello -->
+              <path d="M 358 256 L 358 305 Q 358 318 372 320 L 418 320 Q 432 318 432 305 L 432 256 Z"/>
+              <!-- Hombros y torso -->
+              <path d="M 395 318
+                       Q 320 320 270 340
+                       Q 230 358 215 395
+                       Q 210 420 220 445
+                       L 232 545
+                       Q 234 575 254 580
+                       L 538 595
+                       Q 562 595 565 572
+                       L 562 485
+                       Q 552 420 522 380
+                       Q 488 348 445 335
+                       Q 425 322 395 318 Z"/>
+              <!-- Brazos sutiles pegados al cuerpo -->
+              <path d="M 268 345 Q 250 380 245 440 L 240 555 Q 240 580 260 585 L 285 585 L 295 480 Q 295 410 285 370 Z"/>
+              <path d="M 522 345 Q 540 380 545 440 L 550 555 Q 550 580 530 585 L 505 585 L 495 480 Q 495 410 505 370 Z"/>
+            </g>
+
+            <!-- Corazón anatómico estilizado en el centro del pecho (alegoría de sentir) -->
+            <g transform="translate(395 440)">
+              <!-- Halo pulsante -->
+              <circle cx="0" cy="0" r="70" fill="none" stroke="#F48FB1" stroke-width="1.5" opacity="0.22"/>
+              <circle cx="0" cy="0" r="52" fill="none" stroke="#F48FB1" stroke-width="2" opacity="0.45"/>
+              <!-- Corazón (forma clásica, más grande) -->
+              <path d="M 0 -12
+                       C -10 -34, -46 -34, -46 -10
+                       C -46 10, -27 27, 0 46
+                       C 27 27, 46 10, 46 -10
+                       C 46 -34, 10 -34, 0 -12 Z"
+                    fill="#d24579" opacity="0.95"/>
+            </g>
+          </svg>
+        </div>
+
+        <!-- RIGHT: mensaje -->
+        <div class="message">
+          <div class="series-tag">
+            <span>CAPINI</span><span class="dot"></span><span>PSICOLOGÍA</span>
+          </div>
+          <h1 class="headline">Siente.</h1>
+          <p class="subhead">Tu cuerpo siempre<br/>te dice la verdad.</p>
+          <div class="chips">
+            <span class="chip"><span class="pulse"></span>Atención plena</span>
+            <span class="chip"><span class="pulse"></span>Conexión corporal</span>
+            <span class="chip"><span class="pulse"></span>Escucha interna</span>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Footer -->
+      <div class="footer">
+        <img src="../../logo/capini-logo-transparent.png" alt="CAPINI — Creciendo Juntos" />
+        <div class="tag">Creciendo Juntos</div>
+      </div>
+
+    </div>
+  </div>
+
+  <script>
+    function fit() {
+      var b = document.getElementById('banner');
+      var s = Math.min(window.innerWidth / 2400, window.innerHeight / 800);
+      b.style.transform = 'scale(' + s + ')';
+    }
+    window.addEventListener('resize', fit);
+    window.addEventListener('load', fit);
+    fit();
+  </script>
+</body>
+</html>

@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Llámanos — CAPINI · Psicología</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&family=Mulish:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --turq: #4DB6AC;
+    --turq-deep: #2f8e85;
+    --turq-ink: #1f6b63;
+    --pink: #F48FB1;
+    --pink-deep: #e06a92;
+    --ink: #161918;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body {
+    width: 100%; height: 100%; background: #0c1413; overflow: hidden;
+    font-family: 'Mulish', sans-serif;
+  }
+  #stage {
+    position: fixed; inset: 0; display: flex; align-items: center; justify-content: center;
+  }
+  #banner {
+    position: relative;
+    width: 2400px; height: 800px;
+    /* Fondo turquesa dominante con acento rosa */
+    background: radial-gradient(120% 140% at 4% 30%, #ffffff 0%, #f3fbfa 45%, #d8efeb 100%);
+    overflow: hidden;
+    transform-origin: center center;
+    box-shadow: 0 40px 120px rgba(0,0,0,.5);
+  }
+
+  #bg-deco {
+    position: absolute; inset: 0; width: 100%; height: 100%;
+    z-index: 0; pointer-events: none;
+  }
+
+  #content {
+    position: relative; z-index: 2; height: 100%;
+    display: grid;
+    grid-template-rows: 1fr 200px;
+  }
+
+  /* ZONA SUPERIOR: mensaje + alegoría */
+  .top {
+    display: grid;
+    grid-template-columns: 1.4fr 1fr;
+    height: 600px;
+  }
+
+  .message {
+    height: 100%;
+    display: flex; flex-direction: column; justify-content: flex-start;
+    padding: 78px 50px 30px 130px;
+    gap: 22px;
+  }
+  .series-tag {
+    display: inline-flex; align-items: center; gap: 14px;
+    font-family: 'Mulish', sans-serif; font-weight: 800; font-size: 28px;
+    letter-spacing: 2.5px; text-transform: uppercase;
+    color: var(--turq-deep);
+  }
+  .series-tag::before {
+    content: ''; width: 56px; height: 3px; background: var(--turq); border-radius: 2px;
+  }
+  .series-tag .dot {
+    width: 8px; height: 8px; border-radius: 50%; background: var(--pink);
+  }
+
+  .headline {
+    font-family: 'Montserrat', sans-serif; font-weight: 900;
+    font-size: 220px; line-height: 0.95; letter-spacing: -6px;
+    color: var(--turq-deep);
+    margin-right: 60px;
+  }
+
+  .subhead {
+    font-family: 'Mulish', sans-serif; font-weight: 700;
+    font-size: 42px; line-height: 1.2; color: var(--turq-ink);
+    max-width: 1050px;
+    margin-top: 4px;
+  }
+
+  .chips { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 20px; }
+  .chip {
+    display: inline-flex; align-items: center; gap: 12px;
+    font-family: 'Mulish', sans-serif; font-weight: 700; font-size: 26px;
+    color: var(--ink);
+    background: #fff;
+    border: 2.5px solid rgba(77,182,172,.55);
+    border-radius: 999px;
+    padding: 12px 24px;
+    box-shadow: 0 4px 14px rgba(31,107,99,.06);
+    line-height: 1;
+  }
+  .chip .pulse {
+    width: 12px; height: 12px; border-radius: 50%; background: var(--turq);
+    flex: none;
+  }
+
+  /* RIGHT: teléfono retro con ondas */
+  .allegory {
+    position: relative; height: 100%;
+    display: flex; align-items: center; justify-content: center;
+    padding: 50px 70px 30px 30px;
+  }
+  .allegory svg { width: 95%; height: 95%; }
+
+  /* ZONA INFERIOR: BANDA DE CONTACTO (solo esta lona) */
+  .contact-band {
+    position: relative;
+    height: 200px;
+    background: linear-gradient(90deg, #1f6b63 0%, #2f8e85 100%);
+    z-index: 3;
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    align-items: center;
+    padding: 0 80px;
+    gap: 60px;
+    box-shadow: 0 -8px 30px rgba(31,107,99,.18);
+  }
+
+  /* Logo a la izquierda del band */
+  .band-logo {
+    display: flex; align-items: center; gap: 16px;
+    background: #fff;
+    padding: 14px 22px;
+    border-radius: 14px;
+  }
+  .band-logo img { height: 60px; width: auto; display: block; }
+  .band-logo .lg-text {
+    font-family: 'Mulish', sans-serif; font-weight: 800; font-size: 18px;
+    letter-spacing: 1.5px; text-transform: uppercase; color: var(--turq-deep);
+    line-height: 1.1;
+  }
+  .band-logo .lg-sub {
+    font-family: 'Mulish', sans-serif; font-weight: 600; font-size: 13px;
+    color: #6b7280;
+    margin-top: 2px;
+  }
+
+  /* Centro: WhatsApp + número + credenciales */
+  .band-contact {
+    display: flex; flex-direction: column; gap: 8px;
+    color: #fff;
+  }
+  .band-wa {
+    display: flex; align-items: center; gap: 18px;
+  }
+  .band-wa-icon {
+    width: 70px; height: 70px; flex: none;
+    border-radius: 18px;
+    background: linear-gradient(135deg, #5bd066 0%, #25a74f 100%);
+    display: flex; align-items: center; justify-content: center;
+    box-shadow: 0 8px 18px rgba(37,167,79,.4);
+  }
+  .band-wa-icon svg { width: 42px; height: 42px; }
+  .band-num {
+    font-family: 'Montserrat', sans-serif; font-weight: 900;
+    font-size: 64px; color: #fff; letter-spacing: 1px;
+    line-height: 1;
+  }
+  .band-cta {
+    font-family: 'Mulish', sans-serif; font-weight: 700;
+    font-size: 22px; color: #cce8e6;
+    letter-spacing: 0.5px;
+    margin-top: -2px;
+  }
+  .band-creds {
+    font-family: 'Mulish', sans-serif; font-weight: 700; font-size: 20px;
+    color: #d6efed;
+    margin-top: 4px;
+  }
+  .band-creds b { color: #fff; font-weight: 800; }
+
+  /* Derecha: QR + handle */
+  .band-qr-wrap {
+    display: flex; align-items: center; gap: 18px;
+  }
+  .band-qr {
+    width: 140px; height: 140px;
+    background: #fff;
+    border-radius: 14px;
+    padding: 14px;
+    box-shadow: 0 8px 18px rgba(0,0,0,.18);
+  }
+  .band-qr img { width: 100%; height: 100%; display: block; image-rendering: pixelated; }
+  .band-handle {
+    font-family: 'Mulish', sans-serif; font-weight: 800; font-size: 22px;
+    color: #fff;
+    text-align: left;
+  }
+  .band-handle span {
+    display: block;
+    font-weight: 600; font-size: 14px;
+    color: #cce8e6;
+    letter-spacing: 1.5px; text-transform: uppercase;
+    margin-top: 4px;
+  }
+
+  @page { size: 300mm 100mm; margin: 0; }
+  * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+  @media print {
+    html, body { background: #fff; }
+    #stage { position: static; display: block; }
+    #banner { transform: scale(0.47244) !important; transform-origin: top left; box-shadow: none; }
+  }
+</style>
+</head>
+<body>
+  <div id="stage">
+    <div id="banner">
+
+      <!-- Background: ondas + circuitos (alegoría de comunicación) -->
+      <svg id="bg-deco" viewBox="0 0 2400 800" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+        <g stroke="#4DB6AC" fill="none" opacity="0.18">
+          <path d="M -100 100 Q 400 60 800 100" stroke-width="2.4"/>
+          <path d="M -100 170 Q 400 140 800 170" stroke-width="1.8"/>
+          <path d="M 1620 80 Q 2000 60 2500 100" stroke-width="2.4"/>
+          <path d="M 1620 150 Q 2000 130 2500 170" stroke-width="1.8"/>
+        </g>
+        <g stroke="#4DB6AC" fill="none" opacity="0.18">
+          <path d="M -100 720 Q 400 750 800 720" stroke-width="2.4"/>
+          <path d="M -100 650 Q 400 680 800 650" stroke-width="1.8"/>
+          <path d="M 1620 700 Q 2000 720 2500 720" stroke-width="2.4"/>
+          <path d="M 1620 640 Q 2000 660 2500 640" stroke-width="1.8"/>
+        </g>
+        <!-- Circuitos sutiles (esquinas) -->
+        <g stroke="#4DB6AC" fill="none" opacity="0.15" stroke-width="1.4">
+          <path d="M 80 60 L 200 60 L 200 130 L 320 130"/>
+          <path d="M 2080 60 L 2200 60 L 2200 130 L 2320 130"/>
+          <path d="M 80 740 L 200 740 L 200 670 L 320 670"/>
+        </g>
+        <g fill="#4DB6AC" opacity="0.25">
+          <circle cx="120" cy="90" r="5"/><circle cx="380" cy="60" r="3"/>
+          <circle cx="640" cy="80" r="4"/><circle cx="1820" cy="70" r="5"/>
+          <circle cx="2100" cy="110" r="3"/><circle cx="2280" cy="80" r="4"/>
+          <circle cx="120" cy="710" r="5"/><circle cx="440" cy="740" r="3"/>
+          <circle cx="1980" cy="730" r="4"/>
+        </g>
+        <g fill="#F48FB1" opacity="0.22">
+          <circle cx="80" cy="450" r="6"/><circle cx="1700" cy="50" r="4"/>
+        </g>
+      </svg>
+
+      <div id="content">
+
+        <!-- TOP: mensaje + alegoría -->
+        <div class="top">
+
+          <!-- LEFT -->
+          <div class="message">
+            <div class="series-tag">
+              <span>CAPINI</span><span class="dot"></span><span>PSICOLOGÍA</span>
+            </div>
+            <h1 class="headline">Llámanos.</h1>
+            <p class="subhead">El primer paso<br/>es una llamada.</p>
+            <div class="chips">
+              <span class="chip"><span class="pulse"></span>WhatsApp directo</span>
+              <span class="chip"><span class="pulse"></span>Sin compromiso</span>
+              <span class="chip"><span class="pulse"></span>Confidencial</span>
+            </div>
+          </div>
+
+          <!-- RIGHT: teléfono retro con ondas de comunicación -->
+          <div class="allegory">
+            <svg viewBox="0 0 700 600" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
+              <!-- Ondas de comunicación expandiéndose desde el auricular -->
+              <g fill="none" stroke="#F48FB1" stroke-linecap="round">
+                <path d="M 110 200 Q 280 195 380 205" stroke-width="4" opacity="0.45"/>
+                <path d="M 90 260 Q 280 250 400 260" stroke-width="5" opacity="0.65"/>
+                <path d="M 80 320 Q 280 310 410 320" stroke-width="5" opacity="0.85"/>
+                <path d="M 90 380 Q 280 370 400 380" stroke-width="5" opacity="0.65"/>
+                <path d="M 110 440 Q 280 435 380 445" stroke-width="4" opacity="0.45"/>
+              </g>
+              <g fill="#F48FB1" opacity="0.55">
+                <circle cx="60" cy="200" r="5"/>
+                <circle cx="40" cy="320" r="7"/>
+                <circle cx="60" cy="440" r="5"/>
+              </g>
+
+              <!-- Teléfono retro (handset) estilizado -->
+              <g transform="translate(450 320) rotate(-25)">
+                <!-- Auricular (parte superior) -->
+                <ellipse cx="0" cy="-90" rx="58" ry="48" fill="#1f6b63"/>
+                <ellipse cx="0" cy="-90" rx="44" ry="34" fill="#2f8e85"/>
+                <!-- Cuerpo central (diadema/tubo) -->
+                <rect x="-18" y="-90" width="36" height="180" fill="#1f6b63" rx="14"/>
+                <!-- Micrófono (parte inferior) -->
+                <ellipse cx="0" cy="90" rx="58" ry="48" fill="#1f6b63"/>
+                <ellipse cx="0" cy="90" rx="44" ry="34" fill="#2f8e85"/>
+                <!-- Brillo -->
+                <ellipse cx="-15" cy="-95" rx="12" ry="8" fill="#4DB6AC" opacity="0.7"/>
+                <ellipse cx="-15" cy="85" rx="12" ry="8" fill="#4DB6AC" opacity="0.7"/>
+                <!-- Patitas del cable (decorativas) -->
+                <path d="M 50 90 Q 120 130 180 100 Q 240 70 260 130" stroke="#1f6b63" stroke-width="6" fill="none" stroke-linecap="round"/>
+              </g>
+
+              <!-- Punto de "señal" pulsante en el centro -->
+              <g>
+                <circle cx="465" cy="320" r="14" fill="#F48FB1" opacity="0.95"/>
+                <circle cx="465" cy="320" r="30" fill="none" stroke="#F48FB1" stroke-width="2" opacity="0.45"/>
+                <circle cx="465" cy="320" r="48" fill="none" stroke="#F48FB1" stroke-width="1.5" opacity="0.22"/>
+              </g>
+            </svg>
+          </div>
+
+        </div>
+
+        <!-- BANDA INFERIOR DE CONTACTO -->
+        <div class="contact-band">
+          <!-- Logo + texto CAPINI -->
+          <div class="band-logo">
+            <img src="../../logo/capini-logo-transparent.png" alt="CAPINI" />
+            <div>
+              <div class="lg-text">CAPINI</div>
+              <div class="lg-sub">Creciendo Juntos</div>
+            </div>
+          </div>
+
+          <!-- Centro: WhatsApp + número grande + credenciales -->
+          <div class="band-contact">
+            <div class="band-wa">
+              <span class="band-wa-icon">
+                <svg viewBox="0 0 32 32" fill="#fff" aria-hidden="true">
+                  <path d="M16.01 3.2C9.06 3.2 3.41 8.85 3.4 15.8c0 2.22.58 4.39 1.69 6.3L3.3 28.8l6.86-1.8a12.56 12.56 0 0 0 5.84 1.49h.01c6.95 0 12.6-5.65 12.6-12.6 0-3.37-1.31-6.53-3.69-8.91A12.5 12.5 0 0 0 16.01 3.2Zm0 23.06h-.01a10.45 10.45 0 0 1-5.32-1.46l-.38-.23-3.95 1.04 1.05-3.85-.25-.4a10.4 10.4 0 0 1-1.6-5.56c0-5.77 4.7-10.47 10.47-10.47 2.8 0 5.42 1.09 7.4 3.07a10.4 10.4 0 0 1 3.06 7.41c0 5.78-4.7 10.48-10.47 10.48Zm5.74-7.84c-.31-.16-1.86-.92-2.15-1.02-.29-.11-.5-.16-.71.16-.21.31-.82 1.02-1 1.24-.18.21-.37.24-.68.08-.31-.16-1.33-.49-2.53-1.56-.94-.83-1.57-1.86-1.75-2.18-.18-.31-.02-.48.14-.64.14-.14.31-.37.47-.55.16-.18.21-.31.31-.52.11-.21.05-.39-.03-.55-.08-.16-.71-1.71-.97-2.34-.26-.62-.52-.54-.71-.55-.18-.01-.39-.01-.6-.01-.21 0-.55.08-.84.39-.29.31-1.1 1.08-1.1 2.63 0 1.55 1.13 3.05 1.29 3.26.16.21 2.23 3.41 5.41 4.78.76.33 1.34.52 1.8.67.76.24 1.44.21 1.99.13.61-.09 1.86-.76 2.13-1.5.26-.73.26-1.36.18-1.5-.08-.13-.29-.21-.6-.37Z"/>
+                </svg>
+              </span>
+              <div>
+                <div class="band-num">341 136 5236</div>
+                <div class="band-cta">Agenda tu primera sesión · WhatsApp directo</div>
+              </div>
+            </div>
+            <div class="band-creds">
+              <b>Psic. Ana María Vargas Hernández</b> · Céd. Prof. 13246850 · Tamazula de Gordiano, Jal.
+            </div>
+          </div>
+
+          <!-- QR + handle -->
+          <div class="band-qr-wrap">
+            <div class="band-qr" id="qr"></div>
+            <div class="band-handle">
+              @CAPINImx
+              <span>FB · IG · TikTok</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+  </div>
+
+  <script>
+    function fit() {
+      var b = document.getElementById('banner');
+      var s = Math.min(window.innerWidth / 2400, window.innerHeight / 800);
+      b.style.transform = 'scale(' + s + ')';
+    }
+    window.addEventListener('resize', fit);
+    window.addEventListener('load', fit);
+    fit();
+
+    (function drawQR() {
+      var el = document.getElementById('qr');
+      if (!el) return;
+      var img = new Image();
+      img.alt = 'QR wa.me/523411365236';
+      img.onload = function () { el.innerHTML = ''; el.appendChild(img); };
+      img.onerror = function () { el.innerHTML = '<div style="font:800 18px Mulish;color:#1f6b63;text-align:center;line-height:1.3;padding:24px 6px">wa.me/<br>523411365236</div>'; };
+      img.src = 'https://api.qrserver.com/v1/create-qr-code/?size=520x520&margin=0&qzone=0&data=' + encodeURIComponent('https://wa.me/523411365236');
+    })();
+  </script>
+</body>
+</html>

@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Respira — CAPINI · Psicología</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&family=Mulish:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --turq: #4DB6AC;
+    --turq-deep: #2f8e85;
+    --turq-ink: #1f6b63;
+    --pink: #F48FB1;
+    --pink-deep: #e06a92;
+    --pink-soft: #FCE4EC;
+    --ink: #161918;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body {
+    width: 100%; height: 100%; background: #0c1413; overflow: hidden;
+    font-family: 'Mulish', sans-serif;
+  }
+  #stage {
+    position: fixed; inset: 0; display: flex; align-items: center; justify-content: center;
+  }
+  #banner {
+    position: relative;
+    width: 2400px; height: 800px;
+    background: radial-gradient(120% 140% at 4% 50%, #ffffff 0%, #f3fbfa 48%, #e2f4f1 100%);
+    overflow: hidden;
+    transform-origin: center center;
+    box-shadow: 0 40px 120px rgba(0,0,0,.5);
+  }
+
+  /* Background: ondas SOLO en esquinas (no donde va la silueta) */
+  #bg-deco {
+    position: absolute; inset: 0; width: 100%; height: 100%;
+    z-index: 0; pointer-events: none;
+  }
+
+  #content {
+    position: relative; z-index: 2; height: 100%;
+    display: grid;
+    grid-template-columns: 1.5fr 1fr;
+  }
+
+  /* LEFT */
+  .message {
+    height: 100%;
+    display: flex; flex-direction: column; justify-content: flex-start;
+    padding: 78px 50px 130px 130px;
+    gap: 22px;
+  }
+  .series-tag {
+    display: inline-flex; align-items: center; gap: 14px;
+    font-family: 'Mulish', sans-serif; font-weight: 800; font-size: 28px;
+    letter-spacing: 2.5px; text-transform: uppercase;
+    color: var(--turq-deep);
+  }
+  .series-tag::before {
+    content: ''; width: 56px; height: 3px; background: var(--turq); border-radius: 2px;
+  }
+  .series-tag .dot {
+    width: 8px; height: 8px; border-radius: 50%; background: var(--pink);
+  }
+
+  .headline {
+    font-family: 'Montserrat', sans-serif; font-weight: 900;
+    font-size: 240px; line-height: 0.95; letter-spacing: -7px;
+    color: var(--turq-deep);
+    margin-right: 60px; /* espacio del punto decorativo */
+  }
+
+  .subhead {
+    font-family: 'Mulish', sans-serif; font-weight: 700;
+    font-size: 46px; line-height: 1.2; color: var(--turq-ink);
+    max-width: 1100px;
+    margin-top: 4px;
+  }
+
+  .chips { display: flex; flex-wrap: wrap; gap: 14px; margin-top: 28px; }
+  .chip {
+    display: inline-flex; align-items: center; gap: 12px;
+    font-family: 'Mulish', sans-serif; font-weight: 700; font-size: 28px;
+    color: var(--ink);
+    background: #fff;
+    border: 2.5px solid rgba(77,182,172,.55);
+    border-radius: 999px;
+    padding: 14px 26px;
+    box-shadow: 0 4px 14px rgba(31,107,99,.06);
+    line-height: 1;
+  }
+  .chip .pulse {
+    width: 12px; height: 12px; border-radius: 50%; background: var(--turq);
+    box-shadow: 0 0 0 0 rgba(77,182,172,.6);
+    animation: breathe 4s ease-in-out infinite;
+    flex: none;
+  }
+  @keyframes breathe {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(77,182,172,.6); transform: scale(1); }
+    50%      { box-shadow: 0 0 0 14px rgba(77,182,172,0); transform: scale(1.18); }
+  }
+
+  /* RIGHT */
+  .allegory {
+    position: relative; height: 100%;
+    display: flex; align-items: center; justify-content: center;
+    padding: 60px 80px 130px 30px;
+  }
+  .allegory svg { width: 88%; height: 88%; }
+
+  /* Footer */
+  .footer {
+    position: absolute; left: 0; right: 0; bottom: 38px;
+    display: flex; flex-direction: column; align-items: center; gap: 8px;
+    z-index: 3;
+  }
+  .footer img {
+    height: 86px; width: auto; display: block;
+  }
+  .footer .tag {
+    font-family: 'Mulish', sans-serif; font-weight: 800; font-size: 20px;
+    letter-spacing: 2px; text-transform: uppercase; color: var(--turq-ink);
+    opacity: 0.85;
+  }
+
+  @page { size: 300mm 100mm; margin: 0; }
+  * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+  @media print {
+    html, body { background: #fff; }
+    #stage { position: static; display: block; }
+    #banner { transform: scale(0.47244) !important; transform-origin: top left; box-shadow: none; }
+  }
+</style>
+</head>
+<body>
+  <div id="stage">
+    <div id="banner">
+
+      <!-- Background: ondas SOLO en esquinas, fuera de la zona de la silueta -->
+      <svg id="bg-deco" viewBox="0 0 2400 800" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+        <!-- Esquinas superiores -->
+        <g stroke="#4DB6AC" fill="none" opacity="0.18">
+          <path d="M -100 100 Q 400 60 800 100" stroke-width="2.4"/>
+          <path d="M -100 170 Q 400 140 800 170" stroke-width="1.8"/>
+          <path d="M 1620 80 Q 2000 60 2500 100" stroke-width="2.4"/>
+          <path d="M 1620 150 Q 2000 130 2500 170" stroke-width="1.8"/>
+        </g>
+        <!-- Esquinas inferiores -->
+        <g stroke="#4DB6AC" fill="none" opacity="0.18">
+          <path d="M -100 720 Q 400 750 800 720" stroke-width="2.4"/>
+          <path d="M -100 650 Q 400 680 800 650" stroke-width="1.8"/>
+          <path d="M 1620 700 Q 2000 720 2500 720" stroke-width="2.4"/>
+          <path d="M 1620 640 Q 2000 660 2500 640" stroke-width="1.8"/>
+        </g>
+        <!-- Partículas dispersas -->
+        <g fill="#4DB6AC" opacity="0.25">
+          <circle cx="120" cy="90" r="5"/><circle cx="380" cy="60" r="3"/>
+          <circle cx="640" cy="80" r="4"/><circle cx="1820" cy="70" r="5"/>
+          <circle cx="2100" cy="110" r="3"/><circle cx="2280" cy="80" r="4"/>
+          <circle cx="120" cy="710" r="5"/><circle cx="440" cy="740" r="3"/>
+          <circle cx="1980" cy="730" r="4"/>
+        </g>
+        <g fill="#F48FB1" opacity="0.25">
+          <circle cx="80" cy="450" r="6"/><circle cx="1700" cy="50" r="4"/>
+        </g>
+      </svg>
+
+      <div id="content">
+
+        <!-- LEFT -->
+        <div class="message">
+          <div class="series-tag">
+            <span>CAPINI</span><span class="dot"></span><span>PSICOLOGÍA</span>
+          </div>
+          <h1 class="headline">Respira.</h1>
+          <p class="subhead">Cuando todo va muy rápido,<br/>vuelve a tu centro.</p>
+          <div class="chips">
+            <span class="chip"><span class="pulse"></span>Regulación emocional</span>
+            <span class="chip"><span class="pulse"></span>Manejo de ansiedad</span>
+            <span class="chip"><span class="pulse"></span>Mindfulness</span>
+          </div>
+        </div>
+
+        <!-- RIGHT: silueta minimalista de espaldas + ondas de exhalación -->
+        <div class="allegory">
+          <svg viewBox="0 0 600 700" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
+            <!-- Ondas de exhalación expandiéndose desde el pecho -->
+            <g fill="none" stroke="#4DB6AC" stroke-linecap="round">
+              <path d="M 80 350 Q 200 340 300 355" stroke-width="5" opacity="0.85"/>
+              <path d="M 60 410 Q 200 400 310 415" stroke-width="4.5" opacity="0.65"/>
+              <path d="M 50 470 Q 200 460 320 475" stroke-width="4" opacity="0.45"/>
+              <path d="M 40 530 Q 200 520 330 535" stroke-width="3.5" opacity="0.30"/>
+            </g>
+            <!-- Puntos de aire -->
+            <g fill="#4DB6AC" opacity="0.55">
+              <circle cx="50" cy="350" r="6"/>
+              <circle cx="30" cy="470" r="7"/>
+              <circle cx="40" cy="540" r="5"/>
+            </g>
+
+            <!-- Silueta humana vista de ESPALDAS, estilo icono minimalista -->
+            <g fill="#FCE4EC" opacity="0.95">
+              <!-- Cabeza (vista trasera) -->
+              <ellipse cx="395" cy="170" rx="82" ry="96"/>
+              <!-- Cuello -->
+              <path d="M 358 256 L 358 305 Q 358 318 372 320 L 418 320 Q 432 318 432 305 L 432 256 Z"/>
+              <!-- Hombros y torso -->
+              <path d="M 395 318
+                       Q 320 320 270 340
+                       Q 230 358 215 395
+                       Q 210 420 220 445
+                       L 232 545
+                       Q 234 575 254 580
+                       L 538 595
+                       Q 562 595 565 572
+                       L 562 485
+                       Q 552 420 522 380
+                       Q 488 348 445 335
+                       Q 425 322 395 318 Z"/>
+            </g>
+
+            <!-- Centro de calma: ondas pulsantes en la espalda -->
+            <g>
+              <circle cx="395" cy="440" r="14" fill="#F48FB1" opacity="0.95"/>
+              <circle cx="395" cy="440" r="30" fill="none" stroke="#F48FB1" stroke-width="2" opacity="0.45"/>
+              <circle cx="395" cy="440" r="48" fill="none" stroke="#F48FB1" stroke-width="1.5" opacity="0.22"/>
+            </g>
+          </svg>
+        </div>
+
+      </div>
+
+      <!-- Footer con logo CAPINI -->
+      <div class="footer">
+        <img src="../../logo/capini-logo-transparent.png" alt="CAPINI — Creciendo Juntos" />
+        <div class="tag">Creciendo Juntos</div>
+      </div>
+
+    </div>
+  </div>
+
+  <script>
+    function fit() {
+      var b = document.getElementById('banner');
+      var s = Math.min(window.innerWidth / 2400, window.innerHeight / 800);
+      b.style.transform = 'scale(' + s + ')';
+    }
+    window.addEventListener('resize', fit);
+    window.addEventListener('load', fit);
+    fit();
+  </script>
+</body>
+</html>
