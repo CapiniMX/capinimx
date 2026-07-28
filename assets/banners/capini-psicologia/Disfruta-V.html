@@ -187,64 +187,7 @@
           <span class="chip"><span class="pulse"></span>Plenitud</span>
         </div>
 
-        <div class="allegory">
-          <svg viewBox="0 0 800 700" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
-            <!-- SOL RADIANTE -->
-            <g transform="translate(500 350)">
-              <g stroke="#FFD58A" stroke-width="7" stroke-linecap="round" opacity="0.7">
-                <line x1="0" y1="-280" x2="0" y2="-220"/>
-                <line x1="198" y1="-198" x2="156" y2="-156"/>
-                <line x1="280" y1="0" x2="220" y2="0"/>
-                <line x1="198" y1="198" x2="156" y2="156"/>
-                <line x1="0" y1="280" x2="0" y2="220"/>
-                <line x1="-198" y1="198" x2="-156" y2="156"/>
-                <line x1="-280" y1="0" x2="-220" y2="0"/>
-                <line x1="-198" y1="-198" x2="-156" y2="-156"/>
-              </g>
-              <circle cx="0" cy="0" r="195" fill="#FFD58A" opacity="0.35"/>
-              <circle cx="0" cy="0" r="160" fill="#FFD58A" opacity="0.55"/>
-            </g>
-
-            <!-- Silueta humana con brazos abiertos (celebrar) -->
-            <g fill="#FCE4EC" opacity="0.95">
-              <ellipse cx="500" cy="160" rx="88" ry="104"/>
-              <path d="M 458 252 L 458 305 Q 458 320 472 322 L 528 322 Q 542 320 542 305 L 542 252 Z"/>
-              <path d="M 500 320
-                       Q 416 322 360 344
-                       Q 314 364 298 404
-                       Q 292 432 304 460
-                       L 318 580
-                       Q 320 612 342 618
-                       L 658 634
-                       Q 684 634 688 608
-                       L 684 512
-                       Q 672 442 640 400
-                       Q 600 366 552 354
-                       Q 532 324 500 320 Z"/>
-              <!-- Brazo izquierdo extendido arriba-izq -->
-              <path d="M 358 350
-                       Q 305 322 255 280
-                       Q 220 240 200 210
-                       Q 195 195 207 190
-                       Q 224 190 254 218
-                       Q 300 252 340 300
-                       Q 362 326 372 348 Z"/>
-              <!-- Brazo derecho extendido arriba-der -->
-              <path d="M 642 350
-                       Q 695 322 745 280
-                       Q 780 240 800 210
-                       Q 805 195 793 190
-                       Q 776 190 746 218
-                       Q 700 252 660 300
-                       Q 638 326 628 348 Z"/>
-            </g>
-
-            <!-- Sonrisa sutil -->
-            <path d="M 470 190 Q 500 207 530 190" stroke="#d24579" stroke-width="3.5" fill="none" opacity="0.7" stroke-linecap="round"/>
-          </svg>
-        </div>
-
-        <!-- Bloque de contacto estándar (WhatsApp) -->
+<!-- Bloque de contacto estándar (WhatsApp) -->
         <div class="contact-block">
           <div class="contact-eyebrow">📲 Agenda tu primera sesión</div>
           <div class="wa-row">
@@ -273,15 +216,34 @@
   <script>
     function fit() {
       var b = document.getElementById('banner');
-      // Usar el tamaño del wrapper padre (más confiable que window en iframes)
-      var w = window.innerWidth || document.documentElement.clientWidth;
-      var h = window.innerHeight || document.documentElement.clientHeight;
+      var stage = document.getElementById('stage');
+      // Preferir dimensiones del stage (parent directo) — más confiable en iframes
+      var w = (stage && stage.clientWidth) || window.innerWidth || document.documentElement.clientWidth || 1;
+      var h = (stage && stage.clientHeight) || window.innerHeight || document.documentElement.clientHeight || 1;
       var s = Math.min(w / 1200, h / 2000);
       b.style.transform = 'scale(' + s + ')';
+      b.style.transformOrigin = 'center center';
     }
-    window.addEventListener('resize', fit);
-    window.addEventListener('load', fit);
+    function refit() {
+      // Forzar re-fit con ResizeObserver para detectar cambios del iframe
+      try {
+        var ro = new ResizeObserver(fit);
+        ro.observe(document.getElementById('stage'));
+      } catch(e) {}
+    }
+    // Llamar fit en múltiples puntos del ciclo de vida
     fit();
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', fit);
+    }
+    window.addEventListener('load', function() { fit(); refit(); });
+    window.addEventListener('resize', fit);
+    // Re-fit tras el primer paint (algunos browsers miden mal antes)
+    requestAnimationFrame(function() { fit(); requestAnimationFrame(fit); });
+    // Re-fit adicional tras 100ms y 500ms (cuando fuentes externas ya cargaron)
+    setTimeout(fit, 100);
+    setTimeout(fit, 500);
+    setTimeout(fit, 1500);
   </script>
 </body>
 </html>

@@ -187,52 +187,7 @@
           <span class="chip"><span class="pulse"></span>Escucha interna</span>
         </div>
 
-        <div class="allegory">
-          <svg viewBox="0 0 600 700" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
-            <g fill="none" stroke="#F48FB1" stroke-linecap="round" opacity="0.5">
-              <path d="M 90 380 Q 180 370 280 385" stroke-width="3.5"/>
-              <path d="M 80 440 Q 180 430 290 445" stroke-width="3.5"/>
-              <path d="M 90 500 Q 190 490 300 505" stroke-width="3.5"/>
-            </g>
-            <g fill="#F48FB1" opacity="0.55">
-              <circle cx="60" cy="380" r="6"/>
-              <circle cx="50" cy="440" r="7"/>
-              <circle cx="60" cy="500" r="6"/>
-            </g>
-
-            <g fill="#FCE4EC" opacity="0.95">
-              <ellipse cx="395" cy="170" rx="92" ry="108"/>
-              <path d="M 354 268 L 354 320 Q 354 334 370 336 L 420 336 Q 436 334 436 320 L 436 268 Z"/>
-              <path d="M 395 334
-                       Q 312 336 258 358
-                       Q 215 378 198 418
-                       Q 192 446 204 472
-                       L 218 580
-                       Q 220 612 242 618
-                       L 548 634
-                       Q 574 634 578 610
-                       L 574 514
-                       Q 562 444 530 402
-                       Q 492 366 445 354
-                       Q 425 338 395 334 Z"/>
-              <path d="M 256 363 Q 236 400 230 460 L 224 575 Q 224 600 246 605 L 272 605 L 284 500 Q 284 430 274 388 Z"/>
-              <path d="M 534 363 Q 554 400 560 460 L 566 575 Q 566 600 544 605 L 518 605 L 506 500 Q 506 430 516 388 Z"/>
-            </g>
-
-            <g transform="translate(395 450)">
-              <circle cx="0" cy="0" r="78" fill="none" stroke="#F48FB1" stroke-width="2" opacity="0.22"/>
-              <circle cx="0" cy="0" r="58" fill="none" stroke="#F48FB1" stroke-width="2.5" opacity="0.45"/>
-              <path d="M 0 -14
-                       C -12 -38, -52 -38, -52 -10
-                       C -52 12, -30 30, 0 52
-                       C 30 30, 52 12, 52 -10
-                       C 52 -38, 12 -38, 0 -14 Z"
-                    fill="#d24579" opacity="0.95"/>
-            </g>
-          </svg>
-        </div>
-
-        <!-- Bloque de contacto estándar (WhatsApp) -->
+<!-- Bloque de contacto estándar (WhatsApp) -->
         <div class="contact-block">
           <div class="contact-eyebrow">📲 Agenda tu primera sesión</div>
           <div class="wa-row">
@@ -261,15 +216,34 @@
   <script>
     function fit() {
       var b = document.getElementById('banner');
-      // Usar el tamaño del wrapper padre (más confiable que window en iframes)
-      var w = window.innerWidth || document.documentElement.clientWidth;
-      var h = window.innerHeight || document.documentElement.clientHeight;
+      var stage = document.getElementById('stage');
+      // Preferir dimensiones del stage (parent directo) — más confiable en iframes
+      var w = (stage && stage.clientWidth) || window.innerWidth || document.documentElement.clientWidth || 1;
+      var h = (stage && stage.clientHeight) || window.innerHeight || document.documentElement.clientHeight || 1;
       var s = Math.min(w / 1200, h / 2000);
       b.style.transform = 'scale(' + s + ')';
+      b.style.transformOrigin = 'center center';
     }
-    window.addEventListener('resize', fit);
-    window.addEventListener('load', fit);
+    function refit() {
+      // Forzar re-fit con ResizeObserver para detectar cambios del iframe
+      try {
+        var ro = new ResizeObserver(fit);
+        ro.observe(document.getElementById('stage'));
+      } catch(e) {}
+    }
+    // Llamar fit en múltiples puntos del ciclo de vida
     fit();
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', fit);
+    }
+    window.addEventListener('load', function() { fit(); refit(); });
+    window.addEventListener('resize', fit);
+    // Re-fit tras el primer paint (algunos browsers miden mal antes)
+    requestAnimationFrame(function() { fit(); requestAnimationFrame(fit); });
+    // Re-fit adicional tras 100ms y 500ms (cuando fuentes externas ya cargaron)
+    setTimeout(fit, 100);
+    setTimeout(fit, 500);
+    setTimeout(fit, 1500);
   </script>
 </body>
 </html>

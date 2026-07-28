@@ -221,15 +221,34 @@
   <script>
     function fit() {
       var b = document.getElementById('banner');
-      // Usar el tamaño del wrapper padre (más confiable que window en iframes)
-      var w = window.innerWidth || document.documentElement.clientWidth;
-      var h = window.innerHeight || document.documentElement.clientHeight;
+      var stage = document.getElementById('stage');
+      // Preferir dimensiones del stage (parent directo) — más confiable en iframes
+      var w = (stage && stage.clientWidth) || window.innerWidth || document.documentElement.clientWidth || 1;
+      var h = (stage && stage.clientHeight) || window.innerHeight || document.documentElement.clientHeight || 1;
       var s = Math.min(w / 1200, h / 2000);
       b.style.transform = 'scale(' + s + ')';
+      b.style.transformOrigin = 'center center';
     }
-    window.addEventListener('resize', fit);
-    window.addEventListener('load', fit);
+    function refit() {
+      // Forzar re-fit con ResizeObserver para detectar cambios del iframe
+      try {
+        var ro = new ResizeObserver(fit);
+        ro.observe(document.getElementById('stage'));
+      } catch(e) {}
+    }
+    // Llamar fit en múltiples puntos del ciclo de vida
     fit();
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', fit);
+    }
+    window.addEventListener('load', function() { fit(); refit(); });
+    window.addEventListener('resize', fit);
+    // Re-fit tras el primer paint (algunos browsers miden mal antes)
+    requestAnimationFrame(function() { fit(); requestAnimationFrame(fit); });
+    // Re-fit adicional tras 100ms y 500ms (cuando fuentes externas ya cargaron)
+    setTimeout(fit, 100);
+    setTimeout(fit, 500);
+    setTimeout(fit, 1500);
   </script>
 </body>
 </html>
