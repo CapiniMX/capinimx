@@ -159,3 +159,10 @@ Esta sesión está dedicada exclusivamente a CAPINI. Si Cris pregunta algo de Ce
 - **19-jun-2026:** commit `c29cada` scripts de generación de imágenes
 - **18-jun-2026:** commit `43387a9` actualiza info oficial de CAPINI en lobby
 - **28-jun-2026:** se creó esta sesión dedicada con API key propia
+- **20-nov-2026:** se publica la guia web de Funciones Ejecutivas en
+  `contenido_web/presentacion-funciones-ejecutivas/` (control inhibitorio,
+  termometro del animo, estrategias y 5 juegos de memoria de trabajo).
+  Contenido adaptado de «Las funciones ejecutivas» (Upbility Publications),
+  uso educativo no comercial. Se anade tarjeta en el lobby.
+  Nota de marca: el turquesa documentado es `#4DB6AC` pero el PNG oficial del
+  logo mide `#40B1B7` — queda pendiente decidir cual manda.
